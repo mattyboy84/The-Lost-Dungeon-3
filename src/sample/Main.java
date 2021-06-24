@@ -24,12 +24,21 @@ public class Main extends Application {
 
     Group group = new Group();
     Scene scene = new Scene(group, screenWidth, screenHeight);
+    //
+    Dungeon dungeon = new Dungeon();
 
 
     @Override
     public void start(Stage stage) throws Exception {
 
+        dungeon.Generate();
 
+
+
+
+
+        stage.setScene(scene);
+        stage.show();
     }
 
 
