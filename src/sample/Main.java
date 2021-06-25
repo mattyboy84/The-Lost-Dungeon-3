@@ -33,12 +33,19 @@ public class Main extends Application {
 
         dungeon.Generate();
 
+        for (int i = 0; i <dungeon.getMap().length ; i++) {
+            for (int j = 0; j <dungeon.getMap()[0].length ; j++) {
+                System.out.print(dungeon.getMap()[i][j] + "  ");
+            }
+            System.out.println("");
+        }
+
 
 
 
 
         stage.setScene(scene);
-        stage.show();
+        //stage.show();
     }
 
 
