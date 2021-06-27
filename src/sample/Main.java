@@ -10,6 +10,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     Rectangle2D screenBounds = Screen.getPrimary().getBounds();
     //
     //1080p
@@ -31,14 +32,9 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        dungeon.Generate();
+        dungeon.Generate(20,19,19);
 
-        for (int i = 0; i <dungeon.getMap().length ; i++) {
-            for (int j = 0; j <dungeon.getMap()[0].length ; j++) {
-                System.out.print(dungeon.getMap()[i][j] + "  ");
-            }
-            System.out.println("");
-        }
+        dungeon.displayMap();
 
 
 
