@@ -92,6 +92,7 @@ public class Dungeon {
             System.out.println("");
         }
         System.out.println("-------------------------------------------------------");
+
     }
 
     private void neighbourAdder() {
