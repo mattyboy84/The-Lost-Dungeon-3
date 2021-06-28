@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class Dungeon {
     ArrayList<Neighbour_Rooms> neighbours = new ArrayList<Neighbour_Rooms>();
+    ArrayList<Room> rooms = new ArrayList<Room>();
 
     public Dungeon() {
     }
@@ -19,19 +20,28 @@ public class Dungeon {
     int localRooms = 0;
     int finRooms = 0;
     int minimumRooms;
+    int floorLevel;
 
 
     int startX;
     int startY;
     Random random = new Random();
 
-    public void Generate(int minRooms, int mapXWidth, int mapYWidth) {
+    /*
+    //D:\- JAVA Projects -\- Lost Dungeon -\The-Lost-Dungeon-3\src\resources\gfx\grid
+grid_pit
+props_01_basement
+rocks_basement
+     */
+
+    public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel) {
         map = new int[19][19];
         this.mapX = mapXWidth;
         this.mapY = mapYWidth;
         this.startX = (mapX - 1) / 2;
         this.startY = (mapY - 1) / 2;
         this.minimumRooms = minRooms;
+        this.floorLevel = floorLevel + 1;
 
 
         while (finRooms < minimumRooms) {
@@ -62,7 +72,20 @@ public class Dungeon {
 
         //System.out.println("asd" + neighbours.size());
         //displayMap();
-        System.out.println(finRooms);
+        System.out.println("Dungeon has: " + finRooms + " Rooms");
+
+        finalDungeonGen();
+
+    }
+
+    private void finalDungeonGen() {
+        for (int[] ints : map) {
+            for (int j = 0; j < map[0].length; j++) {
+                if (ints[j] > 0) {
+                    rooms.add(new Room());
+                }
+            }
+        }
 
     }
 
@@ -147,12 +170,8 @@ public class Dungeon {
         }
         try {
             switch (random.nextInt(2)) {
-                case 0:
-                    deltaX = deltaX + (random.nextInt(2) * 2) - 1;
-                    break;
-                case 1:
-                    deltaY = deltaY + (random.nextInt(2) * 2) - 1;
-                    break;
+                case 0 -> deltaX = deltaX + (random.nextInt(2) * 2) - 1;
+                case 1 -> deltaY = deltaY + (random.nextInt(2) * 2) - 1;
             }
             map[startX + deltaX][startY + deltaY] = 1;
             localRooms++;

@@ -32,7 +32,9 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        dungeon.Generate(20,19,19);
+        int floor = 0;
+
+        dungeon.Generate(20,19,19,floor);
 
         dungeon.displayMap();
 
