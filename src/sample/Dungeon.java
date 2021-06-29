@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Dungeon {
+
     ArrayList<Neighbour_Rooms> neighbours = new ArrayList<Neighbour_Rooms>();
     ArrayList<Room> rooms = new ArrayList<Room>();
 
@@ -29,9 +30,10 @@ public class Dungeon {
 
     /*
     //D:\- JAVA Projects -\- Lost Dungeon -\The-Lost-Dungeon-3\src\resources\gfx\grid
-grid_pit
-props_01_basement
-rocks_basement
+    grid_pit
+    props_01_basement
+    rocks_basement
+    grid_bridge
      */
 
     public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel) {
@@ -79,10 +81,10 @@ rocks_basement
     }
 
     private void finalDungeonGen() {
-        for (int[] ints : map) {
+        for (int i = 0; i <map.length ; i++) {
             for (int j = 0; j < map[0].length; j++) {
-                if (ints[j] > 0) {
-                    rooms.add(new Room());
+                if (map[i][j] > 0) {
+                    rooms.add(new Room(i,j,map[i][j],this.floorLevel));
                 }
             }
         }
