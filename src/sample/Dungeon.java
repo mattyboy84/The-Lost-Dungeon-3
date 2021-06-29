@@ -149,7 +149,7 @@ public class Dungeon {
                 map[i][j - 1] = 9;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println(e);
+            //System.out.println(e);
         }
 
 
