@@ -7,6 +7,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -25,7 +27,9 @@ public class Main extends Application {
     float scaleY = (float) screenHeight / madeWithHeight;
 
     Group group = new Group();
+    Group menuGroup = new Group();
     Scene scene = new Scene(group, screenWidth, screenHeight);
+    Scene menuScene = new Scene(menuGroup, screenWidth, screenHeight);
     //
     Dungeon dungeon = new Dungeon();
 
@@ -33,18 +37,41 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        Button newGame = new Button("New Game");
+        newGame.relocate(300, 300);
+        Button loadGame = new Button("Load Game");
+        loadGame.relocate(450, 300);
         System.out.println("ScaleX: " + scaleX + " ScaleY: " + scaleY);
+        menuGroup.getChildren().addAll(newGame,loadGame);
 
-        int floor = 0;
+       // newGame.setOnMouseClicked(mouseEvent -> {
+        //    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                int floor = 0;
+                dungeon.Generate(20, 19, 19, floor, scaleX, scaleY,screenBounds);
+                dungeon.displayMap();
+                dungeon.loadRoom(9, 9,group);
+                stage.setScene(scene);
+        //    }
+        //});
 
-        dungeon.Generate(20, 19, 19, floor,scaleX,scaleY);
+        scene.setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()){
+                case F -> {
+                    stage.setFullScreen(!stage.isFullScreen());
+                }
+            }
+        });
 
-        dungeon.displayMap();
+        loadGame.setOnMouseClicked(mouseEvent -> {
+            switch (mouseEvent.getButton()){
+                case PRIMARY -> {
+                    System.out.println("load game");
+                }
+            }
+        });
 
-        dungeon.loadRoom(9, 9);
-
-
-        stage.setScene(scene);
+        stage.setScene(scene);//bypassed the menu scene for now
+        stage.setFullScreen(true);
         stage.show();
     }
 

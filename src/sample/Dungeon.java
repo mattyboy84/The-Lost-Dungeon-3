@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -36,7 +39,7 @@ public class Dungeon {
     grid_bridge
      */
 
-    public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY) {
+    public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
         map = new int[19][19];
         this.mapX = mapXWidth;
         this.mapY = mapYWidth;
@@ -76,15 +79,15 @@ public class Dungeon {
         //displayMap();
         System.out.println("Dungeon has: " + finRooms + " Rooms");
 
-        finalDungeonGen(scaleX,scaleY);
+        finalDungeonGen(scaleX,scaleY,screenBounds);
 
     }
 
-    private void finalDungeonGen(float scaleX, float scaleY) {
+    private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds) {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] > 0) {
-                    rooms.add(new Room(i, j, map[i][j], this.floorLevel,scaleX,scaleY));
+                    rooms.add(new Room(i, j, map[i][j], this.floorLevel,scaleX,scaleY,screenBounds));
                 }
             }
         }
@@ -183,10 +186,10 @@ public class Dungeon {
         }
     }
 
-    public void loadRoom(int x, int y) {
+    public void loadRoom(int x, int y, Group group) {
         for (Room room : rooms) {
             if (room.getI() == x && room.getJ() == y) {
-                room.load();
+                room.load(group);
                 break;
             }
         }

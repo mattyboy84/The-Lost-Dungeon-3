@@ -2,6 +2,8 @@ package sample;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,16 +21,16 @@ public class Room {
     int floorLevel;
     JsonObject roomTemplate = null;
 
-    public Room(int i, int j, int type, int floorLevel,float scaleX,float scaleY) {
+    public Room(int i, int j, int type, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.i = i;
         this.j = j;
         this.type = type;
         this.floorLevel = floorLevel;
-        this.roomTemplate= new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
+        this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
 
         //System.out.println(this.roomTemplate.getAsJsonObject("Background"));
 
-this.background=new Background(this.roomTemplate.getAsJsonObject("Background"));
+        this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY,screenBounds);
 
         //System.out.println(roomTemplate);
     }
@@ -45,7 +47,7 @@ this.background=new Background(this.roomTemplate.getAsJsonObject("Background"));
             room = contents[random.nextInt(contents.length)];
         }
         try {
-            File file = new File("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type + "\\"+room);
+            File file = new File("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type + "\\" + room);
             //System.out.println(file);
             BufferedReader br = new BufferedReader(new FileReader(file));
             String st;
@@ -62,9 +64,8 @@ this.background=new Background(this.roomTemplate.getAsJsonObject("Background"));
         return json;
     }
 
-    public void load() {
-
-
+    public void load(Group group) {
+        this.background.load(group);
     }
 
     public Random getRandom() {
