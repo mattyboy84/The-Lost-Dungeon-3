@@ -11,26 +11,26 @@ import java.util.Random;
 public class Room {
 
     Random random = new Random();
+    Background background;
 
     int i;
     int j;
     int type;
     int floorLevel;
+    JsonObject roomTemplate = null;
 
-
-    public Room(int i, int j, int type, int floorLevel) {
+    public Room(int i, int j, int type, int floorLevel,float scaleX,float scaleY) {
         this.i = i;
         this.j = j;
         this.type = type;
         this.floorLevel = floorLevel;
+        this.roomTemplate= new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
 
-        JsonObject jsonObject = null;
+        //System.out.println(this.roomTemplate.getAsJsonObject("Background"));
 
+this.background=new Background(this.roomTemplate.getAsJsonObject("Background"));
 
-            jsonObject = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
-        System.out.println(jsonObject);
-
-
+        //System.out.println(roomTemplate);
     }
 
     private StringBuilder templateGetter() {
@@ -56,11 +56,62 @@ public class Room {
 
             //System.out.println(json);
         } catch (Exception e) {
-
+            System.out.println("Cannot find room template - Room");
         }
         //System.out.println(json);
         return json;
     }
 
+    public void load() {
 
+
+    }
+
+    public Random getRandom() {
+        return random;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    public int getI() {
+        return i;
+    }
+
+    public void setI(int i) {
+        this.i = i;
+    }
+
+    public int getJ() {
+        return j;
+    }
+
+    public void setJ(int j) {
+        this.j = j;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getFloorLevel() {
+        return floorLevel;
+    }
+
+    public void setFloorLevel(int floorLevel) {
+        this.floorLevel = floorLevel;
+    }
+
+    public JsonObject getRoomTemplate() {
+        return roomTemplate;
+    }
+
+    public void setRoomTemplate(JsonObject roomTemplate) {
+        this.roomTemplate = roomTemplate;
+    }
 }

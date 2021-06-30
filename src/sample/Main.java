@@ -33,18 +33,19 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        System.out.println("ScaleX: " + scaleX + " ScaleY: " + scaleY);
+
         int floor = 0;
 
-        dungeon.Generate(20,19,19,floor);
+        dungeon.Generate(20, 19, 19, floor,scaleX,scaleY);
 
         dungeon.displayMap();
 
-
-
+        dungeon.loadRoom(9, 9);
 
 
         stage.setScene(scene);
-        //stage.show();
+        stage.show();
     }
 
 

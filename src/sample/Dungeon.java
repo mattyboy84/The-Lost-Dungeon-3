@@ -36,7 +36,7 @@ public class Dungeon {
     grid_bridge
      */
 
-    public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel) {
+    public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY) {
         map = new int[19][19];
         this.mapX = mapXWidth;
         this.mapY = mapYWidth;
@@ -76,15 +76,15 @@ public class Dungeon {
         //displayMap();
         System.out.println("Dungeon has: " + finRooms + " Rooms");
 
-        finalDungeonGen();
+        finalDungeonGen(scaleX,scaleY);
 
     }
 
-    private void finalDungeonGen() {
-        for (int i = 0; i <map.length ; i++) {
+    private void finalDungeonGen(float scaleX, float scaleY) {
+        for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] > 0) {
-                    rooms.add(new Room(i,j,map[i][j],this.floorLevel));
+                    rooms.add(new Room(i, j, map[i][j], this.floorLevel,scaleX,scaleY));
                 }
             }
         }
@@ -181,8 +181,15 @@ public class Dungeon {
         } catch (Exception e) {
             System.out.println("Map gen exceeds set boundaries - its become sentient");
         }
+    }
 
-
+    public void loadRoom(int x, int y) {
+        for (Room room : rooms) {
+            if (room.getI() == x && room.getJ() == y) {
+                room.load();
+                break;
+            }
+        }
     }
 
 
