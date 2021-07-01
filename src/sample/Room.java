@@ -68,6 +68,10 @@ public class Room {
         this.background.load(group);
     }
 
+    public void unload(Group group){
+        this.background.unload(group);
+    }
+
     public Random getRandom() {
         return random;
     }

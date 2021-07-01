@@ -54,11 +54,13 @@ public class Background {
         this.bottomRight.relocate(screenBounds.getWidth() / 2, screenBounds.getHeight() / 2);
         this.bottomRight.setScaleX(-1);
         this.bottomRight.setScaleY(-1);
-
     }
-
 
     public void load(Group group) {
         group.getChildren().addAll(topLeft, topRight, bottomLeft, bottomRight);
+    }
+
+    public void unload(Group group) {
+        group.getChildren().removeAll(topLeft, topRight, bottomLeft, bottomRight);
     }
 }
