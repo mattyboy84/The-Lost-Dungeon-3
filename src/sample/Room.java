@@ -14,23 +14,33 @@ public class Room {
 
     Random random = new Random();
     Background background;
+    Shading shading;
 
     int i;
     int j;
     int type;
+    int upType, downType, leftType, rightType;
     int floorLevel;
     JsonObject roomTemplate = null;
 
-    public Room(int i, int j, int type, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
+    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.i = i;
         this.j = j;
         this.type = type;
+        //
+        this.upType = up;
+        this.downType = down;
+        this.leftType = left;
+        this.rightType = right;
+        //
         this.floorLevel = floorLevel;
         this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
 
         //System.out.println(this.roomTemplate.getAsJsonObject("Background"));
 
-        this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY,screenBounds);
+        this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
+        this.shading = new Shading(scaleX, scaleY, screenBounds);
+
 
         //System.out.println(roomTemplate);
     }
@@ -66,10 +76,12 @@ public class Room {
 
     public void load(Group group) {
         this.background.load(group);
+        this.shading.load(group);
     }
 
-    public void unload(Group group){
+    public void unload(Group group) {
         this.background.unload(group);
+        this.shading.unload(group);
     }
 
     public Random getRandom() {
@@ -118,5 +130,11 @@ public class Room {
 
     public void setRoomTemplate(JsonObject roomTemplate) {
         this.roomTemplate = roomTemplate;
+    }
+
+    public void displayNeighbours() {
+        System.out.println("UP: " + this.upType + " Down: " + this.downType + " Left: " + this.leftType + " Right: " + this.rightType);
+
+
     }
 }

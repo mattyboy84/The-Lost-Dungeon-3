@@ -38,11 +38,15 @@ public class Dungeon {
     rocks_basement
     grid_bridge
      */
+    int borderBoundary = 1;//creates a safe zone around the dungeon. As 1, Row/Column 0 and length-1 are free of rooms
+
 
     public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        map = new int[19][19];
         this.mapX = mapXWidth;
         this.mapY = mapYWidth;
+        //
+        map = new int[this.mapX][this.mapY];
+        //
         this.startX = (mapX - 1) / 2;
         this.startY = (mapY - 1) / 2;
         this.minimumRooms = minRooms;
@@ -79,19 +83,36 @@ public class Dungeon {
         //displayMap();
         System.out.println("Dungeon has: " + finRooms + " Rooms");
 
-        finalDungeonGen(scaleX,scaleY,screenBounds);
+        finalDungeonGen(scaleX, scaleY, screenBounds);
 
     }
 
     private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds) {
+        int up = 0;
+        int down = 0;
+        int left = 0;
+        int right = 0;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] > 0) {
-                    rooms.add(new Room(i, j, map[i][j], this.floorLevel,scaleX,scaleY,screenBounds));
+
+                    up = roomChecker(i, j, -1, 0);
+
+                    down = roomChecker(i, j, +1, 0);
+
+                    right = roomChecker(i, j, 0, +1);
+
+                    left = roomChecker(i, j, 0, -1);
+                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds));
+                    //System.out.println("Type: " + map[i][j] + " I: " + i + " J: " + j);
                 }
             }
         }
 
+    }
+
+    private int roomChecker(int i, int j, int II, int JJ) {
+        return Math.max(map[i + II][j + JJ], 0);
     }
 
     private void neighbourCleaner() {
@@ -113,13 +134,38 @@ public class Dungeon {
     }
 
     public void displayMap() {
-        for (int[] ints : map) {
+        System.out.println("I down, J across");
+        StringBuilder a = new StringBuilder();
+        a.append("   ");
+        for (int i = 0; i < map.length; i++) {
+            a.append(i);
+            if (i < 10) {
+                a.append("  ");
+            } else {
+                a.append(" ");
+            }
+        }
+        System.out.println(a);
+
+
+        for (int i = 0; i < map.length; i++) {
+            if (i < 10) {
+                System.out.print(i + "  ");
+            } else {
+                System.out.print(i + " ");
+            }
             for (int j = 0; j < map[0].length; j++) {
-                System.out.print(ints[j] + "  ");
+                System.out.print(map[i][j] + "  ");
             }
             System.out.println("");
+            //System.out.print(i + " ");
         }
-        System.out.println("-------------------------------------------------------");
+        System.out.print("-");//start with 1 to account for I column
+
+        for (int i = 0; i <map.length ; i++) {//3 for every unit in map,
+            System.out.print("---");
+        }
+
 
     }
 
@@ -135,28 +181,29 @@ public class Dungeon {
 
     private void neighbourSubAdder(int i, int j) {
         try {
-            if (map[i + 1][j] == 0) {
-                neighbours.add(new Neighbour_Rooms(i + 1, j));
-                map[i + 1][j] = 9;
-            }
-            if (map[i - 1][j] == 0) {
-                neighbours.add(new Neighbour_Rooms(i - 1, j));
-                map[i - 1][j] = 9;
-            }
-            if (map[i][j + 1] == 0) {
-                neighbours.add(new Neighbour_Rooms(i, j + 1));
-                map[i][j + 1] = 9;
-            }
-            if (map[i][j - 1] == 0) {
-                neighbours.add(new Neighbour_Rooms(i, j - 1));
-                map[i][j - 1] = 9;
+            if (i >= borderBoundary && j >= borderBoundary && i < (map.length - borderBoundary) && j < (map.length - borderBoundary)) {
+                if (map[i + 1][j] == 0) {
+                    neighbours.add(new Neighbour_Rooms(i + 1, j));
+                    map[i + 1][j] = 9;
+                }
+                if (map[i - 1][j] == 0) {
+                    neighbours.add(new Neighbour_Rooms(i - 1, j));
+                    map[i - 1][j] = 9;
+                }
+                if (map[i][j + 1] == 0) {
+                    neighbours.add(new Neighbour_Rooms(i, j + 1));
+                    map[i][j + 1] = 9;
+                }
+                if (map[i][j - 1] == 0) {
+                    neighbours.add(new Neighbour_Rooms(i, j - 1));
+                    map[i][j - 1] = 9;
+                }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             //System.out.println(e);
         }
-
-
     }
+
 
     private void mapclearer() {
         for (int i = 0; i < map.length; i++) {
@@ -168,8 +215,9 @@ public class Dungeon {
 
 
     private void roomAdder() {
-        if (startX + deltaX >= map.length || startX + deltaX <= 0 ||
-                startY + deltaY >= map.length || startY + deltaY <= 0) {
+        if (startX + deltaX >= map.length - borderBoundary || startX + deltaX <= borderBoundary ||
+                startY + deltaY >= map.length - borderBoundary || startY + deltaY <= borderBoundary) {
+            //System.out.println((startX + deltaX)+"  " + (startY + deltaY));
             deltaX = 0;
             deltaY = 0;
         }

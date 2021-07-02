@@ -1,0 +1,28 @@
+file:shading.png  422 x x286
+scaling to fit screen leaves it looing slightly off...
+ideal fit for a 1920x1080 screen is 1943 x 1122 with top left corner at -11 , -24
+
+ideal fit for: 1366x768
+
+xMult = 1.01
+YMult = 1.04
+xScale = 0.711
+yScale = 0.711
+
+shading should be: 1379 x 798
+top left corner should be: -8, -17
+
+
+
+/////////////////////////////////////////////////////////////////
+
+
+
+fit: (1366 x 768 ) x (1.02, 1.044) = 1394 x 802   -14x , -18y
+fit: (1920 x 1080) x (1.02, 1.044) = 1958 x 1127 -20x ,-28y
+
+hard code the default delta as -20x, -28y then multiply by screen scaling factor gets close enough
+
+
+work: y: 1.044
+work: x: 1.02

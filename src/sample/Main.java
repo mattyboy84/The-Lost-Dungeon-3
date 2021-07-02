@@ -47,12 +47,20 @@ public class Main extends Application {
        // newGame.setOnMouseClicked(mouseEvent -> {
         //    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                 int floor = 0;
-                dungeon.Generate(20, 19, 19, floor, scaleX, scaleY,screenBounds);
+                dungeon.Generate(18, 19, 19, floor, scaleX, scaleY,screenBounds);
                 dungeon.displayMap();
                 dungeon.loadRoom(9, 9,group);
                 stage.setScene(scene);
         //    }
         //});
+
+        loadGame.setOnMouseClicked(mouseEvent -> {
+            switch (mouseEvent.getButton()){
+                case PRIMARY -> {
+                    System.out.println("load game");
+                }
+            }
+        });
 
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()){
@@ -62,13 +70,7 @@ public class Main extends Application {
             }
         });
 
-        loadGame.setOnMouseClicked(mouseEvent -> {
-            switch (mouseEvent.getButton()){
-                case PRIMARY -> {
-                    System.out.println("load game");
-                }
-            }
-        });
+
 
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);

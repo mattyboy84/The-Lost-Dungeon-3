@@ -58,6 +58,10 @@ public class Background {
 
     public void load(Group group) {
         group.getChildren().addAll(topLeft, topRight, bottomLeft, bottomRight);
+        topLeft.setViewOrder(1);
+        topRight.setViewOrder(1);
+        bottomLeft.setViewOrder(1);
+        bottomRight.setViewOrder(1);
     }
 
     public void unload(Group group) {
