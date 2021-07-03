@@ -112,7 +112,11 @@ public class Dungeon {
     }
 
     private int roomChecker(int i, int j, int II, int JJ) {
-        return Math.max(map[i + II][j + JJ], 0);
+        try {
+            return Math.max(map[i + II][j + JJ], 0);
+        }catch (Exception e){
+            return 0;
+        }
     }
 
     private void neighbourCleaner() {

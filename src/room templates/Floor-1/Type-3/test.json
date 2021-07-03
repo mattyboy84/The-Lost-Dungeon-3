@@ -4,7 +4,9 @@
     "Width": 234,
     "Height": 156,
     "Rows": 2,
-    "Columns": 2
+    "Columns": 2,
+    "BorderX": 213,
+    "BorderY": 180
   },
   "Props": {
     "name": "props_01_basement",

@@ -41,6 +41,7 @@ public class Room {
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         this.shading = new Shading(scaleX, scaleY, screenBounds);
 
+        //213 x 180
 
         //System.out.println(roomTemplate);
     }

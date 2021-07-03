@@ -55,10 +55,8 @@ public class Main extends Application {
         //});
 
         loadGame.setOnMouseClicked(mouseEvent -> {
-            switch (mouseEvent.getButton()){
-                case PRIMARY -> {
-                    System.out.println("load game");
-                }
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                System.out.println("load game");
             }
         });
 
@@ -69,8 +67,6 @@ public class Main extends Application {
                 }
             }
         });
-
-
 
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);
