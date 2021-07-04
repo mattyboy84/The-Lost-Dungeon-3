@@ -40,12 +40,6 @@ public class Background {
         down=new Rectangle(0,screenBounds.getHeight()-this.borderY,screenBounds.getWidth(),screenBounds.getHeight());
         right=new Rectangle(screenBounds.getWidth()-this.borderX,0,screenBounds.getWidth(),screenBounds.getHeight());
 
-        System.out.println(up.getBoundsInParent());
-        System.out.println(left.getBoundsInParent());
-        System.out.println(right.getBoundsInParent());
-        System.out.println(down.getBoundsInParent());
-
-
         //
         int randRow = random.nextInt(this.rows);
         int randCol = random.nextInt(this.columns);

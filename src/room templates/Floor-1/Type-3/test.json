@@ -13,7 +13,9 @@
     "Width": 26,
     "Height": 26,
     "Rows": 10,
-    "Columns": 6
+    "Columns": 6,
+    "BorderX": 213,
+    "BorderY": 180
   },
   "Rocks": {
     "name": "rocks_basement",

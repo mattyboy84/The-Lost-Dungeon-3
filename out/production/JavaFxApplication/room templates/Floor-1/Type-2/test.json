@@ -4,14 +4,18 @@
     "Width": 234,
     "Height": 156,
     "Rows": 2,
-    "Columns": 2
+    "Columns": 2,
+    "BorderX": 213,
+    "BorderY": 180
   },
   "Props": {
     "name": "props_01_basement",
     "Width": 26,
     "Height": 26,
     "Rows": 10,
-    "Columns": 6
+    "Columns": 6,
+    "BorderX": 213,
+    "BorderY": 180
   },
   "Rocks": {
     "name": "rocks_basement",

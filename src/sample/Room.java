@@ -22,8 +22,11 @@ public class Room {
     int upType, downType, leftType, rightType;
     int floorLevel;
     JsonObject roomTemplate = null;
+    Background_items backgroundItems;
 
     public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
+        this.backgroundItems=new Background_items();
+        //
         this.i = i;
         this.j = j;
         this.type = type;
@@ -40,6 +43,7 @@ public class Room {
 
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         this.shading = new Shading(scaleX, scaleY, screenBounds);
+        this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"),scaleX,scaleY,screenBounds);
 
         //213 x 180
 
@@ -78,11 +82,13 @@ public class Room {
     public void load(Group group) {
         this.background.load(group);
         this.shading.load(group);
+        this.backgroundItems.load(group);
     }
 
     public void unload(Group group) {
         this.background.unload(group);
         this.shading.unload(group);
+        this.backgroundItems.unload(group);
     }
 
     public Random getRandom() {
