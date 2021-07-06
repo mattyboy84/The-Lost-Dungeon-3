@@ -55,15 +55,14 @@ public class Shading {
             overlay.getGraphicsContext2D().drawImage(shading.getImage(), 0, 0);
             //
             //mouse.sub(offsetX, offsetY);
+            double op=0;
             for (int i = Math.max((int) (mouse.x - radius), 0); i < Math.min(mouse.x + (radius), screenBounds.getWidth()); i++) {
                 for (int j = Math.max((int) (mouse.y - radius), 0); j < Math.min(mouse.y + (radius), screenBounds.getHeight()); j++) {
                     //i = width
                     //j = height
-                    double op = 0;
 
 
-                    op = pixelReader.getColor(i, j).getOpacity();
-
+                    op =pixelReader.getColor(i, j).getOpacity();
 
                     int d = calc(i, j, mouse);
 
@@ -83,7 +82,6 @@ public class Shading {
 
                 }
             }
-
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
     }

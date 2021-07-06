@@ -141,7 +141,10 @@ public class Room {
 
     public void displayNeighbours() {
         System.out.println("UP: " + this.upType + " Down: " + this.downType + " Left: " + this.leftType + " Right: " + this.rightType);
+    }
 
-
+    @Override
+    public String toString() {
+        return "Room";
     }
 }

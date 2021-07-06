@@ -2,6 +2,7 @@ package sample;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -42,6 +43,8 @@ public class Dungeon {
 
 
     public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
+
+
         this.mapX = mapXWidth;
         this.mapY = mapYWidth;
         //
@@ -104,7 +107,7 @@ public class Dungeon {
 
                     left = roomChecker(i, j, 0, -1);
                     rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds));
-                    //System.out.println("Type: " + map[i][j] + " I: " + i + " J: " + j);
+                    //System.out.println(rooms.get(rooms.size()-1));
                 }
             }
         }
