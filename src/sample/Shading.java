@@ -50,7 +50,7 @@ public class Shading {
     }
 
     private void timelineStarter(PixelReader pixelReader, Rectangle2D screenBounds) {
-        this.timeline = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
+        this.timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
             overlay.getGraphicsContext2D().clearRect(0, 0, overlay.getWidth(), overlay.getHeight());
             overlay.getGraphicsContext2D().drawImage(shading.getImage(), 0, 0);
             //
@@ -64,8 +64,20 @@ public class Shading {
 
                     op =pixelReader.getColor(i, j).getOpacity();
 
-                    int d = calc(i, j, mouse);
+                    float d = Math.abs(calc(i, j, mouse));
 
+
+                    float b = d/radius;
+                    System.out.println("d: "+ d + " radius " + radius + " b " + b);
+                    if (b>1){
+                        b=1;
+                    }
+
+
+                        //System.out.println("set " + op + " " + b + " New Op " + (op*b));
+                        overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, op*b));
+
+/*
                     if (d < 250) {
                         double a = Math.max(op - 0.02, 0);
                         //System.out.println(a);
@@ -79,7 +91,7 @@ public class Shading {
                         double a = Math.max(op - 0.08, 0);
                         overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, a));
                     }
-
+*/
                 }
             }
         }));
