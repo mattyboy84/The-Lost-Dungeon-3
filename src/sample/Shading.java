@@ -9,7 +9,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
 
 public class Shading {
 
@@ -20,93 +23,110 @@ public class Shading {
     float yMult = (float) 1.044;
 
     int radius;
-    Vecc2f mouse = new Vecc2f(480,540);//demo pos until character is made
+    Vecc2f mouse = new Vecc2f(480, 540);//demo pos until character is made
 
     ImageView shading;
     Canvas overlay;
     String file = "file:src\\resources\\gfx\\backdrop\\shading.png";
     Timeline timeline;
+    //
+    Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+
+    Double[][] screen = new Double[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
+    ArrayList<Points> sources = new ArrayList<Points>();
+    ArrayList<Points> activeSources = new ArrayList<Points>();
 
     //        this.topLeft = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
     public Shading(float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.shading = new ImageView(new Image(file, (int) (screenBounds.getWidth() * xMult), (int) (screenBounds.getHeight() * yMult), false, false));
-        //this.shading.relocate(offsetX*scaleX,offsetY*scaleY);
+
+        activeSources.add(new Points(300, 300, 50));
+        //activeSources.add(new Points(500, 500, 50));
+        //activeSources.add(new Points(500, 550, 50));
+        //activeSources.add(new Points(1400, 900, 50));
+        //
+        /*
+        Timeline externalTimeline = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
+
+            //this external timeline is how other classes (player,enemies, background lights) will be pass a light point to the shading layer.
+
+            removeActiveSource(a.x, a.y);
+
+            //position of a moving object is updated or similar
+            a = new Vecc2f(MouseInfo.getPointerInfo().getLocation().x - deltaX, MouseInfo.getPointerInfo().getLocation().y - deltaY);
+
+            addActiveSource(a.x, a.y, 175);//new position is sent to the shading layer
+        }));
+        externalTimeline.setCycleCount(Timeline.INDEFINITE);
+        externalTimeline.play();
+        */
+
         this.overlay = new Canvas(shading.getBoundsInParent().getWidth(), shading.getBoundsInParent().getHeight());
         overlay.relocate(offsetX, offsetY);
         //
-        this.radius = (int) (250 * ((scaleX + scaleY) / 2));
+
         //
         PixelReader pixelReader = shading.getImage().getPixelReader();
         //
-        for (int i = 0; i < shading.getBoundsInParent().getWidth(); i++) {
-            for (int j = 0; j < shading.getBoundsInParent().getHeight(); j++) {
-                overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, pixelReader.getColor(i, j));
-            }
-        }
 
-        timelineStarter(pixelReader, screenBounds);
+        timelineStarter(pixelReader, screenBounds, scaleX, scaleY);
 
 
     }
 
-    private void timelineStarter(PixelReader pixelReader, Rectangle2D screenBounds) {
-        this.timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+    private void timelineStarter(PixelReader pixelReader, Rectangle2D screenBounds, float scaleX, float scaleY) {
+        this.timeline = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
+            //
             overlay.getGraphicsContext2D().clearRect(0, 0, overlay.getWidth(), overlay.getHeight());
             overlay.getGraphicsContext2D().drawImage(shading.getImage(), 0, 0);
             //
-            //mouse.sub(offsetX, offsetY);
-            double op=0;
-            for (int i = Math.max((int) (mouse.x - radius), 0); i < Math.min(mouse.x + (radius), screenBounds.getWidth()); i++) {
-                for (int j = Math.max((int) (mouse.y - radius), 0); j < Math.min(mouse.y + (radius), screenBounds.getHeight()); j++) {
-                    //i = width
-                    //j = height
+            for (Points activeSource : activeSources) {
+                sources.add(new Points(activeSource.getPosition().x, activeSource.getPosition().y, activeSource.getRadius()));
+            }
+
+            //sources.add(new Points(1500,800,50));
+            //
 
 
-                    op =pixelReader.getColor(i, j).getOpacity();
-
-                    float d = Math.abs(calc(i, j, mouse));
-
-
-                    float b = d/radius;
-                    System.out.println("d: "+ d + " radius " + radius + " b " + b);
-                    if (b>1){
-                        b=1;
+            for (Points source : sources) {
+                float localRadius = (int) (source.getRadius() * ((scaleX) + (scaleY)) / 2);
+                for (int i = (int) Math.max((source.getPosition().x - localRadius), 0); i < Math.min((source.getPosition().x + localRadius), screenBounds.getWidth()); i++) {
+                    for (int j = Math.max((int) (source.getPosition().y - localRadius), 0); j < Math.min((source.getPosition().y + localRadius), screenBounds.getHeight()); j++) {
+                        //i = width
+                        //j = height
+                        float d = Math.min(calc(i, j, source.getPosition()), localRadius);
+                        //
+                        if (screen[i][j] == null) {
+                            screen[i][j] = pixelReader.getColor(i, j).getOpacity();
+                        }
+                        overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, screen[i][j] * (d / (localRadius))));
+                        screen[i][j] = screen[i][j] * (d / (localRadius));
                     }
-
-
-                        //System.out.println("set " + op + " " + b + " New Op " + (op*b));
-                        overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, op*b));
-
-/*
-                    if (d < 250) {
-                        double a = Math.max(op - 0.02, 0);
-                        //System.out.println(a);
-                        overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, a));
-                    }
-                    if (d < 175) {
-                        double a = Math.max(op - 0.05, 0);
-                        overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, a));
-                    }
-                    if (d < 100) {
-                        double a = Math.max(op - 0.08, 0);
-                        overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, a));
-                    }
-*/
                 }
             }
+            screen = new Double[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
+            sources.clear();
         }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
+        this.timeline.setCycleCount(Timeline.INDEFINITE);
     }
 
-    private int calc(int i, int j, Vecc2f mouse) {
+    public void removeActiveSource(float x, float y) {
+        for (int i = 0; i < activeSources.size(); i++) {
+            if (activeSources.get(i).getPosition().x == x && activeSources.get(i).getPosition().y == y) {
+                activeSources.remove(i);
+            }
+        }
+    }
 
-        int dX = (int) (i - mouse.x);
-        int dY = (int) (j - mouse.y);
+    public void addActiveSource(float x, float y, int radius) {
+        activeSources.add(new Points(x, y, radius));
+    }
 
-
+    private int calc(int i, int j, Vecc2f source) {
+        int dX = (int) (i - source.x);
+        int dY = (int) (j - source.y);
         return (int) Math.sqrt(((dX * dX) + (dY * dY)));
     }
-
 
     public void load(Group group) {
         group.getChildren().addAll(this.overlay);
@@ -119,4 +139,22 @@ public class Shading {
         this.timeline.pause();
     }
 
+    private class Points {
+
+        Vecc2f position;
+        int radius;
+
+        public Points(float x, float y, int i) {
+            this.position = new Vecc2f(x, y);
+            this.radius = i;
+        }
+
+        public Vecc2f getPosition() {
+            return position;
+        }
+
+        public int getRadius() {
+            return radius;
+        }
+    }
 }

@@ -91,10 +91,7 @@ public class Dungeon {
     }
 
     private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds) {
-        int up = 0;
-        int down = 0;
-        int left = 0;
-        int right = 0;
+        int up,down,left,right;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] > 0) {
@@ -337,5 +334,37 @@ public class Dungeon {
 
     public void setMinimumRooms(int minimumRooms) {
         this.minimumRooms = minimumRooms;
+    }
+
+    public ArrayList<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(ArrayList<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    public int getFloorLevel() {
+        return floorLevel;
+    }
+
+    public void setFloorLevel(int floorLevel) {
+        this.floorLevel = floorLevel;
+    }
+
+    public Random getRandom() {
+        return random;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    public int getBorderBoundary() {
+        return borderBoundary;
+    }
+
+    public void setBorderBoundary(int borderBoundary) {
+        this.borderBoundary = borderBoundary;
     }
 }

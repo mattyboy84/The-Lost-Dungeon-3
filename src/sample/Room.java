@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Random;
 
 public class Room {
@@ -21,6 +22,7 @@ public class Room {
     int type;
     int upType, downType, leftType, rightType;
     int floorLevel;
+    //
     JsonObject roomTemplate = null;
     Background_items backgroundItems;
 
@@ -36,6 +38,9 @@ public class Room {
         this.leftType = left;
         this.rightType = right;
         //
+
+
+        //
         this.floorLevel = floorLevel;
         this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
 
@@ -44,7 +49,6 @@ public class Room {
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         this.shading = new Shading(scaleX, scaleY, screenBounds);
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"),scaleX,scaleY,screenBounds);
-
         //213 x 180
 
         //System.out.println(roomTemplate);

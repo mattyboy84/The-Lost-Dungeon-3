@@ -12,6 +12,10 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main extends Application {
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     Rectangle2D screenBounds = Screen.getPrimary().getBounds();
