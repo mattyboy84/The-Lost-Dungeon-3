@@ -35,12 +35,21 @@ public class Shading {
     Double[][] screen = new Double[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
     ArrayList<Points> sources = new ArrayList<Points>();
     ArrayList<Points> activeSources = new ArrayList<Points>();
+    //
+    float scaleX,scaleY,avgScale;
 
     //        this.topLeft = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
     public Shading(float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.shading = new ImageView(new Image(file, (int) (screenBounds.getWidth() * xMult), (int) (screenBounds.getHeight() * yMult), false, false));
+        //
+        this.scaleX=scaleX;
+        this.scaleY=scaleY;
+        this.avgScale = (((scaleX+scaleY))/2);
 
-        activeSources.add(new Points(300, 300, 50));
+
+        //activeSources.add(new Points(300*scaleX, 300*scaleY, 50));
+
+        addActiveSource(300,300,50);
         //activeSources.add(new Points(500, 500, 50));
         //activeSources.add(new Points(500, 550, 50));
         //activeSources.add(new Points(1400, 900, 50));
@@ -64,14 +73,10 @@ public class Shading {
         this.overlay = new Canvas(shading.getBoundsInParent().getWidth(), shading.getBoundsInParent().getHeight());
         overlay.relocate(offsetX, offsetY);
         //
-
-        //
         PixelReader pixelReader = shading.getImage().getPixelReader();
         //
 
         timelineStarter(pixelReader, screenBounds, scaleX, scaleY);
-
-
     }
 
     private void timelineStarter(PixelReader pixelReader, Rectangle2D screenBounds, float scaleX, float scaleY) {
@@ -83,11 +88,8 @@ public class Shading {
             for (Points activeSource : activeSources) {
                 sources.add(new Points(activeSource.getPosition().x, activeSource.getPosition().y, activeSource.getRadius()));
             }
-
             //sources.add(new Points(1500,800,50));
             //
-
-
             for (Points source : sources) {
                 float localRadius = (int) (source.getRadius() * ((scaleX) + (scaleY)) / 2);
                 for (int i = (int) Math.max((source.getPosition().x - localRadius), 0); i < Math.min((source.getPosition().x + localRadius), screenBounds.getWidth()); i++) {
@@ -119,7 +121,7 @@ public class Shading {
     }
 
     public void addActiveSource(float x, float y, int radius) {
-        activeSources.add(new Points(x, y, radius));
+        activeSources.add(new Points(x*this.scaleX, y*scaleY, (int) (radius*this.avgScale)));
     }
 
     private int calc(int i, int j, Vecc2f source) {

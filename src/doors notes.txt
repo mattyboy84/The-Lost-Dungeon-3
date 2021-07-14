@@ -1,0 +1,15 @@
+Upscale everything by 4
+
+Door frame Delta (8,9) 32 , 36 - on top
+Door background Delta (16,20) 64, 80 - behind frame
+Left Door Part Delta (19,16) 76, 60
+Right Door Part Delta (32,15) 128,60
+Broken door Frame Delta (8,11) 32, 44
+Locked Right Door Part Delta (32,15) 128,60
+
+
+Individual sprite: (64 x 48) 256 , 192
+
+Upscale SpireSheet to 512 x 960
+
+384 256
