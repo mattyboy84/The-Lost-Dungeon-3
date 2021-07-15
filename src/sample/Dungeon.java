@@ -104,7 +104,7 @@ public class Dungeon {
 
                     left = roomChecker(i, j, 0, -1);
                     rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds));
-                    //System.out.println(rooms.get(rooms.size()-1));
+                    System.out.println("Room " + (rooms.size()-1) + " done");
                 }
             }
         }
@@ -151,7 +151,6 @@ public class Dungeon {
         }
         System.out.println(a);
 
-
         for (int i = 0; i < map.length; i++) {
             if (i < 10) {
                 System.out.print(i + "  ");
@@ -169,8 +168,6 @@ public class Dungeon {
         for (int i = 0; i <map.length ; i++) {//3 for every unit in map,
             System.out.print("---");
         }
-
-
     }
 
     private void neighbourAdder() {

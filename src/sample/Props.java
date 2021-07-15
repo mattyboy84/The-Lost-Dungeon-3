@@ -43,7 +43,7 @@ public class Props {
         group.getChildren().add(this.prop);
         this.prop.setViewOrder(-1);
         this.prop.relocate(position.x, position.y);
-        System.out.println(this.position);
+        //System.out.println(this.position);
     }
 
     public void unload(Group group) {
