@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Room {
@@ -25,9 +26,10 @@ public class Room {
     //
     JsonObject roomTemplate = null;
     Background_items backgroundItems;
+    ArrayList<Door> doors = new ArrayList<Door>();
 
     public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        this.backgroundItems=new Background_items();
+        this.backgroundItems = new Background_items();
         //
         this.i = i;
         this.j = j;
@@ -48,8 +50,21 @@ public class Room {
 
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         this.shading = new Shading(scaleX, scaleY, screenBounds);
-        this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"),scaleX,scaleY,screenBounds);
+        this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
         //213 x 180
+
+        if (upType > 0) {
+            doors.add(new Door("up", 0, this.upType, this.type, scaleX, scaleY, screenBounds));
+        }
+        if (downType > 0) {
+            doors.add(new Door("down", 180, this.downType, this.type, scaleX, scaleY, screenBounds));
+        }
+        if (leftType > 0) {
+            doors.add(new Door("left", 270, this.leftType, this.type, scaleX, scaleY, screenBounds));
+        }
+        if (rightType > 0) {
+            doors.add(new Door("right", 90, this.rightType, this.type, scaleX, scaleY, screenBounds));
+        }
 
         //System.out.println(roomTemplate);
     }
@@ -87,6 +102,10 @@ public class Room {
         this.background.load(group);
         this.shading.load(group);
         this.backgroundItems.load(group);
+        //
+        for (Door door : doors) {
+            door.load(group);
+        }
     }
 
     public void unload(Group group) {

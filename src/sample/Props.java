@@ -6,6 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+
 import java.util.Random;
 
 public class Props {
@@ -17,8 +18,8 @@ public class Props {
     int width, height, rows, columns, borderX, borderY;
     Random random = new Random();
     //
-    int spriteScaleX=3;
-    int spriteScaleY=3;
+    int spriteScaleX = 3;
+    int spriteScaleY = 3;
 
     //    ImageView imageView = new ImageView(new Image("file:src\\default_floor.png", (new Image("file:src\\default_floor.png").getWidth() * scaleX), (new Image("file:src\\default_floor.png").getHeight() * scaleY), true, false));
     public Props(JsonObject props, float scaleX, float scaleY, Rectangle2D screenBounds) {
@@ -35,8 +36,9 @@ public class Props {
         //
         String file = "file:src\\resources\\gfx\\grid\\" + this.name + ".png";
         //
-        this.prop = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX*spriteScaleX), (new Image(file).getHeight() * scaleY*spriteScaleY), false, false).getPixelReader(), (int) (this.width * randX * scaleX*spriteScaleX), (int) (this.height * randY * scaleY*spriteScaleY), (int)(this.height*scaleX*spriteScaleX), (int)(this.width*scaleY*spriteScaleY))));
-        this.position=new Vecc2f((float)(this.borderX+random.nextInt((int) (screenBounds.getWidth()-(2*this.borderX)-this.prop.getBoundsInParent().getWidth()))),(float)(this.borderY+random.nextInt((int) (screenBounds.getHeight()-(2*this.borderY)-this.prop.getBoundsInParent().getHeight()))));
+        this.prop = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * spriteScaleX), (new Image(file).getHeight() * scaleY * spriteScaleY), false, false).getPixelReader(), (int) (this.width * randX * scaleX * spriteScaleX), (int) (this.height * randY * scaleY * spriteScaleY), (int) (this.height * scaleX * spriteScaleX), (int) (this.width * scaleY * spriteScaleY))));
+        this.position = new Vecc2f((float) (this.borderX + random.nextInt((int) (screenBounds.getWidth() - (2 * this.borderX) - this.prop.getBoundsInParent().getWidth()))), (float) (this.borderY + random.nextInt((int) (screenBounds.getHeight() - (2 * this.borderY) - this.prop.getBoundsInParent().getHeight()))));
+        //this.prop.setRotate(90 * (random.nextInt(4)));
     }
 
     public void load(Group group) {
