@@ -41,6 +41,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
         Button newGame = new Button("New Game");
         newGame.relocate(300, 300);
         Button loadGame = new Button("Load Game");

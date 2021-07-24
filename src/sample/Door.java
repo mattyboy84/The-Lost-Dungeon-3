@@ -82,6 +82,11 @@ public class Door {
         this.doorShadow.relocate(position.x, position.y);
         this.doorPartRight.relocate(position.x, position.y);
         this.doorPartLeft.relocate(position.x, position.y);
+        //
+        this.doorFrame.setViewOrder(-3);
+        this.doorShadow.setViewOrder(-3);
+        this.doorPartRight.setViewOrder(-3);
+        this.doorPartLeft.setViewOrder(-3);
     }
 
     public void unload(Group group) {
