@@ -18,11 +18,12 @@ public class Props {
     int width, height, rows, columns, borderX, borderY;
     Random random = new Random();
     //
-    int spriteScaleX = 3;
-    int spriteScaleY = 3;
+    //int spriteScaleX = 3;
+    //int spriteScaleY = 3;
 
     //    ImageView imageView = new ImageView(new Image("file:src\\default_floor.png", (new Image("file:src\\default_floor.png").getWidth() * scaleX), (new Image("file:src\\default_floor.png").getHeight() * scaleY), true, false));
     public Props(JsonObject props, float scaleX, float scaleY, Rectangle2D screenBounds) {
+        //
         this.name = props.get("name").getAsString();
         this.width = props.get("Width").getAsInt();
         this.height = props.get("Height").getAsInt();
@@ -31,12 +32,15 @@ public class Props {
         this.borderX = (int) (props.get("BorderX").getAsInt() * scaleX);
         this.borderY = (int) (props.get("BorderY").getAsInt() * scaleY);
         //
+        scaleX=scaleX*props.get("SheetScale").getAsInt();
+        scaleY=scaleY*props.get("SheetScale").getAsInt();
+        //
         int randX = random.nextInt(this.rows);
         int randY = random.nextInt(this.columns);
         //
         String file = "file:src\\resources\\gfx\\grid\\" + this.name + ".png";
         //
-        this.prop = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * spriteScaleX), (new Image(file).getHeight() * scaleY * spriteScaleY), false, false).getPixelReader(), (int) (this.width * randX * scaleX * spriteScaleX), (int) (this.height * randY * scaleY * spriteScaleY), (int) (this.height * scaleX * spriteScaleX), (int) (this.width * scaleY * spriteScaleY))));
+        this.prop = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX), (new Image(file).getHeight() * scaleY), false, false).getPixelReader(), (int) (this.width * randX * scaleX), (int) (this.height * randY * scaleY), (int) (this.height * scaleX), (int) (this.width * scaleY))));
         this.position = new Vecc2f((float) (this.borderX + random.nextInt((int) (screenBounds.getWidth() - (2 * this.borderX) - this.prop.getBoundsInParent().getWidth()))), (float) (this.borderY + random.nextInt((int) (screenBounds.getHeight() - (2 * this.borderY) - this.prop.getBoundsInParent().getHeight()))));
         //this.prop.setRotate(90 * (random.nextInt(4)));
     }

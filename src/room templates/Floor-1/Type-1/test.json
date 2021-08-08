@@ -10,6 +10,7 @@
   },
   "Props": {
     "name": "props_01_basement",
+    "SheetScale": 3,
     "Width": 26,
     "Height": 26,
     "Rows": 10,
@@ -27,23 +28,81 @@
   "enemies": [
     {
       "enemy": "fly",
+      "type": "classic",
+      "filePath": "monster_010_fly",
+      "SheetScale": 3,
+      "Health": 6,
+      "StartX": 0,
+      "StartY": 0,
+      "Width": 32,
+      "Height": 32,
+      "Rows": 2,
+      "Columns": 1,
+      "Images": 2,
+      "Hitboxes": [
+        {
+          "Type": "Rectangle",
+          "Width": 19,
+          "Height": 15,
+          "xDelta": 6,
+          "yDelta": 8
+        }
+      ],
+      "hasDeathImages": "True",
+      "DeathFilePath":"src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
+      "DeathStartX": 0,
+      "DeathStartY": 64,
+      "DeathWidth": 64,
+      "DeathHeight": 64,
+      "DeathRows": 4,
+      "DeathColumns": 3,
+      "DeathImages": 11,
       "PositionX": 100,
       "PositionY": 100
     },
     {
       "enemy": "attack fly",
+      "type": "classic",
+      "filePath": "monster_010_fly",
+      "SheetScale": 3,
+      "Health": 9,
+      "StartX": 32,
+      "StartY": 32,
+      "Width": 32,
+      "Height": 32,
+      "Rows": 2,
+      "Columns": 1,
+      "Images": 2,
+      "Hitboxes": [
+        {
+          "Type": "Rectangle",
+          "Width": 19,
+          "Height": 15,
+          "xDelta": 6,
+          "yDelta": 8
+        }
+      ],
+      "hasDeathImages": "True",
+      "DeathFilePath":"src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
+      "DeathStartX": 0,
+      "DeathStartY": 64,
+      "DeathWidth": 64,
+      "DeathHeight": 64,
+      "DeathRows": 4,
+      "DeathColumns": 3,
+      "DeathImages": 11,
       "PositionX": 600,
       "PositionY": 600
     }
   ],
   "rocks": [
     {
-      "PositionX": 0,
-      "PositionY": 0
+      "CenterPositionX": 0,
+      "CenterPositionY": 0
     },
     {
-      "PositionX": 300,
-      "PositionY": 300
+      "CenterPositionX": 300,
+      "CenterPositionY": 300
     }
   ]
 }
