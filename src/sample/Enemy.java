@@ -66,7 +66,7 @@ public class Enemy {
             this.deathColumns = enemyTemplate.get("DeathColumns").getAsInt();
             this.numDeathImages = enemyTemplate.get("DeathImages").getAsInt();
         }
-        this.position = new Vecc2f(positionX * scaleX, positionY * scaleY);
+        this.position = new Vecc2f((int)(positionX * scaleX),(int) (positionY * scaleY));
 
         /*
     {
