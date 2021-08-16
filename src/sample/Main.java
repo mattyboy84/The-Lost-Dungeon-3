@@ -73,6 +73,7 @@ public class Main extends Application {
             }
         });
 
+
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);
         stage.show();

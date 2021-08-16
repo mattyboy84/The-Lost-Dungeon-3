@@ -1,5 +1,6 @@
 package sample;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -22,7 +23,7 @@ public class Enemy {
     int rows, columns;
     int numImages;
     ///////////////////////
-    ArrayList<Shape> hitBoxes = new ArrayList<>();
+    ArrayList<Hitbox> hitboxes = new ArrayList<>();
     ///////////////////////
     boolean hasDeathImages;
     String deathFilePath;
@@ -30,6 +31,7 @@ public class Enemy {
     int deathWidth, deathHeight;
     int deathRows, deathColumns;
     int numDeathImages;
+    ImageView enemy;
     Image[] images;
     //
     Vecc2f position;
@@ -66,49 +68,15 @@ public class Enemy {
             this.deathColumns = enemyTemplate.get("DeathColumns").getAsInt();
             this.numDeathImages = enemyTemplate.get("DeathImages").getAsInt();
         }
-        this.position = new Vecc2f((int)(positionX * scaleX),(int) (positionY * scaleY));
+        this.position = new Vecc2f((int) (positionX * scaleX), (int) (positionY * scaleY));
 
-        /*
-    {
-      "enemy": "fly",
-      "type": "classic",
-      "filePath": "monster_010_fly",
-      "Health": 6,
-      "StartX": 0,
-      "StartY": 0,
-      "Width": 32,
-      "Height": 32,
-      "Rows": 2,
-      "Columns": 1,
-      "Images": 2,
-      "Hitboxes": [
-        {
-          "Type": "Rectangle",
-          "Width": 19,
-          "Height": 15,
-          "xDelta": 6,
-          "yDelta": 8
-        }
-      ],
-      "hasDeathImages": "True",
-      "DeathFilePath":"src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
-      "DeathStartX": 0,
-      "DeathStartY": 64,
-      "DeathWidth": 64,
-      "DeathHeight": 64,
-      "DeathRows": 4,
-      "DeathColumns": 3,
-      "DeathImages": 11,
-      "PositionX": 100,
-      "PositionY": 100
-    },
-     */
 
         //D:\- JAVA Projects -\- Lost Dungeon -\The-Lost-Dungeon-3\src\resources\gfx\monsters\classic
 
         String file = "file:src\\resources\\gfx\\monsters\\classic\\" + this.filePath + ".png";
 
         images = new Image[enemyTemplate.get("Images").getAsInt()];
+
         //System.out.println(scaleX);
         sheetScale = enemyTemplate.get("SheetScale").getAsInt();
         //
@@ -116,27 +84,72 @@ public class Enemy {
         int topLeftY = (int) (enemyTemplate.get("StartY").getAsInt() * scaleY * sheetScale);
         //
         for (int i = 0; i < images.length; i++) {
-            images[i] = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) topLeftX, (int) topLeftY,(int) (this.width * scaleX * sheetScale), (int) (this.height * scaleY * sheetScale))).getImage());
+            images[i] = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) topLeftX, (int) topLeftY, (int) (this.width * scaleX * sheetScale), (int) (this.height * scaleY * sheetScale))).getImage());
             //System.out.println(enemyTemplate.get("enemy").getAsString() + " TLX: " + topLeftX +" TLY: " + topLeftY);
             topLeftX = (int) (topLeftX + (enemyTemplate.get("Width").getAsInt() * scaleX * sheetScale));
             if (topLeftX >= (new Image(file).getWidth() * scaleX * sheetScale)) {
-                topLeftX=0;
-                topLeftY=(int) (topLeftY + (enemyTemplate.get("Height").getAsInt() * scaleY * sheetScale));
+                topLeftX = 0;
+                topLeftY = (int) (topLeftY + (enemyTemplate.get("Height").getAsInt() * scaleY * sheetScale));
             }
         }
+        //
+        enemy = new ImageView(images[0]);
+        //System.out.println(images[0].getHeight() + " " + images[0].getWidth());
+
+        hitboxGenerator(enemyTemplate.getAsJsonArray("Hitboxes"), sheetScale,scaleX,scaleY);
 
 
         //System.out.println(scaleX);
+    }
 
+    private void hitboxGenerator(JsonArray hitboxes, int sheetScale, float scaleX, float scaleY) {
+        for (int i = 0; i < hitboxes.size(); i++) {
+            this.hitboxes.add(new Hitbox(hitboxes.get(i).getAsJsonObject(), sheetScale, scaleX, scaleY));
 
+            //System.out.println(hitboxes.get(i).getAsJsonObject());
+        }
+
+    }
+
+    private void hitboxRelocator() {
+        for (Hitbox hitbox : hitboxes) {
+            hitbox.getShape().relocate((this.position.x + hitbox.getxDelta()), (this.position.y + hitbox.getyDelta()));
+            //System.out.println(" ");
+            //System.out.println("X: " + (this.position.x+ hitbox.getxDelta()) + " Y: " + (this.position.y+hitbox.getyDelta()));
+            //hitbox.getShape().relocate(621,615);
+            //System.out.println("Enemy: " + this.enemy.getBoundsInParent());
+            //System.out.println("Hitbox: " + hitbox.getShape().getBoundsInParent());
+            //System.out.println("X: " + hitbox.getxDelta() + " Y: " + hitbox.getxDelta());
+        }
     }
 
     public void load(Group group) {
-
+        //
+        for (Hitbox hitbox : this.hitboxes) {
+            group.getChildren().add(hitbox.shape);
+            hitbox.shape.relocate(this.position.x, this.position.y);
+            hitbox.shape.setViewOrder(-5);
+            hitbox.shape.setVisible(false);
+            //System.out.println("Hitbox: " +hitbox.getShape().getBoundsInParent());
+        }
+        //
+        group.getChildren().add(this.enemy);
+        this.enemy.relocate(this.position.x, this.position.y);
+        this.enemy.setViewOrder(-5);
+        //
+        hitboxRelocator();
+        //System.out.println("Enemy: " + enemy.getBoundsInParent());
 
     }
 
+
     public void unload(Group group) {
+        //
+        for (int i = 0; i < hitboxes.size(); i++) {
+            group.getChildren().remove(hitboxes.get(0).shape);
+        }
+        //
+        group.getChildren().remove(this.enemy);
     }
     /*
     public String toString() {

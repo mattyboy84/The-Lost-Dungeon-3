@@ -44,8 +44,8 @@
           "Type": "Rectangle",
           "Width": 19,
           "Height": 15,
-          "xDelta": 6,
-          "yDelta": 8
+          "xDelta": 7,
+          "yDelta": 5
         }
       ],
       "hasDeathImages": "True",
@@ -78,8 +78,8 @@
           "Type": "Rectangle",
           "Width": 19,
           "Height": 15,
-          "xDelta": 6,
-          "yDelta": 8
+          "xDelta": 7,
+          "yDelta": 5
         }
       ],
       "hasDeathImages": "True",

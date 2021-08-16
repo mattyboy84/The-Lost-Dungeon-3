@@ -43,8 +43,6 @@ public class Dungeon {
 
 
     public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
-
-
         this.mapX = mapXWidth;
         this.mapY = mapYWidth;
         //
