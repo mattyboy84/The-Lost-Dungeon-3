@@ -108,18 +108,11 @@ public class Enemy {
 
             //System.out.println(hitboxes.get(i).getAsJsonObject());
         }
-
     }
 
     private void hitboxRelocator() {
         for (Hitbox hitbox : hitboxes) {
             hitbox.getShape().relocate((this.position.x + hitbox.getxDelta()), (this.position.y + hitbox.getyDelta()));
-            //System.out.println(" ");
-            //System.out.println("X: " + (this.position.x+ hitbox.getxDelta()) + " Y: " + (this.position.y+hitbox.getyDelta()));
-            //hitbox.getShape().relocate(621,615);
-            //System.out.println("Enemy: " + this.enemy.getBoundsInParent());
-            //System.out.println("Hitbox: " + hitbox.getShape().getBoundsInParent());
-            //System.out.println("X: " + hitbox.getxDelta() + " Y: " + hitbox.getxDelta());
         }
     }
 

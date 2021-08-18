@@ -22,19 +22,17 @@ public class Hitbox {
         this.type = jsonObject.get("Type").getAsString();
         switch (this.type) {
             case "Rectangle":
-                this.width = (int) (jsonObject.get("Width").getAsInt() * sheetScale * scaleX);
-                this.height = (int) (jsonObject.get("Height").getAsInt() * sheetScale * scaleY);
+                this.width = (int) Math.ceil(jsonObject.get("Width").getAsInt() * sheetScale * scaleX);
+                this.height = (int) Math.ceil(jsonObject.get("Height").getAsInt() * sheetScale * scaleY);
                 this.shape = new Rectangle(this.width, this.height);
                 break;
             case "Circle":
-                this.radius = (int) (jsonObject.get("Radius").getAsInt() * sheetScale * ((scaleX + scaleY) / 2));
+                this.radius = (int) Math.ceil(jsonObject.get("Radius").getAsInt() * sheetScale * ((scaleX + scaleY) / 2));
                 this.shape = new Circle(this.radius);
                 break;
         }
-        this.xDelta = (int) (jsonObject.get("xDelta").getAsInt() * sheetScale * scaleX);
-        this.yDelta = (int) (jsonObject.get("yDelta").getAsInt() * sheetScale * scaleY);
-
-
+        this.xDelta = (int) Math.ceil(jsonObject.get("xDelta").getAsInt() * sheetScale * scaleX);
+        this.yDelta = (int) Math.ceil(jsonObject.get("yDelta").getAsInt() * sheetScale * scaleY);
     }
 
     public String getType() {
