@@ -24,6 +24,7 @@ public class Enemy {
     int numImages;
     ///////////////////////
     ArrayList<Hitbox> hitboxes = new ArrayList<>();
+    ArrayList<Enemy_part> parts = new ArrayList<>();
     ///////////////////////
     boolean hasDeathImages;
     String deathFilePath;
@@ -46,14 +47,12 @@ public class Enemy {
         this.type = enemyTemplate.get("type").getAsString();
         this.filePath = enemyTemplate.get("filePath").getAsString();
         this.maxHealth = enemyTemplate.get("Health").getAsInt();
-        this.health = enemyTemplate.get("Health").getAsInt();
-        this.startX = enemyTemplate.get("StartX").getAsInt();
-        this.startY = enemyTemplate.get("StartY").getAsInt();
-        this.width = enemyTemplate.get("Width").getAsInt();
-        this.height = enemyTemplate.get("Height").getAsInt();
-        this.rows = enemyTemplate.get("Rows").getAsInt();
-        this.columns = enemyTemplate.get("Columns").getAsInt();
-        this.numImages = enemyTemplate.get("Images").getAsInt();
+        this.health = maxHealth;
+
+        //System.out.println(enemyTemplate);
+        for (int i = 0; i <enemyTemplate.get("enemyParts").getAsJsonArray().size() ; i++) {
+            parts.add(new Enemy_part(enemyTemplate.get("enemyParts").getAsJsonArray().get(i).getAsJsonObject(),this.type,this.filePath,sheetScale,scaleX,scaleY));
+        }
         ////////////////
 
         ////////////////
@@ -72,12 +71,11 @@ public class Enemy {
 
 
         //D:\- JAVA Projects -\- Lost Dungeon -\The-Lost-Dungeon-3\src\resources\gfx\monsters\classic
-
-        String file = "file:src\\resources\\gfx\\monsters\\classic\\" + this.filePath + ".png";
+/*
+        String file = "file:src\\resources\\gfx\\monsters\\" + this.type + "\\" + this.filePath + ".png";
 
         images = new Image[enemyTemplate.get("Images").getAsInt()];
 
-        //System.out.println(scaleX);
         sheetScale = enemyTemplate.get("SheetScale").getAsInt();
         //
         int topLeftX = (int) (enemyTemplate.get("StartX").getAsInt() * scaleX * sheetScale);
@@ -85,7 +83,6 @@ public class Enemy {
         //
         for (int i = 0; i < images.length; i++) {
             images[i] = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) topLeftX, (int) topLeftY, (int) (this.width * scaleX * sheetScale), (int) (this.height * scaleY * sheetScale))).getImage());
-            //System.out.println(enemyTemplate.get("enemy").getAsString() + " TLX: " + topLeftX +" TLY: " + topLeftY);
             topLeftX = (int) (topLeftX + (enemyTemplate.get("Width").getAsInt() * scaleX * sheetScale));
             if (topLeftX >= (new Image(file).getWidth() * scaleX * sheetScale)) {
                 topLeftX = 0;
@@ -93,11 +90,9 @@ public class Enemy {
             }
         }
         //
-        enemy = new ImageView(images[0]);
-        //System.out.println(images[0].getHeight() + " " + images[0].getWidth());
 
-        hitboxGenerator(enemyTemplate.getAsJsonArray("Hitboxes"), sheetScale,scaleX,scaleY);
-
+        hitboxGenerator(enemyTemplate.getAsJsonArray("Hitboxes"), sheetScale, scaleX, scaleY);
+*/
 
         //System.out.println(scaleX);
     }
@@ -120,9 +115,8 @@ public class Enemy {
         //
         for (Hitbox hitbox : this.hitboxes) {
             group.getChildren().add(hitbox.shape);
-            hitbox.shape.relocate(this.position.x, this.position.y);
             hitbox.shape.setViewOrder(-5);
-            hitbox.shape.setVisible(false);
+            hitbox.shape.setVisible(true);
             //System.out.println("Hitbox: " +hitbox.getShape().getBoundsInParent());
         }
         //

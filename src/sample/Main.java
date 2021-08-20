@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
+
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+
     //
     //1080p
     int madeWithWidth = 1920;
@@ -41,6 +43,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        System.out.println(screenBounds);
 
         Button newGame = new Button("New Game");
         newGame.relocate(300, 300);

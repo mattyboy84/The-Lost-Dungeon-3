@@ -122,9 +122,11 @@ public class Room {
             door.load(group);
         }
         //
-        for (Enemy enemy : enemies) {
-            enemy.load(group);
-        }
+
+        //for (Enemy enemy : enemies) {
+        //    enemy.load(group);
+        //}
+
     }
 
     public void unload(Group group) {
@@ -136,9 +138,9 @@ public class Room {
             door.unload(group);
         }
         //
-        for (Enemy enemy : enemies) {
-            enemy.unload(group);
-        }
+        //for (Enemy enemy : enemies) {
+        //    enemy.unload(group);
+        //}
     }
 
     public Random getRandom() {

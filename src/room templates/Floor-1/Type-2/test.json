@@ -30,24 +30,36 @@
       "enemy": "fly",
       "type": "classic",
       "filePath": "monster_010_fly",
-      "SheetScale": 3,
       "Health": 6,
-      "StartX": 0,
-      "StartY": 0,
-      "Width": 32,
-      "Height": 32,
-      "Rows": 2,
-      "Columns": 1,
-      "Images": 2,
-      "Hitboxes": [
+      "SheetScale": 3,
+
+
+
+      "enemyParts": [
         {
-          "Type": "Rectangle",
-          "Width": 19,
-          "Height": 15,
-          "xDelta": 7,
-          "yDelta": 8
+          "part": "Body",
+          "StartX": 0,
+          "StartY": 0,
+          "Width": 32,
+          "Height": 32,
+          "Rows": 2,
+          "Columns": 1,
+          "Images": 2,
+          "Hitboxes": [
+            {
+              "Type": "Rectangle",
+              "Width": 19,
+              "Height": 15,
+              "xDelta": 7,
+              "yDelta": 5
+            }
+          ]
         }
       ],
+
+
+
+
       "hasDeathImages": "True",
       "DeathFilePath":"src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
       "DeathStartX": 0,
@@ -57,42 +69,10 @@
       "DeathRows": 4,
       "DeathColumns": 3,
       "DeathImages": 11,
+
+
       "PositionX": 100,
       "PositionY": 100
-    },
-    {
-      "enemy": "attack fly",
-      "type": "classic",
-      "filePath": "monster_010_fly",
-      "SheetScale": 3,
-      "Health": 9,
-      "StartX": 32,
-      "StartY": 32,
-      "Width": 32,
-      "Height": 32,
-      "Rows": 2,
-      "Columns": 1,
-      "Images": 2,
-      "Hitboxes": [
-        {
-          "Type": "Rectangle",
-          "Width": 19,
-          "Height": 15,
-          "xDelta": 7,
-          "yDelta": 8
-        }
-      ],
-      "hasDeathImages": "True",
-      "DeathFilePath":"src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
-      "DeathStartX": 0,
-      "DeathStartY": 64,
-      "DeathWidth": 64,
-      "DeathHeight": 64,
-      "DeathRows": 4,
-      "DeathColumns": 3,
-      "DeathImages": 11,
-      "PositionX": 600,
-      "PositionY": 600
     }
   ],
   "rocks": [
