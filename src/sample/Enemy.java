@@ -40,7 +40,7 @@ public class Enemy {
     int sheetScale;
 
 
-    public Enemy(JsonObject enemyTemplate, float positionX, float positionY, float scaleX, float scaleY, Rectangle2D screenBounds) {
+    public Enemy(JsonObject enemyTemplate, float scaleX, float scaleY, Rectangle2D screenBounds,Shading shading) {
         this.template = enemyTemplate;
         //System.out.println(this.template);
         this.name = enemyTemplate.get("enemy").getAsString();
@@ -48,10 +48,11 @@ public class Enemy {
         this.filePath = enemyTemplate.get("filePath").getAsString();
         this.maxHealth = enemyTemplate.get("Health").getAsInt();
         this.health = maxHealth;
+        this.sheetScale=enemyTemplate.get("SheetScale").getAsInt();
 
         //System.out.println(enemyTemplate);
         for (int i = 0; i <enemyTemplate.get("enemyParts").getAsJsonArray().size() ; i++) {
-            parts.add(new Enemy_part(enemyTemplate.get("enemyParts").getAsJsonArray().get(i).getAsJsonObject(),this.type,this.filePath,sheetScale,scaleX,scaleY));
+            parts.add(new Enemy_part(enemyTemplate.get("enemyParts").getAsJsonArray().get(i).getAsJsonObject(),this.type,this.filePath,sheetScale,scaleX,scaleY,shading));
         }
         ////////////////
 
@@ -67,12 +68,12 @@ public class Enemy {
             this.deathColumns = enemyTemplate.get("DeathColumns").getAsInt();
             this.numDeathImages = enemyTemplate.get("DeathImages").getAsInt();
         }
-        this.position = new Vecc2f((int) (positionX * scaleX), (int) (positionY * scaleY));
+        //this.position = new Vecc2f((int) (positionX * scaleX), (int) (positionY * scaleY));
 
+        String file = "file:src\\resources\\gfx\\monsters\\" + this.type + "\\" + this.filePath + ".png";
 
         //D:\- JAVA Projects -\- Lost Dungeon -\The-Lost-Dungeon-3\src\resources\gfx\monsters\classic
 /*
-        String file = "file:src\\resources\\gfx\\monsters\\" + this.type + "\\" + this.filePath + ".png";
 
         images = new Image[enemyTemplate.get("Images").getAsInt()];
 
@@ -97,46 +98,23 @@ public class Enemy {
         //System.out.println(scaleX);
     }
 
-    private void hitboxGenerator(JsonArray hitboxes, int sheetScale, float scaleX, float scaleY) {
-        for (int i = 0; i < hitboxes.size(); i++) {
-            this.hitboxes.add(new Hitbox(hitboxes.get(i).getAsJsonObject(), sheetScale, scaleX, scaleY));
-
-            //System.out.println(hitboxes.get(i).getAsJsonObject());
-        }
-    }
-
-    private void hitboxRelocator() {
-        for (Hitbox hitbox : hitboxes) {
-            hitbox.getShape().relocate((this.position.x + hitbox.getxDelta()), (this.position.y + hitbox.getyDelta()));
-        }
-    }
 
     public void load(Group group) {
         //
-        for (Hitbox hitbox : this.hitboxes) {
-            group.getChildren().add(hitbox.shape);
-            hitbox.shape.setViewOrder(-5);
-            hitbox.shape.setVisible(true);
-            //System.out.println("Hitbox: " +hitbox.getShape().getBoundsInParent());
+        for (Enemy_part part : parts) {
+            part.load(group);
         }
         //
-        group.getChildren().add(this.enemy);
-        this.enemy.relocate(this.position.x, this.position.y);
-        this.enemy.setViewOrder(-5);
-        //
-        hitboxRelocator();
-        //System.out.println("Enemy: " + enemy.getBoundsInParent());
-
     }
 
 
     public void unload(Group group) {
         //
-        for (int i = 0; i < hitboxes.size(); i++) {
-            group.getChildren().remove(hitboxes.get(0).shape);
+        for (Enemy_part part : parts) {
+            part.unload(group);
         }
+
         //
-        group.getChildren().remove(this.enemy);
     }
     /*
     public String toString() {

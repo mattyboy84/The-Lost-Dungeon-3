@@ -49,7 +49,7 @@ public class Shading {
 
         //activeSources.add(new Points(300*scaleX, 300*scaleY, 50));
 
-        addActiveSource(300,300,50);
+        //addActiveSource(300,300,50);
         //activeSources.add(new Points(500, 500, 50));
         //activeSources.add(new Points(500, 550, 50));
         //activeSources.add(new Points(1400, 900, 50));

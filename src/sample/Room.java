@@ -27,7 +27,7 @@ public class Room {
     //
     JsonObject roomTemplate = null;
     Background_items backgroundItems;
-    ArrayList<Door> doors = new ArrayList<Door>();
+    ArrayList<Door> doors = new ArrayList<>();
     ArrayList<Enemy> enemies = new ArrayList<>();
 
     public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
@@ -41,8 +41,6 @@ public class Room {
         this.downType = down;
         this.leftType = left;
         this.rightType = right;
-        //
-
 
         //
         this.floorLevel = floorLevel;
@@ -54,7 +52,7 @@ public class Room {
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         this.shading = new Shading(scaleX, scaleY, screenBounds);
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
-        enemyAdder(this.roomTemplate.getAsJsonArray("enemies"),scaleX,scaleY,screenBounds);
+        enemyAdder(this.roomTemplate.getAsJsonArray("enemies"),scaleX,scaleY,screenBounds,shading);
         //
         //213 x 180
 
@@ -74,11 +72,11 @@ public class Room {
         //System.out.println(roomTemplate);
     }
 
-    private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds) {
+    private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
         for (int k = 0; k <enemyArray.size() ; k++) {
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
-                case "fly" -> enemies.add(new Enemy_Fly(enemyArray.get(k).getAsJsonObject(), enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt(),scaleX,scaleY,screenBounds));
-                case "attack fly" -> enemies.add(new Enemy_attackFly(enemyArray.get(k).getAsJsonObject(), enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt(),scaleX,scaleY,screenBounds));
+                case "fly" -> enemies.add(new Enemy_Fly(enemyArray.get(k).getAsJsonObject(),scaleX,scaleY,screenBounds,shading));
+                case "attack fly" -> enemies.add(new Enemy_attackFly(enemyArray.get(k).getAsJsonObject(),scaleX,scaleY,screenBounds,shading));
             }
         }
         //System.out.println(scaleX);
@@ -123,9 +121,9 @@ public class Room {
         }
         //
 
-        //for (Enemy enemy : enemies) {
-        //    enemy.load(group);
-        //}
+        for (Enemy enemy : enemies) {
+            enemy.load(group);
+        }
 
     }
 
@@ -138,9 +136,9 @@ public class Room {
             door.unload(group);
         }
         //
-        //for (Enemy enemy : enemies) {
-        //    enemy.unload(group);
-        //}
+        for (Enemy enemy : enemies) {
+            enemy.unload(group);
+        }
     }
 
     public Random getRandom() {
