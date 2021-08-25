@@ -5,6 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +32,7 @@ public class Room {
     Background_items backgroundItems;
     ArrayList<Door> doors = new ArrayList<>();
     ArrayList<Enemy> enemies = new ArrayList<>();
+    ArrayList<Rock> rocks = new ArrayList<Rock>();
 
     public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.backgroundItems = new Background_items();
@@ -41,19 +45,19 @@ public class Room {
         this.downType = down;
         this.leftType = left;
         this.rightType = right;
-
         //
         this.floorLevel = floorLevel;
         this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
 
         //System.out.println(this.roomTemplate.getAsJsonObject("Background"));
         //
-        
+
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         this.shading = new Shading(scaleX, scaleY, screenBounds);
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
-        enemyAdder(this.roomTemplate.getAsJsonArray("enemies"),scaleX,scaleY,screenBounds,shading);
+        enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
         //
+        rockAdder(this.roomTemplate.getAsJsonObject("Rocks"), scaleX, scaleY);
         //213 x 180
 
         if (upType > 0) {
@@ -72,11 +76,47 @@ public class Room {
         //System.out.println(roomTemplate);
     }
 
+    private void rockAdder(JsonObject rockTemplate, float scaleX, float scaleY) {
+        int sheetScale, width, height, rows, columns, borderX, borderY;
+        String name = rockTemplate.get("name").getAsString();
+        sheetScale = rockTemplate.get("SheetScale").getAsInt();
+        width = rockTemplate.get("Width").getAsInt();
+        height = rockTemplate.get("Height").getAsInt();
+        rows = rockTemplate.get("Rows").getAsInt();
+        columns = rockTemplate.get("Columns").getAsInt();
+        borderX = rockTemplate.get("BorderX").getAsInt();
+        borderY = rockTemplate.get("BorderY").getAsInt();
+        for (int k = 0; k < rockTemplate.get("rocksARR").getAsJsonArray().size(); k++) {
+            int a = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("PositionX").getAsInt();
+            int b = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("PositionY").getAsInt();
+            int c=rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageX").getAsInt();
+            int d=rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageY").getAsInt();
+            rocks.add(new Rock(a, b, c,d,name, sheetScale, width, height, rows, columns, borderX, borderY, scaleX, scaleY));
+        }
+
+        /*
+        int sheetScale = rockArray.get("SheetScale").getAsInt();
+        String file ="file:src\\resources\\gfx\\grid\\" + rockArray.get("name").getAsString()+ ".png";
+        int width= (int) (rockArray.get("Width").getAsInt()*scaleX*sheetScale);
+        int height= (int) (rockArray.get("Height").getAsInt()*scaleY*sheetScale);
+        //System.out.println(file);
+        Image[][] rocks = new Image[7][7];
+
+        for (int k = 0; k <rocks.length ; k++) {
+            for (int l = 0; l < rocks[0].length; l++) {
+                rocks[k][l] = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) width*k, (int) height*l, (int) (width), (int) (height))).getImage());
+            }
+        }
+        */
+
+
+    }
+
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
-        for (int k = 0; k <enemyArray.size() ; k++) {
+        for (int k = 0; k < enemyArray.size(); k++) {
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
-                case "fly" -> enemies.add(new Enemy_Fly(enemyArray.get(k).getAsJsonObject(),scaleX,scaleY,screenBounds,shading));
-                case "attack fly" -> enemies.add(new Enemy_attackFly(enemyArray.get(k).getAsJsonObject(),scaleX,scaleY,screenBounds,shading));
+                case "fly" -> enemies.add(new Enemy_Fly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
+                case "attack fly" -> enemies.add(new Enemy_attackFly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
             }
         }
         //System.out.println(scaleX);
@@ -124,6 +164,10 @@ public class Room {
         for (Enemy enemy : enemies) {
             enemy.load(group);
         }
+        //
+        for (Rock rock : rocks) {
+            rock.load(group);
+        }
 
     }
 
@@ -138,6 +182,10 @@ public class Room {
         //
         for (Enemy enemy : enemies) {
             enemy.unload(group);
+        }
+        //
+        for (Rock rock : rocks) {
+            rock.unload(group);
         }
     }
 

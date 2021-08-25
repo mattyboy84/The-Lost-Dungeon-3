@@ -3,6 +3,9 @@ package sample;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -84,17 +87,37 @@ public class Dungeon {
         //displayMap();
         System.out.println("Dungeon has: " + finRooms + " Rooms");
 
+        //Image[][] rocks = rockGetter();
+
         finalDungeonGen(scaleX, scaleY, screenBounds);
 
     }
+/*
+    private Image[][] rockGetter() {
+        //
+        int sheetScale = rockArray.get("SheetScale").getAsInt();
+        String file ="file:src\\resources\\gfx\\grid\\" + rockArray.get("name").getAsString()+ ".png";
+        int width= (int) (rockArray.get("Width").getAsInt()*scaleX*sheetScale);
+        int height= (int) (rockArray.get("Height").getAsInt()*scaleY*sheetScale);
+        //System.out.println(file);
+        Image[][] rocks = new Image[7][7];
+
+        for (int k = 0; k <rocks.length ; k++) {
+            for (int l = 0; l < rocks[0].length; l++) {
+                rocks[k][l] = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) width*k, (int) height*l, (int) (width), (int) (height))).getImage());
+            }
+        }
+        return rocks;
+    }
+*/
 
     private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds) {
-        map[8][9]=1;
-        map[10][9]=1;
-        map[9][10]=1;
-        map[9][8]=1;
+        map[8][9] = 1;
+        map[10][9] = 1;
+        map[9][10] = 1;
+        map[9][8] = 1;
 
-        int up,down,left,right;
+        int up, down, left, right;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] > 0) {
@@ -107,7 +130,7 @@ public class Dungeon {
 
                     left = roomChecker(i, j, 0, -1);
                     rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds));
-                    System.out.println("Room " + (rooms.size()-1) + " done");
+                    System.out.println("Room " + (rooms.size() - 1) + " done");
                 }
             }
         }
@@ -117,7 +140,7 @@ public class Dungeon {
     private int roomChecker(int i, int j, int II, int JJ) {
         try {
             return Math.max(map[i + II][j + JJ], 0);
-        }catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -168,7 +191,7 @@ public class Dungeon {
         }
         System.out.print("-");//start with 1 to account for I column
 
-        for (int i = 0; i <map.length ; i++) {//3 for every unit in map,
+        for (int i = 0; i < map.length; i++) {//3 for every unit in map,
             System.out.print("---");
         }
     }

@@ -106,18 +106,25 @@
   ],
   "Rocks": {
     "name": "rocks_basement",
+    "SheetScale": 3,
     "Width": 32,
     "Height": 32,
     "Rows": 4,
     "Columns": 8,
+    "BorderX": 213,
+    "BorderY": 180,
     "rocksARR": [
       {
-        "PositionX": 0,
-        "PositionY": 0
+        "PositionX": 400,
+        "PositionY": 400,
+        "ImageX": 1,
+        "ImageY": 1
       },
       {
-        "PositionX": 300,
-        "PositionY": 300
+        "PositionX": 700,
+        "PositionY": 700,
+        "ImageX": 1,
+        "ImageY": 1
       }
     ]
   }

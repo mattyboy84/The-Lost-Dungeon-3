@@ -93,6 +93,7 @@ public class Enemy_part {
             group.getChildren().add(hitbox.shape);
             hitbox.shape.setViewOrder(-5);
             hitbox.shape.setVisible(true);
+            hitbox.shape.relocate(this.position.x+hitbox.getxDelta(),this.position.y+hitbox.getyDelta());
         }
         //Enemy
         group.getChildren().add(this.enemy);
