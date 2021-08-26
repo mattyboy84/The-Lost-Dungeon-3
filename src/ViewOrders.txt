@@ -1,5 +1,5 @@
 Background 0
-props Layer (all debris and enemy remains/blood) -1
+props Layer (all debris and enemy remains/blood) & rocks -1
 ground insects/moving background objects -2
 Door layer -3
 Items Layer (Coins, Bombs Keys etc) -4

@@ -35,6 +35,18 @@ public class Hitbox {
         this.yDelta = (int) Math.ceil(jsonObject.get("yDelta").getAsInt() * sheetScale * scaleY);
     }
 
+    public Hitbox(String shape, int width, int height,int sheetScale,float scaleX,float scaleY) {
+        switch (shape){
+            case "Rectangle":
+                this.width = (int) Math.ceil(width * sheetScale * scaleX);
+                this.height = (int) Math.ceil(height * sheetScale * scaleY);
+                this.shape = new Rectangle(this.width, this.height);
+                break;
+        }
+
+
+    }
+
     public String getType() {
         return type;
     }

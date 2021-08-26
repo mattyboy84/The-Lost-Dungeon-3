@@ -115,14 +115,14 @@
     "BorderY": 180,
     "rocksARR": [
       {
-        "PositionX": 400,
-        "PositionY": 400,
+        "PositionX": 200,
+        "PositionY": 0,
         "ImageX": 1,
         "ImageY": 1
       },
       {
         "PositionX": 700,
-        "PositionY": 700,
+        "PositionY": 400,
         "ImageX": 1,
         "ImageY": 1
       }
