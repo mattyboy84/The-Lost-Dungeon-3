@@ -16,7 +16,6 @@ public class Hitbox {
     //
     Shape shape;
 
-
     public Hitbox(JsonObject jsonObject, int sheetScale, float scaleX, float scaleY) {
         //System.out.println(jsonObject);
         this.type = jsonObject.get("Type").getAsString();
@@ -35,16 +34,16 @@ public class Hitbox {
         this.yDelta = (int) Math.ceil(jsonObject.get("yDelta").getAsInt() * sheetScale * scaleY);
     }
 
-    public Hitbox(String shape, int width, int height,int sheetScale,float scaleX,float scaleY) {
-        switch (shape){
+    public Hitbox(String shape, int width, int height, int sheetScale, float scaleX, float scaleY, int xDelta, int yDelta) {
+        switch (shape) {
             case "Rectangle":
                 this.width = (int) Math.ceil(width * sheetScale * scaleX);
                 this.height = (int) Math.ceil(height * sheetScale * scaleY);
                 this.shape = new Rectangle(this.width, this.height);
                 break;
         }
-
-
+        this.xDelta = (int) Math.ceil(xDelta * sheetScale * scaleX);
+        this.yDelta = (int) Math.ceil(yDelta * sheetScale * scaleX);
     }
 
     public String getType() {

@@ -24,7 +24,6 @@ public class Background {
     //
     Random random = new Random();
 
-
     public Background(JsonObject background, float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.backgroundTemplate = background;
         this.name = background.get("name").getAsString();
@@ -45,7 +44,6 @@ public class Background {
         int randCol = random.nextInt(this.columns);
 
         //this.spriteSheet = new ImageView("file:src\\resources\\gfx\\backdrop\\" + this.name + ".png");
-
 
         String file = "file:src\\resources\\gfx\\backdrop\\" + this.name + ".png";
 
