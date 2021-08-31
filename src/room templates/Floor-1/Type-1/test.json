@@ -46,9 +46,8 @@
           ],
           "Light": true,
           "Radius": 50,
-
-          "PositionX": 200,
-          "PositionY": 200
+          "PositionX": 500,
+          "PositionY": 500
         }
       ],
       "hasDeathImages": "True",
@@ -88,9 +87,8 @@
           ],
           "Light": true,
           "Radius": 50,
-
-          "PositionX": 250,
-          "PositionY": 400
+          "PositionX": 550,
+          "PositionY": 700
         }
       ],
       "hasDeathImages": "True",
@@ -106,7 +104,7 @@
   ],
   "Rocks": {
     "name": "rocks_basement",
-    "SheetScale": 3,
+    "SheetScale": 3.2,
     "Width": 32,
     "Height": 32,
     "Rows": 4,
@@ -115,16 +113,28 @@
     "BorderY": 180,
     "rocksARR": [
       {
-        "PositionX": 200,
+        "PositionX": 0,
         "PositionY": 0,
-        "ImageX": 1,
-        "ImageY": 1
+        "ImageX": 0,
+        "ImageY": 3
       },
       {
-        "PositionX": 700,
-        "PositionY": 400,
+        "PositionX": 102,
+        "PositionY": 0,
         "ImageX": 1,
-        "ImageY": 1
+        "ImageY": 3
+      },
+      {
+        "PositionX": 0,
+        "PositionY": 102,
+        "ImageX": 0,
+        "ImageY": 4
+      },
+      {
+        "PositionX": 102,
+        "PositionY": 102,
+        "ImageX": 1,
+        "ImageY": 4
       }
     ]
   }

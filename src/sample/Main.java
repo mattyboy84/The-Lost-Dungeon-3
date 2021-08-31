@@ -44,6 +44,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        
+
         System.out.println(screenBounds);
 
         Button newGame = new Button("New Game");

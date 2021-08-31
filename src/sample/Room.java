@@ -77,9 +77,10 @@ public class Room {
     }
 
     private void rockAdder(JsonObject rockTemplate, float scaleX, float scaleY) {
-        int sheetScale, width, height, rows, columns, borderX, borderY;
+        int  width, height, rows, columns, borderX, borderY;
+        float sheetScale;
         String name = rockTemplate.get("name").getAsString();
-        sheetScale = rockTemplate.get("SheetScale").getAsInt();
+        sheetScale = rockTemplate.get("SheetScale").getAsFloat();
         width = rockTemplate.get("Width").getAsInt();
         height = rockTemplate.get("Height").getAsInt();
         rows = rockTemplate.get("Rows").getAsInt();

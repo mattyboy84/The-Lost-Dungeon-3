@@ -14,7 +14,7 @@ public class Rock {
     int sheetScale, width, height, rows, columns, borderX, borderY;
     Hitbox hitbox;
 
-    public Rock(int positionX, int positionY, int imageX, int imageY, String name, int sheetScale, int width, int height, int rows, int columns, int borderX, int borderY, float scaleX, float scaleY) {
+    public Rock(int positionX, int positionY, int imageX, int imageY, String name, float sheetScale, int width, int height, int rows, int columns, int borderX, int borderY, float scaleX, float scaleY) {
         String file = "file:src\\resources\\gfx\\grid\\" + name + ".png";
 
         this.width = (int) (width * sheetScale * scaleX);
@@ -24,14 +24,11 @@ public class Rock {
         this.borderX = (int) (borderX * scaleX);
         this.borderY = (int) (borderY * scaleY);
 
-        this.hitbox = new Hitbox("Rectangle", (int) (width * 0.8), (int) (height * 0.8), sheetScale, scaleX, scaleY, (int) (width * 0.1), (int) (height * 0.1));
+        this.hitbox = new Hitbox("Rectangle", (int) ((width * 0.8)), (int) ((height * 0.8)), sheetScale, scaleX, scaleY, (int) (width * 0.1), (int) (height * 0.1));
         this.rock = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) (this.width * imageX), (int) (this.height * imageY), (int) (this.width), (int) (this.height))));
 
         this.position = new Vecc2f(this.borderX + (positionX * scaleX), this.borderY + (positionY * scaleY));
-
-
     }
-
 
     public void load(Group group) {
         group.getChildren().addAll(this.hitbox.getShape(), this.rock);
@@ -45,8 +42,6 @@ public class Rock {
     }
 
     public void unload(Group group) {
-        group.getChildren().removeAll(this.hitbox.getShape(),this.rock);
-
-
+        group.getChildren().removeAll(this.hitbox.getShape(), this.rock);
     }
 }

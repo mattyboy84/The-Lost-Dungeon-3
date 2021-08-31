@@ -1,6 +1,5 @@
 All rocks positions are offset by X:213, Y:180. a position of 0,0 would be moved to 213,180 - This adjusts for room corners.
 
-Every rock needs a 8 pixel buffer
 
 1920 x 1080 - adjusted for corners is 1494 x 720
-this fits 15 x 7 rocks with an 8 pixel buffer
+this fits 15 x 7 rocks when you upscale each rock to 102pixels (at 1080p)
