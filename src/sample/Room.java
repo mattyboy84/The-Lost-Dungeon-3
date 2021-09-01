@@ -77,7 +77,7 @@ public class Room {
     }
 
     private void rockAdder(JsonObject rockTemplate, float scaleX, float scaleY) {
-        int  width, height, rows, columns, borderX, borderY;
+        int width, height, rows, columns, borderX, borderY;
         float sheetScale;
         String name = rockTemplate.get("name").getAsString();
         sheetScale = rockTemplate.get("SheetScale").getAsFloat();
@@ -90,9 +90,9 @@ public class Room {
         for (int k = 0; k < rockTemplate.get("rocksARR").getAsJsonArray().size(); k++) {
             int a = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("PositionX").getAsInt();
             int b = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("PositionY").getAsInt();
-            int c=rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageX").getAsInt();
-            int d=rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageY").getAsInt();
-            rocks.add(new Rock(a, b, c,d,name, sheetScale, width, height, rows, columns, borderX, borderY, scaleX, scaleY));
+            int c = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageX").getAsInt();
+            int d = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageY").getAsInt();
+            rocks.add(new Rock(a, b, c, d, name, sheetScale, width, height, rows, columns, borderX, borderY, scaleX, scaleY));
         }
 
         /*
