@@ -40,28 +40,26 @@ public class Main extends Application {
     Dungeon dungeon = new Dungeon();
 
 
-
     @Override
     public void start(Stage stage) throws Exception {
 
-        
-
         System.out.println(screenBounds);
+        //2560 × 1440
 
         Button newGame = new Button("New Game");
         newGame.relocate(300, 300);
         Button loadGame = new Button("Load Game");
         loadGame.relocate(450, 300);
         System.out.println("ScaleX: " + scaleX + " ScaleY: " + scaleY);
-        menuGroup.getChildren().addAll(newGame,loadGame);
+        menuGroup.getChildren().addAll(newGame, loadGame);
 
-       // newGame.setOnMouseClicked(mouseEvent -> {
+        // newGame.setOnMouseClicked(mouseEvent -> {
         //    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                int floor = 0;
-                dungeon.Generate(18, 19, 19, floor, scaleX, scaleY,screenBounds);
-                dungeon.displayMap();
-                dungeon.loadRoom(9, 9,group);
-                stage.setScene(scene);
+        int floor = 0;
+        dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
+        dungeon.displayMap();
+        dungeon.loadRoom(9, 9, group);
+        stage.setScene(scene);
         //    }
         //});
 
@@ -72,7 +70,7 @@ public class Main extends Application {
         });
 
         scene.setOnKeyPressed(keyEvent -> {
-            switch (keyEvent.getCode()){
+            switch (keyEvent.getCode()) {
                 case F -> {
                     stage.setFullScreen(!stage.isFullScreen());
                 }
