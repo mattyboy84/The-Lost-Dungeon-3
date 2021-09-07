@@ -38,12 +38,14 @@ public class Main extends Application {
     Scene menuScene = new Scene(menuGroup, screenWidth, screenHeight);
     //
     Dungeon dungeon = new Dungeon();
+    Player player = new Player();
 
 
     @Override
     public void start(Stage stage) throws Exception {
 
         System.out.println(screenBounds);
+        //1920 x 1080
         //2560 × 1440
 
         Button newGame = new Button("New Game");
@@ -59,6 +61,11 @@ public class Main extends Application {
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
         dungeon.displayMap();
         dungeon.loadRoom(9, 9, group);
+        //
+
+        player.Generate("character_001_isaac",dungeon.startX,dungeon.startY,scaleX,scaleY,screenBounds,3);
+        player.load(group);
+        //
         stage.setScene(scene);
         //    }
         //});
