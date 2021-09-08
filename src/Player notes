@@ -1,0 +1,4 @@
+When player head and body have same pos, moving head by -10Y (unscaled) lines up the sprites.
+Body is 0,0
+Body offset is 0x , 0y With a delta of 8x,13y With a Hitbox of 16x,11y
+head offset is 0x,-10y With a delta of 16x,4y with a Hitbox radius of 13

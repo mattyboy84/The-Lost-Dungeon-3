@@ -20,7 +20,7 @@ public class Player {
     int width, height;
     //
 
-//src\resources\gfx\characters\costumes
+    //src\resources\gfx\characters\costumes
     //"file:src\resources\gfx\characters\costumes\[costume].png"
 
     //        this.rock = (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)), ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
@@ -57,7 +57,6 @@ public class Player {
             }
         }
     }
-
 
     public void load(Group group) {
         group.getChildren().add(this.body);
