@@ -63,7 +63,7 @@ public class Main extends Application {
         dungeon.loadRoom(9, 9, group);
         //
 
-        player.Generate("character_001_isaac",dungeon.startX,dungeon.startY,scaleX,scaleY,screenBounds,3);
+        player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3);
         player.load(group);
         //
         stage.setScene(scene);
@@ -78,12 +78,39 @@ public class Main extends Application {
 
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
-                case F -> {
+                case F:
                     stage.setFullScreen(!stage.isFullScreen());
-                }
+                    break;
+                case W:
+                    player.setNorthMOVING(true);
+                    break;
+                case A:
+                    player.setEastMOVING(true);
+                    break;
+                case S:
+                    player.setSouthMOVING(true);
+                    break;
+                case D:
+                    player.setWestMOVING(true);
+                    break;
             }
         });
-
+        scene.setOnKeyReleased(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case W:
+                    player.setNorthMOVING(false);
+                    break;
+                case A:
+                    player.setEastMOVING(false);
+                    break;
+                case S:
+                    player.setSouthMOVING(false);
+                    break;
+                case D:
+                    player.setWestMOVING(false);
+                    break;
+            }
+        });
 
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);
