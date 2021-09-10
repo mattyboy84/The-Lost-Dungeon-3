@@ -78,9 +78,6 @@ public class Main extends Application {
 
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
-                case F:
-                    stage.setFullScreen(!stage.isFullScreen());
-                    break;
                 case W:
                     player.setNorthMOVING(true);
                     break;
@@ -92,6 +89,9 @@ public class Main extends Application {
                     break;
                 case D:
                     player.setWestMOVING(true);
+                    break;
+                case F:
+                    stage.setFullScreen(!stage.isFullScreen());
                     break;
             }
         });

@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -7,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 public class Player {
 
@@ -21,6 +24,7 @@ public class Player {
     //
     int width, height;
     //
+    Vecc2f VECscale = new Vecc2f();
     Vecc2f bodyOffset, headOffset;
     Vecc2f bodyDelta, headDelta;
     Hitbox headHitbox, bodyHitbox;
@@ -29,7 +33,17 @@ public class Player {
     Vecc2f velocity = new Vecc2f();
     Vecc2f acceleration = new Vecc2f();
     //
-    boolean northMOVING,eastMOVING,westMOVING,southMOVING;
+    Vecc2f xSpeed = new Vecc2f((float) 0.1, 0);
+    Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.1);
+    boolean moving;
+
+    //
+
+    float veloLimit = 7;//default is 7
+    //
+    boolean northMOVING, eastMOVING, westMOVING, southMOVING;
+    //
+    Timeline controller;
 
     //src\resources\gfx\characters\costumes
     //"file:src\resources\gfx\characters\costumes\[costume].png"
@@ -38,6 +52,11 @@ public class Player {
     //        (int) ((this.width * imageX)), (int) ((this.height * imageY)), (int) this.width, (int) this.height)));
 
     public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale) {
+        //
+        xSpeed.mult(scaleX);
+        ySpeed.mult(scaleY);
+        veloLimit = veloLimit * ((scaleX + scaleY) / 2);
+        VECscale.set(scaleX, scaleY);
         //
         bodyOffset = new Vecc2f(0 * scaleX, 0 * scaleY);
         headOffset = new Vecc2f(0 * scaleX, -10 * scaleY);
@@ -70,8 +89,43 @@ public class Player {
         bodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
         //int radius = (int) (13 * sheetScale * (scaleX + scaleY) / 2);
         headHitbox = new Hitbox("Circle", 12, 12, sheetScale, scaleX, scaleY, 16, 4);
-
         //
+        playerController();
+        //
+    }
+
+    private void playerController() {
+        controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
+
+            accDecider();
+
+        }));
+        controller.setCycleCount(Timeline.INDEFINITE);
+        controller.play();
+    }
+
+    private void accDecider() {
+        this.moving = true;
+        this.acceleration = northMOVING ? (acceleration.add(ySpeed)) : this.acceleration;
+        this.acceleration = southMOVING ? (acceleration.sub(ySpeed)) : this.acceleration;
+        //
+        this.acceleration = eastMOVING ? (acceleration.add(xSpeed)) : this.acceleration;
+        this.acceleration = westMOVING ? (acceleration.sub(xSpeed)) : this.acceleration;
+        //
+        if (northMOVING && southMOVING) {
+            acceleration.y = 0;
+            velocity.y = 0;
+            moving = false;
+        }
+        if (eastMOVING && westMOVING) {
+            acceleration.x = 0;
+            velocity.x = 0;
+            moving = false;
+        }
+        if (!northMOVING || !westMOVING || !eastMOVING || !southMOVING){
+            this.acceleration.set(0,0);
+            moving=false;
+        }
 
     }
 

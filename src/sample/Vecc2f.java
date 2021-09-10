@@ -161,25 +161,28 @@ public class Vecc2f {
         }
     }
 
-    public void add(Vecc2f vec) {
+    public Vecc2f add(Vecc2f vec) {
         this.x = this.x + vec.x;
         this.y = this.y + vec.y;
+        return new Vecc2f(this.x, this.y);
     }
 
-    public void add(float x, float y) {
+    public Vecc2f add(float x, float y) {
         this.x = this.x + x;
         this.y = this.y + y;
+        return new Vecc2f(this.x, this.y);
     }
 
-    public void sub(Vecc2f vec) {
+    public Vecc2f sub(Vecc2f vec) {
         this.x = this.x - vec.x;
         this.y = this.y - vec.y;
+        return new Vecc2f(this.x, this.y);
     }
 
-
-    public void sub(float x, float y) {
+    public Vecc2f sub(float x, float y) {
         this.x = this.x - x;
         this.y = this.y - y;
+        return new Vecc2f(this.x, this.y);
     }
 
     public Vecc2f sub(Vecc2f v1, Vecc2f v2) {
