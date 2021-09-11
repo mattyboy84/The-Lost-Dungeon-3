@@ -3,6 +3,7 @@ package sample;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -12,6 +13,8 @@ import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
 public class Player {
+
+    float avgScale;
 
     int roomX, roomY;
     String costume;
@@ -39,7 +42,7 @@ public class Player {
 
     //
 
-    float veloLimit = 7;//default is 7
+    float veloLimit;//default is 7 multiplied by screen scale
     //
     boolean northMOVING, eastMOVING, westMOVING, southMOVING;
     //
@@ -52,10 +55,11 @@ public class Player {
     //        (int) ((this.width * imageX)), (int) ((this.height * imageY)), (int) this.width, (int) this.height)));
 
     public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale) {
+        this.avgScale = ((scaleX + scaleY) / 2);
         //
         xSpeed.mult(scaleX);
         ySpeed.mult(scaleY);
-        veloLimit = veloLimit * ((scaleX + scaleY) / 2);
+        veloLimit = 7 * avgScale;
         VECscale.set(scaleX, scaleY);
         //
         bodyOffset = new Vecc2f(0 * scaleX, 0 * scaleY);
@@ -89,6 +93,18 @@ public class Player {
         bodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
         //int radius = (int) (13 * sheetScale * (scaleX + scaleY) / 2);
         headHitbox = new Hitbox("Circle", 12, 12, sheetScale, scaleX, scaleY, 16, 4);
+        //caching
+        {
+            this.body.setCache(true);
+            this.body.setCacheHint(CacheHint.QUALITY);
+            this.head.setCache(true);
+            this.head.setCacheHint(CacheHint.QUALITY);
+            this.bodyHitbox.getShape().setCache(true);
+            this.bodyHitbox.getShape().setCacheHint(CacheHint.QUALITY);
+            this.headHitbox.getShape().setCache(true);
+            this.headHitbox.getShape().setCacheHint(CacheHint.QUALITY);
+        }
+        
         //
         playerController();
         //
@@ -96,8 +112,26 @@ public class Player {
 
     private void playerController() {
         controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
-
+            //
+            System.out.println(moving);
             accDecider();
+            this.acceleration.limit(2 * avgScale);
+            this.velocity.add(this.acceleration);
+            //
+            this.velocity.mult((float) 0.95);
+            if (this.velocity.magnitude() < 0.2) {
+                this.velocity.set(0, 0);
+                this.position.set((int)this.position.x,(int)this.position.y);
+                relocate();
+            }
+            this.velocity.limit(veloLimit);
+            //
+            this.position.add(this.velocity);
+            relocate();
+            //
+            if (moving){
+
+            }
 
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
@@ -106,11 +140,11 @@ public class Player {
 
     private void accDecider() {
         this.moving = true;
-        this.acceleration = northMOVING ? (acceleration.add(ySpeed)) : this.acceleration;
-        this.acceleration = southMOVING ? (acceleration.sub(ySpeed)) : this.acceleration;
+        this.acceleration = northMOVING ? (acceleration.sub(ySpeed)) : this.acceleration;
+        this.acceleration = southMOVING ? (acceleration.add(ySpeed)) : this.acceleration;
         //
-        this.acceleration = eastMOVING ? (acceleration.add(xSpeed)) : this.acceleration;
-        this.acceleration = westMOVING ? (acceleration.sub(xSpeed)) : this.acceleration;
+        this.acceleration = eastMOVING ? (acceleration.sub(xSpeed)) : this.acceleration;
+        this.acceleration = westMOVING ? (acceleration.add(xSpeed)) : this.acceleration;
         //
         if (northMOVING && southMOVING) {
             acceleration.y = 0;
@@ -122,11 +156,10 @@ public class Player {
             velocity.x = 0;
             moving = false;
         }
-        if (!northMOVING || !westMOVING || !eastMOVING || !southMOVING){
-            this.acceleration.set(0,0);
-            moving=false;
+        if (!northMOVING && !westMOVING && !eastMOVING && !southMOVING) {
+            this.acceleration.set(0, 0);
+            moving = false;
         }
-
     }
 
     private void relocate() {
