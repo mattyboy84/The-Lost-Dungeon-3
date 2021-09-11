@@ -48,12 +48,6 @@ public class Player {
     //
     Timeline controller;
 
-    //src\resources\gfx\characters\costumes
-    //"file:src\resources\gfx\characters\costumes\[costume].png"
-
-    //        this.rock = (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)), ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
-    //        (int) ((this.width * imageX)), (int) ((this.height * imageY)), (int) this.width, (int) this.height)));
-
     public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale) {
         this.avgScale = ((scaleX + scaleY) / 2);
         //
@@ -83,9 +77,9 @@ public class Player {
                     (this.width * i), 0, (int) this.width, (int) this.height))).getImage();
         }
         //
-        readImageINTOArray(file, sheetScale, scaleX, scaleY, UD_body, (int) (192 * scaleX * sheetScale), 0);
+        readImageINTOArray(file, sheetScale, scaleX, scaleY, UD_body, (int) Math.round(192 * scaleX * sheetScale), 0);
         //
-        readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) (64 * sheetScale * scaleY));
+        readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) Math.round(64 * sheetScale * scaleY));
         //
         this.body.setImage(UD_body[2]);
         this.head.setImage(heads[0]);
@@ -104,7 +98,7 @@ public class Player {
             this.headHitbox.getShape().setCache(true);
             this.headHitbox.getShape().setCacheHint(CacheHint.QUALITY);
         }
-        
+
         //
         playerController();
         //
@@ -113,7 +107,7 @@ public class Player {
     private void playerController() {
         controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
             //
-            System.out.println(moving);
+            //System.out.println(moving);
             accDecider();
             this.acceleration.limit(2 * avgScale);
             this.velocity.add(this.acceleration);
@@ -121,7 +115,7 @@ public class Player {
             this.velocity.mult((float) 0.95);
             if (this.velocity.magnitude() < 0.2) {
                 this.velocity.set(0, 0);
-                this.position.set((int)this.position.x,(int)this.position.y);
+                this.position.set((int) this.position.x, (int) this.position.y);
                 relocate();
             }
             this.velocity.limit(veloLimit);
@@ -129,7 +123,7 @@ public class Player {
             this.position.add(this.velocity);
             relocate();
             //
-            if (moving){
+            if (moving) {
 
             }
 
@@ -170,11 +164,12 @@ public class Player {
     }
 
     private void readImageINTOArray(String file, int sheetScale, float scaleX, float scaleY, Image[] ARRAY, int startX, int startY) {
+        //
         for (int i = 0; i < ARRAY.length; i++) {
-            ARRAY[i] = (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)), ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
+            ARRAY[i] = (new ImageView(new WritableImage(new Image(file, ((int) (new Image(file).getWidth() * scaleX * sheetScale)), ((int) (new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
                     startX, startY, (int) this.width, (int) this.height))).getImage();
             startX = startX + this.width;
-            if (startX >= 256 * sheetScale * scaleX) {
+            if (startX >= (int) (256 * sheetScale * scaleX)) {
                 startX = 0;
                 startY = startY + this.height;
             }
