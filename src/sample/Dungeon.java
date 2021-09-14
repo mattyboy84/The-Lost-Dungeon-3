@@ -14,6 +14,9 @@ public class Dungeon {
 
     ArrayList<Neighbour_Rooms> neighbours = new ArrayList<Neighbour_Rooms>();
     ArrayList<Room> rooms = new ArrayList<Room>();
+    //Room Threads
+    ArrayList<RoomThread> thread1 = new ArrayList<>();
+    ArrayList<Room> rooms1 = new ArrayList<>();
 
     public Dungeon() {
     }
@@ -83,8 +86,6 @@ public class Dungeon {
 
         neighbourCleaner();//removes map border
 
-        //System.out.println("asd" + neighbours.size());
-        //displayMap();
         System.out.println("Dungeon has: " + finRooms + " Rooms");
 
         //Image[][] rocks = rockGetter();
@@ -112,10 +113,11 @@ public class Dungeon {
 */
 
     private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds) {
-        map[8][9] = 1;
-        map[10][9] = 1;
-        map[9][10] = 1;
-        map[9][8] = 1;
+        //map[8][9] = 1;
+        //map[10][9] = 1;
+        //map[9][10] = 1;
+        //map[9][8] = 1;
+
 
         int up, down, left, right;
         for (int i = 0; i < map.length; i++) {
@@ -129,12 +131,26 @@ public class Dungeon {
                     right = roomChecker(i, j, 0, +1);
 
                     left = roomChecker(i, j, 0, -1);
-                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds));
-                    System.out.println("Room " + (rooms.size() - 1) + " done");
+
+
+                    thread1.add(new RoomThread(rooms1, i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, "1"));
+                    thread1.get(thread1.size() - 1).start();
+
+
+                    //rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds));
+                    //System.out.println("Room " + (rooms.size() - 1) + " done");
                 }
             }
         }
 
+        while (rooms1.size()!=finRooms){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        rooms.addAll(rooms1);
     }
 
     private int roomChecker(int i, int j, int II, int JJ) {

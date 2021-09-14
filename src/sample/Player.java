@@ -2,6 +2,7 @@ package sample;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
@@ -14,8 +15,11 @@ import javafx.util.Duration;
 
 public class Player {
 
+    //
+    int XAnimateCounter, YAnimateCounter;
+    //
     float avgScale;
-
+    String movingDirection;
     int roomX, roomY;
     String costume;
     Image[] heads = new Image[6];
@@ -32,6 +36,7 @@ public class Player {
     Vecc2f bodyDelta, headDelta;
     Hitbox headHitbox, bodyHitbox;
     //
+    Vecc2f direction = new Vecc2f();
     Vecc2f position = new Vecc2f();
     Vecc2f velocity = new Vecc2f();
     Vecc2f acceleration = new Vecc2f();
@@ -39,6 +44,8 @@ public class Player {
     Vecc2f xSpeed = new Vecc2f((float) 0.1, 0);
     Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.1);
     boolean moving;
+    //timers;
+    int animationTimer;
 
     //
 
@@ -106,8 +113,12 @@ public class Player {
 
     private void playerController() {
         controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
+            //timers
+            animationTimer++;
+
             //
-            //System.out.println(moving);
+            this.direction.set(velocity.x, velocity.y);
+            this.direction.limit(1);
             accDecider();
             this.acceleration.limit(2 * avgScale);
             this.velocity.add(this.acceleration);
@@ -116,6 +127,7 @@ public class Player {
             if (this.velocity.magnitude() < 0.2) {
                 this.velocity.set(0, 0);
                 this.position.set((int) this.position.x, (int) this.position.y);
+                this.body.setImage(UD_body[2]);
                 relocate();
             }
             this.velocity.limit(veloLimit);
@@ -124,12 +136,51 @@ public class Player {
             relocate();
             //
             if (moving) {
-
+                if (animationTimer >= 6) {
+                    heroAnimator();
+                    animationTimer = 0;
+                }
             }
 
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
+    }
+
+    private void heroAnimator() {
+
+        float angle = this.direction.toAngle();
+        if (angle > 45 && angle < 135) {//right
+            this.movingDirection = "right";
+            body.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+            subHeroAnimterX();
+        } else if (angle > 135 && angle < 225) {//down
+            this.movingDirection = "down";
+            subHeroAnimterY();
+        } else if (angle > 225 && angle < 315) {//left
+            this.movingDirection = "left";
+            body.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            subHeroAnimterX();
+        } else if (angle > 315 || angle < 45) {//up
+            this.movingDirection = "up";
+            subHeroAnimterY();
+        }
+    }
+
+    private void subHeroAnimterY() {
+        YAnimateCounter++;
+        if (YAnimateCounter > UD_body.length-1) {
+            YAnimateCounter = 0;
+        }
+        body.setImage(UD_body[YAnimateCounter]);
+    }
+
+    private void subHeroAnimterX() {
+        XAnimateCounter++;
+        if (XAnimateCounter > LR_body.length-1) {
+            XAnimateCounter = 0;
+        }
+        body.setImage(LR_body[XAnimateCounter]);
     }
 
     private void accDecider() {

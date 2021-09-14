@@ -5,6 +5,7 @@
     "Height": 156,
     "Rows": 2,
     "Columns": 2,
+    "SheetScale": 3,
     "BorderX": 213,
     "BorderY": 180
   },
@@ -136,7 +137,6 @@
         "ImageX": 0,
         "ImageY": 4
       },
-
       {
         "PositionX": 103,
         "PositionY": 103,

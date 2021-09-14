@@ -94,23 +94,6 @@ public class Room {
             int d = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageY").getAsInt();
             rocks.add(new Rock(a, b, c, d, name, sheetScale, width, height, rows, columns, borderX, borderY, scaleX, scaleY));
         }
-
-        /*
-        int sheetScale = rockArray.get("SheetScale").getAsInt();
-        String file ="file:src\\resources\\gfx\\grid\\" + rockArray.get("name").getAsString()+ ".png";
-        int width= (int) (rockArray.get("Width").getAsInt()*scaleX*sheetScale);
-        int height= (int) (rockArray.get("Height").getAsInt()*scaleY*sheetScale);
-        //System.out.println(file);
-        Image[][] rocks = new Image[7][7];
-
-        for (int k = 0; k <rocks.length ; k++) {
-            for (int l = 0; l < rocks[0].length; l++) {
-                rocks[k][l] = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) width*k, (int) height*l, (int) (width), (int) (height))).getImage());
-            }
-        }
-        */
-
-
     }
 
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
