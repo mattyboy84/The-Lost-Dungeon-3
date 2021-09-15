@@ -142,14 +142,17 @@ public class Dungeon {
                 }
             }
         }
-
-        while (rooms1.size()!=finRooms){
+        int a = 0;
+        int increment = 200;
+        while (rooms1.size() != finRooms) {
             try {
-                Thread.sleep(100);
+                a=a+100;
+                Thread.sleep(increment);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        System.out.println("Prolonged time: " + a);
         rooms.addAll(rooms1);
     }
 
