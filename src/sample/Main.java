@@ -60,7 +60,7 @@ public class Main extends Application {
         int floor = 0;
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
         dungeon.displayMap();
-        dungeon.loadRoom(9, 9, group);
+        dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
         //
 
         player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3);
@@ -82,13 +82,13 @@ public class Main extends Application {
                     player.setNorthMOVING(true);
                     break;
                 case A:
-                    player.setEastMOVING(true);
+                    player.setWestMOVING(true);
                     break;
                 case S:
                     player.setSouthMOVING(true);
                     break;
                 case D:
-                    player.setWestMOVING(true);
+                    player.setEastMOVING(true);
                     break;
                 case F:
                     stage.setFullScreen(!stage.isFullScreen());
@@ -101,13 +101,13 @@ public class Main extends Application {
                     player.setNorthMOVING(false);
                     break;
                 case A:
-                    player.setEastMOVING(false);
+                    player.setWestMOVING(false);
                     break;
                 case S:
                     player.setSouthMOVING(false);
                     break;
                 case D:
-                    player.setWestMOVING(false);
+                    player.setEastMOVING(false);
                     break;
             }
         });

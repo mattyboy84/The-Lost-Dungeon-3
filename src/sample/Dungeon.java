@@ -145,8 +145,9 @@ public class Dungeon {
         int a = 0;
         int increment = 200;
         while (rooms1.size() != finRooms) {
+            System.out.println(rooms1.size() + " " + finRooms);
             try {
-                a=a+100;
+                a=a+increment;
                 Thread.sleep(increment);
             } catch (InterruptedException e) {
                 e.printStackTrace();
