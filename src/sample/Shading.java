@@ -121,7 +121,7 @@ public class Shading {
     }
 
     public void addActiveSource(float x, float y, int radius) {
-        activeSources.add(new Points(x*this.scaleX, y*scaleY, (int) (radius*this.avgScale)));
+        activeSources.add(new Points(x, y, (int) (radius*this.avgScale)));
     }
 
     private int calc(int i, int j, Vecc2f source) {

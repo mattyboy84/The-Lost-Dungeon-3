@@ -1,12 +1,12 @@
 Background 0
 props Layer (all debris and enemy remains/blood) & rocks -1
 ground insects/moving background objects -2
-Door layer -3
+Door Shadow layer -3
 Items Layer (Coins, Bombs Keys etc) -4
 Enemy/Boss Layer -5
 Enemy/Boss Tears/Attacks -6
 Player Layer -7
-Player Tears/Attacks -8
+Player Tears/Attacks & door Frame, left part & right part -8
 foreground insects (tiny flies etc) -9
 Shading layer -10
 UI Layer (Health, coins/keys/bombs counter,dungeon map,overlay text) -11

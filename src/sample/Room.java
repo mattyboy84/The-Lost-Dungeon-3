@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.shape.Rectangle;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -185,6 +186,17 @@ public class Room {
             rock.unload(group);
         }
     }
+
+    public ArrayList<Rectangle> getBoundaries(){//provides an arraylist of obstacles.
+        ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
+        for (Door door : doors) {
+            if (door.getState() == Door.State.closed) {
+                a.add(door.getDoorBlock());
+            }
+        }
+        return a;
+    }
+
 
     public Random getRandom() {
         return random;

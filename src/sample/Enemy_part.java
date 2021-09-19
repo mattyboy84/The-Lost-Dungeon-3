@@ -66,6 +66,7 @@ public class Enemy_part {
         if (this.light) {
             this.lightRadius = enemyPart.get("Radius").getAsInt();
             shading.addActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())), this.lightRadius);
+            //shading.addActiveSource(this.position.x,this.position.y,this.lightRadius);
             //System.out.println(hitboxes.get(0).xDelta);
 
             //System.out.println((this.enemy.getBoundsInLocal().getMinX())+ " " +  (int)(this.enemy.getBoundsInLocal().getMinY()) +" " +  this.lightRadius);

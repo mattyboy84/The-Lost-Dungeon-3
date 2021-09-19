@@ -63,7 +63,7 @@ public class Main extends Application {
         dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
         //
 
-        player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3);
+        player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3,dungeon);
         player.load(group);
         //
         stage.setScene(scene);

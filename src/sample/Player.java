@@ -34,6 +34,7 @@ public class Player {
     int width, height;
     //
     Vecc2f VECscale = new Vecc2f();
+
     Vecc2f bodyOffset, headOffset;
     Vecc2f bodyDelta, headDelta;
     Hitbox headHitbox, bodyHitbox;
@@ -48,16 +49,18 @@ public class Player {
     boolean moving;
     //timers;
     int animationTimer;
-
     //
-
+    Room currentRoom;
+    //
+    int lightRadius=150;
+    //
     float veloLimit;//default is 7 multiplied by screen scale
     //
     boolean northMOVING, eastMOVING, westMOVING, southMOVING;
     //
     Timeline controller;
 
-    public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale) {
+    public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, Dungeon dungeon) {
         this.avgScale = ((scaleX + scaleY) / 2);
         //
         xSpeed.mult(scaleX);
@@ -90,6 +93,8 @@ public class Player {
         //
         readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) Math.round(64 * sheetScale * scaleY));
         //
+        roomFinder(dungeon);
+        //
         this.body.setImage(UD_body[2]);//default is 2
         this.head.setImage(heads[0]);
         //
@@ -107,14 +112,25 @@ public class Player {
             this.headHitbox.getShape().setCache(true);
             this.headHitbox.getShape().setCacheHint(CacheHint.QUALITY);
         }
+        //
 
         //
         playerController();
         //
     }
 
+    private void roomFinder(Dungeon dungeon) {
+        for (int i = 0; i < dungeon.rooms.size(); i++) {
+            if (this.roomX == dungeon.rooms.get(i).getI() && this.roomY == dungeon.rooms.get(i).getJ()) {
+                currentRoom = dungeon.rooms.get(i);
+            }
+        }
+    }
+
     private void playerController() {
         controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
+            currentRoom.shading.removeActiveSource((float)(this.headHitbox.getShape().getLayoutX()+this.headHitbox.radius),(float)(this.headHitbox.getShape().getLayoutY()+this.headHitbox.radius));
+
             //timers
             animationTimer++;
 
@@ -144,6 +160,7 @@ public class Player {
                     animationTimer = 0;
                 }
             }
+            currentRoom.shading.addActiveSource((float)(this.headHitbox.getShape().getLayoutX()+this.headHitbox.radius),(float)(this.headHitbox.getShape().getLayoutY()+this.headHitbox.radius),this.lightRadius);
 
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
@@ -174,13 +191,13 @@ public class Player {
             this.moving = true;
         }
     }
-    
+
     private void readImageINTOArray(String file, int sheetScale, float scaleX, float scaleY, Image[] ARRAY, int startX, int startY) {
         for (int i = 0; i < ARRAY.length; i++) {
             ARRAY[i] = (new ImageView(new WritableImage(new Image(file, ((int) (new Image(file).getWidth() * scaleX * sheetScale)), ((int) (new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
                     startX, startY, (int) this.width, (int) this.height))).getImage();
             startX = startX + this.width;
-            if (startX >= (int) this.width*8) {
+            if (startX >= (int) this.width * 8) {
                 startX = 0;
                 startY = startY + this.height;
             }
@@ -241,8 +258,8 @@ public class Player {
         //
         this.body.setVisible(true);
         this.head.setVisible(true);
-        this.headHitbox.shape.setVisible(false);
-        this.bodyHitbox.shape.setVisible(false);
+        this.headHitbox.shape.setVisible(true);
+        this.bodyHitbox.shape.setVisible(true);
         //
         this.position.set(800, 400);
         relocate();

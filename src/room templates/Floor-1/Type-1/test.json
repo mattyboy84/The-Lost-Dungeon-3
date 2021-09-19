@@ -46,7 +46,7 @@
             }
           ],
           "Light": true,
-          "Radius": 50,
+          "Radius": 75,
           "PositionX": 500,
           "PositionY": 500
         }
@@ -87,7 +87,7 @@
             }
           ],
           "Light": true,
-          "Radius": 50,
+          "Radius": 75,
           "PositionX": 550,
           "PositionY": 700
         }

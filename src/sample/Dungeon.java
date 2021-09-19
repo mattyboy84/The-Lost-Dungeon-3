@@ -70,10 +70,10 @@ public class Dungeon {
                 roomAdder();
             }
             //
-            map[8][9] = 1;
-            map[10][9] = 1;
-            map[9][10] = 1;
-            map[9][8] = 1;
+            map[this.startX-1][this.startY] = 1;
+            map[this.startX+1][this.startY] = 1;
+            map[this.startX][this.startY+1] = 1;
+            map[this.startX][this.startY-1] = 1;
             //
 
             for (int[] ints : map) {

@@ -24,8 +24,9 @@ public class Door {
     //
     int doorBoundary = 12;
     Rectangle doorTrigger;
+    Rectangle doorBlock;
     int triggerHeight = 75;
-
+    int blockHeight = 20;
 
     enum State {
         open,
@@ -34,6 +35,7 @@ public class Door {
     }
 
     State state;
+
 
     public Door(String direction, int rotation, int directionType, int type, float scaleX, float scaleY, Rectangle2D screenBounds, Background background) {
         //String file = "file:src\\resources\\gfx\\grid\\" + this.name + ".png";
@@ -47,7 +49,8 @@ public class Door {
 
         //this.doorFrame = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX*spriteScaleX), (new Image(file).getHeight() * scaleY*spriteScaleY), false, false).getPixelReader(), (int) (0 *((width*scaleX*spriteScaleX))), (int) (0*((height*scaleY*spriteScaleY))), (int)(width*scaleX*spriteScaleX), (int)(height*scaleY*spriteScaleY))));
 
-        this.triggerHeight+=((scaleX + scaleY) / 2);
+        this.triggerHeight *= ((scaleX + scaleY) / 2);
+        this.blockHeight *= ((scaleX + scaleY) / 2);
 
         this.doorFrame = imageGetter(file, 0, 0, scaleX, scaleY);
         this.doorShadow = imageGetter(file, 1, 0, scaleX, scaleY);
@@ -58,20 +61,24 @@ public class Door {
         switch (direction) {
             case "up" -> {
                 this.position = new Vecc2f((float) ((screenBounds.getWidth() / 2) - this.doorFrame.getBoundsInParent().getWidth() / 2), (doorBoundary * scaleY));
-                doorTrigger = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), 0, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, triggerHeight);
+                this.doorTrigger = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), 0, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, triggerHeight);
+                this.doorBlock = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), background.topLeft.getBoundsInParent().getMaxY() - blockHeight, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, blockHeight);
+
             }
             case "down" -> {
                 this.position = new Vecc2f((float) ((screenBounds.getWidth() / 2) - this.doorFrame.getBoundsInParent().getWidth() / 2), (float) (screenBounds.getHeight() - this.doorFrame.getBoundsInParent().getHeight() - (doorBoundary * scaleY)));
-                this.doorTrigger = new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), screenBounds.getHeight() - (triggerHeight),(((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2,triggerHeight);
+                this.doorTrigger = new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), screenBounds.getHeight() - (triggerHeight), (((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2, triggerHeight);
+                this.doorBlock = new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(),background.bottomLeft.getBoundsInParent().getMinY(),(((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2,blockHeight);
             }
             case "left" -> {
                 this.position = new Vecc2f(0 + (doorBoundary * scaleX), (float) ((screenBounds.getHeight() / 2) - (this.doorFrame.getBoundsInParent().getHeight() / 2)));
-                this.doorTrigger = new Rectangle(0,background.leftUp.getBoundsInParent().getMaxY(),triggerHeight,(((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
+                this.doorTrigger = new Rectangle(0, background.leftUp.getBoundsInParent().getMaxY(), triggerHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
+                this.doorBlock = new Rectangle(background.leftUp.getBoundsInParent().getMaxX()-blockHeight, background.leftUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
             }
             case "right" -> {
                 this.position = new Vecc2f((float) (screenBounds.getWidth() - this.doorFrame.getBoundsInParent().getWidth() - (doorBoundary * scaleX)), (float) ((screenBounds.getHeight() / 2) - (this.doorFrame.getBoundsInParent().getHeight() / 2)));
-                this.doorTrigger = new Rectangle(screenBounds.getWidth()-triggerHeight,background.rightUp.getBoundsInParent().getMaxY(),triggerHeight,(((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
-
+                this.doorTrigger = new Rectangle(screenBounds.getWidth() - triggerHeight, background.rightUp.getBoundsInParent().getMaxY(), triggerHeight, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
+                this.doorBlock = new Rectangle(background.rightUp.getBoundsInParent().getMinX(), background.rightUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
             }
         }
         //
@@ -103,15 +110,20 @@ public class Door {
         this.doorPartRight.relocate(position.x, position.y);
         this.doorPartLeft.relocate(position.x, position.y);
         //
-        this.doorFrame.setViewOrder(-3);
+        this.doorFrame.setViewOrder(-8);
         this.doorShadow.setViewOrder(-3);
-        this.doorPartRight.setViewOrder(-3);
-        this.doorPartLeft.setViewOrder(-3);
+        this.doorPartRight.setViewOrder(-8);
+        this.doorPartLeft.setViewOrder(-8);
         //
         group.getChildren().add(this.doorTrigger);
         this.doorTrigger.toFront();
         this.doorTrigger.setFill(Color.RED);
         this.doorTrigger.setViewOrder(-12);
+        //
+        group.getChildren().add(this.doorBlock);
+        this.doorBlock.toFront();
+        this.doorBlock.setFill(Color.GREEN);
+        this.doorBlock.setViewOrder(-12);
     }
 
     public void unload(Group group) {
@@ -131,5 +143,141 @@ public class Door {
             group.getChildren().remove(this.doorPartRightLocked);
         } catch (Exception e) {
         }
+    }
+
+    public String[] getTypes() {
+        return types;
+    }
+
+    public void setTypes(String[] types) {
+        this.types = types;
+    }
+
+    public ImageView getDoorFrame() {
+        return doorFrame;
+    }
+
+    public void setDoorFrame(ImageView doorFrame) {
+        this.doorFrame = doorFrame;
+    }
+
+    public ImageView getDoorShadow() {
+        return doorShadow;
+    }
+
+    public void setDoorShadow(ImageView doorShadow) {
+        this.doorShadow = doorShadow;
+    }
+
+    public ImageView getDoorPartLeft() {
+        return doorPartLeft;
+    }
+
+    public void setDoorPartLeft(ImageView doorPartLeft) {
+        this.doorPartLeft = doorPartLeft;
+    }
+
+    public ImageView getDoorPartRight() {
+        return doorPartRight;
+    }
+
+    public void setDoorPartRight(ImageView doorPartRight) {
+        this.doorPartRight = doorPartRight;
+    }
+
+    public ImageView getDoorPartRightLocked() {
+        return doorPartRightLocked;
+    }
+
+    public void setDoorPartRightLocked(ImageView doorPartRightLocked) {
+        this.doorPartRightLocked = doorPartRightLocked;
+    }
+
+    public int getSpriteScaleX() {
+        return spriteScaleX;
+    }
+
+    public void setSpriteScaleX(int spriteScaleX) {
+        this.spriteScaleX = spriteScaleX;
+    }
+
+    public int getSpriteScaleY() {
+        return spriteScaleY;
+    }
+
+    public void setSpriteScaleY(int spriteScaleY) {
+        this.spriteScaleY = spriteScaleY;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public Vecc2f getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vecc2f position) {
+        this.position = position;
+    }
+
+    public int getDoorBoundary() {
+        return doorBoundary;
+    }
+
+    public void setDoorBoundary(int doorBoundary) {
+        this.doorBoundary = doorBoundary;
+    }
+
+    public Rectangle getDoorTrigger() {
+        return doorTrigger;
+    }
+
+    public void setDoorTrigger(Rectangle doorTrigger) {
+        this.doorTrigger = doorTrigger;
+    }
+
+    public Rectangle getDoorBlock() {
+        return doorBlock;
+    }
+
+    public void setDoorBlock(Rectangle doorBlock) {
+        this.doorBlock = doorBlock;
+    }
+
+    public int getTriggerHeight() {
+        return triggerHeight;
+    }
+
+    public void setTriggerHeight(int triggerHeight) {
+        this.triggerHeight = triggerHeight;
+    }
+
+    public int getBlockHeight() {
+        return blockHeight;
+    }
+
+    public void setBlockHeight(int blockHeight) {
+        this.blockHeight = blockHeight;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 }
