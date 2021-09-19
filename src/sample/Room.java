@@ -33,8 +33,14 @@ public class Room {
     ArrayList<Door> doors = new ArrayList<>();
     ArrayList<Enemy> enemies = new ArrayList<>();
     ArrayList<Rock> rocks = new ArrayList<Rock>();
+    //
+    String parentThreadName;
 
-    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
+    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName) {
+        //System.out.println(Thread.currentThread().getName());
+        //
+        this.parentThreadName = threadName;
+        //
         this.backgroundItems = new Background_items();
         //
         this.i = i;
@@ -48,30 +54,37 @@ public class Room {
         //
         this.floorLevel = floorLevel;
         this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
-
-        //System.out.println(this.roomTemplate.getAsJsonObject("Background"));
         //
-
+        //
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
+        System.out.println("Thread: " + threadName + " Background Complete");
+        //
         this.shading = new Shading(scaleX, scaleY, screenBounds);
+        System.out.println("Thread: " + threadName + " Shading Complete");
+        //
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
+        System.out.println("Thread: " + threadName + " BackgroundItems");
+        //
         enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
+        System.out.println("Thread: " + threadName + " Enemies Complete");
         //
         rockAdder(this.roomTemplate.getAsJsonObject("Rocks"), scaleX, scaleY);
+        System.out.println("Thread: " + threadName + " Rocks Complete");
+        //
         //213 x 180
-
         if (upType > 0) {
-            doors.add(new Door("up", 0, this.upType, this.type, scaleX, scaleY, screenBounds));
+            doors.add(new Door("up", 0, this.upType, this.type, scaleX, scaleY, screenBounds,background));
         }
         if (downType > 0) {
-            doors.add(new Door("down", 180, this.downType, this.type, scaleX, scaleY, screenBounds));
+            doors.add(new Door("down", 180, this.downType, this.type, scaleX, scaleY, screenBounds,background));
         }
         if (leftType > 0) {
-            doors.add(new Door("left", 270, this.leftType, this.type, scaleX, scaleY, screenBounds));
+            doors.add(new Door("left", 270, this.leftType, this.type, scaleX, scaleY, screenBounds,background));
         }
         if (rightType > 0) {
-            doors.add(new Door("right", 90, this.rightType, this.type, scaleX, scaleY, screenBounds));
+            doors.add(new Door("right", 90, this.rightType, this.type, scaleX, scaleY, screenBounds,background));
         }
+        System.out.println("Thread: " + threadName + " Doors Complete");
 
         //System.out.println(roomTemplate);
     }

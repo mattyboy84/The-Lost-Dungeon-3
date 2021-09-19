@@ -61,15 +61,20 @@ public class Background {
         float a = (float) (screenBounds.getWidth() / 2) / this.width;
         float b = (float) (screenBounds.getHeight() / 2) / this.height;
 
-        this.topLeftIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
+        this.topLeftIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b),
+                false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
         this.topLeftIMG.relocate(0, 0);
-        this.topRightIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
+        this.topRightIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b),
+                false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
         this.topRightIMG.relocate(screenBounds.getWidth() / 2, 0);
         this.topRightIMG.setScaleX(-1);
-        this.bottomLeftIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
+        this.bottomLeftIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b),
+                false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
         this.bottomLeftIMG.relocate(0, screenBounds.getHeight() / 2);
         this.bottomLeftIMG.setScaleY(-1);
-        this.bottomRightIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
+        this.bottomRightIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b),
+                false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
+
         this.bottomRightIMG.relocate(screenBounds.getWidth() / 2, screenBounds.getHeight() / 2);
         this.bottomRightIMG.setScaleX(-1);
         this.bottomRightIMG.setScaleY(-1);
@@ -77,20 +82,29 @@ public class Background {
 
     public void load(Group group) {
         group.getChildren().addAll(topLeft, topRight, bottomLeft, bottomRight, leftUp, leftDown, rightUp, rightDown);
-        topLeft.setViewOrder(1);
-        topRight.setViewOrder(1);
-        leftUp.setViewOrder(1);
-        leftDown.setViewOrder(1);
-        bottomRight.setViewOrder(1);
-        bottomLeft.setViewOrder(1);
-        rightDown.setViewOrder(1);
-        rightUp.setViewOrder(1);
+        //topLeft.setViewOrder(1);
+        //topRight.setViewOrder(1);
+        //leftUp.setViewOrder(1);
+        //leftDown.setViewOrder(1);
+        //bottomRight.setViewOrder(1);
+        //bottomLeft.setViewOrder(1);
+        //rightDown.setViewOrder(1);
+        //rightUp.setViewOrder(1);
         //
         group.getChildren().addAll(topLeftIMG, topRightIMG, bottomLeftIMG, bottomRightIMG);
         topLeftIMG.setViewOrder(0);
         topRightIMG.setViewOrder(0);
         bottomLeftIMG.setViewOrder(0);
         bottomRightIMG.setViewOrder(0);
+        //
+        topLeft.toFront();
+        topRight.toFront();
+        leftUp.toFront();
+        leftDown.toFront();
+        bottomRight.toFront();
+        bottomLeft.toFront();
+        rightDown.toFront();
+        rightUp.toFront();
     }
 
     public void unload(Group group) {

@@ -115,9 +115,6 @@ public class Player {
 
     private void playerController() {
         controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
-            //System.out.println(moving);
-            //this.body.setImage(LR_body[8]);
-            //System.out.println(Arrays.toString(LR_body));
             //timers
             animationTimer++;
 
@@ -177,13 +174,8 @@ public class Player {
             this.moving = true;
         }
     }
-    //readImageINTOArray(file, sheetScale, scaleX, scaleY, UD_body, (int) Math.round(192 * scaleX * sheetScale), 0);
-    //readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) Math.round(64 * sheetScale * scaleY));
-
+    
     private void readImageINTOArray(String file, int sheetScale, float scaleX, float scaleY, Image[] ARRAY, int startX, int startY) {
-        //
-        //System.out.println("");
-        //System.out.println("Array " + ARRAY + " StartX: " +startX + " StartY: " + startY );
         for (int i = 0; i < ARRAY.length; i++) {
             ARRAY[i] = (new ImageView(new WritableImage(new Image(file, ((int) (new Image(file).getWidth() * scaleX * sheetScale)), ((int) (new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
                     startX, startY, (int) this.width, (int) this.height))).getImage();

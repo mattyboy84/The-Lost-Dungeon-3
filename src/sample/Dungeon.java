@@ -69,6 +69,13 @@ public class Dungeon {
             for (int i = 0; i < (int) (this.minimumRooms * 1.2); i++) {
                 roomAdder();
             }
+            //
+            map[8][9] = 1;
+            map[10][9] = 1;
+            map[9][10] = 1;
+            map[9][8] = 1;
+            //
+
             for (int[] ints : map) {
                 for (int j = 0; j < map[0].length; j++) {
                     if (ints[j] == 1) {
@@ -133,7 +140,7 @@ public class Dungeon {
                     left = roomChecker(i, j, 0, -1);
 
 
-                    thread1.add(new RoomThread(rooms1, i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, "1"));
+                    thread1.add(new RoomThread(rooms1, i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(thread1.size())));
                     thread1.get(thread1.size() - 1).start();
 
 

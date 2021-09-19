@@ -35,7 +35,7 @@ class RoomThread implements Runnable {
     public void run() {
         // System.out.println("Running " +  threadName );
 
-        rooms.add(new Room(i, j, i1, up, down, left, right, this.floorLevel, scaleX, scaleY, screenbounds));
+        rooms.add(new Room(i, j, i1, up, down, left, right, this.floorLevel, scaleX, scaleY, screenbounds,threadName));
         //t.stop();
         //System.out.println("Thread " +  threadName + " exiting.");
     }
