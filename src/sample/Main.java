@@ -93,6 +93,9 @@ public class Main extends Application {
                 case F:
                     stage.setFullScreen(!stage.isFullScreen());
                     break;
+                case J:
+                    player.currentRoom.openDoors(group);
+                    break;
             }
         });
         scene.setOnKeyReleased(keyEvent -> {

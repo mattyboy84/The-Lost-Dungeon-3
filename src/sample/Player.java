@@ -37,7 +37,7 @@ public class Player {
 
     Vecc2f bodyOffset, headOffset;
     Vecc2f bodyDelta, headDelta;
-    Hitbox headHitbox, bodyHitbox;
+    Hitbox headHitbox, bodyHitbox, nextFrameBodyHitbox;
     //
     Vecc2f direction = new Vecc2f();
     Vecc2f position = new Vecc2f();
@@ -52,7 +52,7 @@ public class Player {
     //
     Room currentRoom;
     //
-    int lightRadius=150;
+    int lightRadius = 200;
     //
     float veloLimit;//default is 7 multiplied by screen scale
     //
@@ -99,6 +99,7 @@ public class Player {
         this.head.setImage(heads[0]);
         //
         bodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
+        nextFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
         //int radius = (int) (13 * sheetScale * (scaleX + scaleY) / 2);
         headHitbox = new Hitbox("Circle", 12, 12, sheetScale, scaleX, scaleY, 16, 4);
         //caching
@@ -129,7 +130,7 @@ public class Player {
 
     private void playerController() {
         controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
-            currentRoom.shading.removeActiveSource((float)(this.headHitbox.getShape().getLayoutX()+this.headHitbox.radius),(float)(this.headHitbox.getShape().getLayoutY()+this.headHitbox.radius));
+            currentRoom.shading.removeActiveSource((float) (this.headHitbox.getShape().getLayoutX() + this.headHitbox.radius), (float) (this.headHitbox.getShape().getLayoutY() + this.headHitbox.radius));
 
             //timers
             animationTimer++;
@@ -142,10 +143,16 @@ public class Player {
             this.velocity.add(this.acceleration);
             //
             this.velocity.mult((float) 0.95);
+            //
+            boundaryChecker();
+            //
             if (this.velocity.magnitude() < 0.2) {
                 moving = false;
                 this.velocity.set(0, 0);
-                this.position.set((int) this.position.x, (int) this.position.y);
+                //this.position.set((int) this.position.x, (int) this.position.y);
+                if (!colliding()){
+                    this.position.set((int) this.position.x, (int) this.position.y);
+                }
                 this.body.setImage(UD_body[2]);
                 relocate();
             }
@@ -154,17 +161,43 @@ public class Player {
             this.position.add(this.velocity);
             relocate();
             //
+
+            //
             if (moving) {
                 if (animationTimer >= 6) {
-                    heroAnimator();
+                    playerAnimator();
                     animationTimer = 0;
                 }
             }
-            currentRoom.shading.addActiveSource((float)(this.headHitbox.getShape().getLayoutX()+this.headHitbox.radius),(float)(this.headHitbox.getShape().getLayoutY()+this.headHitbox.radius),this.lightRadius);
-
+            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX() + this.headHitbox.radius), (float) (this.headHitbox.getShape().getLayoutY() + this.headHitbox.radius), this.lightRadius);
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
+    }
+
+    boolean collide = false;
+
+    public boolean colliding(){
+        //boolean a=false;
+        for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
+            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextFrameBodyHitbox.shape.getBoundsInParent()) && !collide) {
+                return true;
+            }
+        }
+            return false;
+    }
+
+    private void boundaryChecker() {
+        for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
+            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextFrameBodyHitbox.shape.getBoundsInParent()) && !collide) {
+                collide = true;
+                //if (this.velocity.magnitude() > (this.veloLimit * 0.5)) {
+                    this.velocity.mult((float) 0.8);
+                    this.position.sub(this.velocity);
+                //}
+            }
+        }
+        collide = false;
     }
 
     private void accDecider() {
@@ -204,27 +237,27 @@ public class Player {
         }
     }
 
-    private void heroAnimator() {
+    private void playerAnimator() {
 
         float angle = this.direction.toAngle();
         if (angle > 45 && angle < 135) {//right
             this.movingDirection = "right";
             body.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-            subHeroAnimterX();
+            subPlayerAnimterX();
         } else if (angle > 135 && angle < 225) {//down
             this.movingDirection = "down";
-            subHeroAnimterY();
+            subPlayerAnimterY();
         } else if (angle > 225 && angle < 315) {//left
             this.movingDirection = "left";
             body.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            subHeroAnimterX();
+            subPlayerAnimterX();
         } else if (angle > 315 || angle < 45) {//up
             this.movingDirection = "up";
-            subHeroAnimterY();
+            subPlayerAnimterY();
         }
     }
 
-    private void subHeroAnimterY() {
+    private void subPlayerAnimterY() {
         YAnimateCounter++;
         if (YAnimateCounter > UD_body.length - 1) {
             YAnimateCounter = 0;
@@ -232,7 +265,7 @@ public class Player {
         body.setImage(UD_body[YAnimateCounter]);
     }
 
-    private void subHeroAnimterX() {
+    private void subPlayerAnimterX() {
         XAnimateCounter++;
         if (XAnimateCounter > LR_body.length - 1) {
             XAnimateCounter = 0;
@@ -246,13 +279,15 @@ public class Player {
         this.head.relocate(position.x + headOffset.x, position.y + headOffset.y);
         this.headHitbox.getShape().relocate(position.x + headDelta.x - (this.headHitbox.radius), position.y + headDelta.y - (this.headHitbox.radius));
         this.bodyHitbox.getShape().relocate(position.x + bodyDelta.x, position.y + bodyDelta.y);
+        this.nextFrameBodyHitbox.getShape().relocate(bodyHitbox.shape.getLayoutX() + this.velocity.x, bodyHitbox.shape.getLayoutY() + this.velocity.y);
     }
 
     public void load(Group group) {
-        group.getChildren().addAll(this.headHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head);
+        group.getChildren().addAll(this.headHitbox.getShape(), this.nextFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head);
         //
         this.headHitbox.getShape().setViewOrder(-7);
         this.bodyHitbox.getShape().setViewOrder(-7);
+        this.nextFrameBodyHitbox.getShape().setViewOrder(-7);
         this.body.setViewOrder(-7);
         this.head.setViewOrder(-7);
         //
@@ -260,6 +295,7 @@ public class Player {
         this.head.setVisible(true);
         this.headHitbox.shape.setVisible(true);
         this.bodyHitbox.shape.setVisible(true);
+        this.nextFrameBodyHitbox.shape.setVisible(true);
         //
         this.position.set(800, 400);
         relocate();

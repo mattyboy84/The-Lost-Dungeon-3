@@ -25,7 +25,8 @@ public class Door {
     int doorBoundary = 12;
     Rectangle doorTrigger;
     Rectangle doorBlock;
-    int triggerHeight = 75;
+    int triggerHeight = 80;
+    int triggerWidth=115;
     int blockHeight = 20;
 
     enum State {
@@ -63,21 +64,20 @@ public class Door {
                 this.position = new Vecc2f((float) ((screenBounds.getWidth() / 2) - this.doorFrame.getBoundsInParent().getWidth() / 2), (doorBoundary * scaleY));
                 this.doorTrigger = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), 0, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, triggerHeight);
                 this.doorBlock = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), background.topLeft.getBoundsInParent().getMaxY() - blockHeight, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, blockHeight);
-
             }
             case "down" -> {
                 this.position = new Vecc2f((float) ((screenBounds.getWidth() / 2) - this.doorFrame.getBoundsInParent().getWidth() / 2), (float) (screenBounds.getHeight() - this.doorFrame.getBoundsInParent().getHeight() - (doorBoundary * scaleY)));
                 this.doorTrigger = new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), screenBounds.getHeight() - (triggerHeight), (((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2, triggerHeight);
-                this.doorBlock = new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(),background.bottomLeft.getBoundsInParent().getMinY(),(((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2,blockHeight);
+                this.doorBlock = new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), background.bottomLeft.getBoundsInParent().getMinY(), (((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2, blockHeight);
             }
             case "left" -> {
                 this.position = new Vecc2f(0 + (doorBoundary * scaleX), (float) ((screenBounds.getHeight() / 2) - (this.doorFrame.getBoundsInParent().getHeight() / 2)));
-                this.doorTrigger = new Rectangle(0, background.leftUp.getBoundsInParent().getMaxY(), triggerHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
-                this.doorBlock = new Rectangle(background.leftUp.getBoundsInParent().getMaxX()-blockHeight, background.leftUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
+                this.doorTrigger = new Rectangle(0, background.leftUp.getBoundsInParent().getMaxY(), triggerWidth, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
+                this.doorBlock = new Rectangle(background.leftUp.getBoundsInParent().getMaxX() - blockHeight, background.leftUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
             }
             case "right" -> {
                 this.position = new Vecc2f((float) (screenBounds.getWidth() - this.doorFrame.getBoundsInParent().getWidth() - (doorBoundary * scaleX)), (float) ((screenBounds.getHeight() / 2) - (this.doorFrame.getBoundsInParent().getHeight() / 2)));
-                this.doorTrigger = new Rectangle(screenBounds.getWidth() - triggerHeight, background.rightUp.getBoundsInParent().getMaxY(), triggerHeight, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
+                this.doorTrigger = new Rectangle(screenBounds.getWidth() - triggerWidth, background.rightUp.getBoundsInParent().getMaxY(), triggerWidth, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
                 this.doorBlock = new Rectangle(background.rightUp.getBoundsInParent().getMinX(), background.rightUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
             }
         }
@@ -91,9 +91,7 @@ public class Door {
     }
 
     private ImageView imageGetter(String file, int i, int i1, float scaleX, float scaleY) {
-
         return (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * spriteScaleX), (new Image(file).getHeight() * scaleY * spriteScaleY), false, false).getPixelReader(), (int) (i * ((width * scaleX * spriteScaleX))), (int) (i1 * ((height * scaleY * spriteScaleY))), (int) (width * scaleX * spriteScaleX), (int) (height * scaleY * spriteScaleY))));
-
     }
 
 
@@ -101,26 +99,24 @@ public class Door {
         //group.getChildren().addAll(this.doorShadow, this.doorPartLeft, this.doorPartRight, this.doorFrame);
 
         switch (state) {
-            case open -> group.getChildren().addAll(this.doorShadow, this.doorFrame);
-            case closed -> group.getChildren().addAll(this.doorShadow, this.doorPartLeft, this.doorPartRight, this.doorFrame);
-            case locked -> group.getChildren().addAll(this.doorShadow, this.doorPartLeft, this.doorPartRightLocked, this.doorFrame);
+            case open -> group.getChildren().addAll(this.doorShadow, this.doorFrame, this.doorTrigger);
+            case closed -> group.getChildren().addAll(this.doorShadow, this.doorPartLeft, this.doorPartRight, this.doorFrame, this.doorBlock, this.doorTrigger);
+            case locked -> group.getChildren().addAll(this.doorShadow, this.doorPartLeft, this.doorPartRightLocked, this.doorFrame, this.doorBlock, this.doorTrigger);
         }
         this.doorFrame.relocate(position.x, position.y);
         this.doorShadow.relocate(position.x, position.y);
         this.doorPartRight.relocate(position.x, position.y);
         this.doorPartLeft.relocate(position.x, position.y);
         //
-        this.doorFrame.setViewOrder(-8);
+        this.doorFrame.setViewOrder(-3);
         this.doorShadow.setViewOrder(-3);
         this.doorPartRight.setViewOrder(-8);
         this.doorPartLeft.setViewOrder(-8);
         //
-        group.getChildren().add(this.doorTrigger);
         this.doorTrigger.toFront();
         this.doorTrigger.setFill(Color.RED);
         this.doorTrigger.setViewOrder(-12);
         //
-        group.getChildren().add(this.doorBlock);
         this.doorBlock.toFront();
         this.doorBlock.setFill(Color.GREEN);
         this.doorBlock.setViewOrder(-12);
@@ -143,6 +139,29 @@ public class Door {
             group.getChildren().remove(this.doorPartRightLocked);
         } catch (Exception e) {
         }
+        try {
+            group.getChildren().removeAll(this.doorTrigger, this.doorBlock);
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void open(Group group) {
+
+        switch (state) {
+            case open -> {
+
+            }
+            case closed -> {
+                group.getChildren().removeAll(this.doorPartLeft, this.doorPartRight, this.doorBlock);
+            }
+            case locked -> {
+                group.getChildren().removeAll(this.doorPartLeft, this.doorPartRightLocked, this.doorBlock);
+
+            }
+        }
+        this.state = State.open;
+
     }
 
     public String[] getTypes() {

@@ -194,7 +194,16 @@ public class Room {
                 a.add(door.getDoorBlock());
             }
         }
+        for (Rock rock : rocks) {
+            a.add((Rectangle) rock.hitbox.shape);
+        }
         return a;
+    }
+
+    public void openDoors(Group group){
+        for (int k = 0; k < doors.size(); k++) {
+            doors.get(k).open(group);
+        }
     }
 
 
