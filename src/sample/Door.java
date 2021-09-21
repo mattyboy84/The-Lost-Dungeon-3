@@ -146,7 +146,7 @@ public class Door {
         }
     }
 
-    public void open(Group group) {
+    public void forceOpen(Group group) {
 
         switch (state) {
             case open -> {

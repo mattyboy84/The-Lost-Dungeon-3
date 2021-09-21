@@ -200,9 +200,14 @@ public class Room {
         return a;
     }
 
-    public void openDoors(Group group){
+    public void openDoors(Group group) {
+
+        
+    }
+
+    public void forceOpenDoors(Group group){
         for (int k = 0; k < doors.size(); k++) {
-            doors.get(k).open(group);
+            doors.get(k).forceOpen(group);
         }
     }
 
@@ -263,4 +268,6 @@ public class Room {
     public String toString() {
         return "Room";
     }
+
+
 }

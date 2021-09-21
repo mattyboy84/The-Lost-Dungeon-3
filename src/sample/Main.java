@@ -94,7 +94,7 @@ public class Main extends Application {
                     stage.setFullScreen(!stage.isFullScreen());
                     break;
                 case J:
-                    player.currentRoom.openDoors(group);
+                    player.currentRoom.forceOpenDoors(group);
                     break;
             }
         });
