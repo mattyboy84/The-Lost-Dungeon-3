@@ -51,6 +51,7 @@ public class Door {
         //this.doorFrame = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX*spriteScaleX), (new Image(file).getHeight() * scaleY*spriteScaleY), false, false).getPixelReader(), (int) (0 *((width*scaleX*spriteScaleX))), (int) (0*((height*scaleY*spriteScaleY))), (int)(width*scaleX*spriteScaleX), (int)(height*scaleY*spriteScaleY))));
 
         this.triggerHeight *= ((scaleX + scaleY) / 2);
+        this.triggerWidth*= ((scaleX + scaleY) / 2);
         this.blockHeight *= ((scaleX + scaleY) / 2);
 
         this.doorFrame = imageGetter(file, 0, 0, scaleX, scaleY);

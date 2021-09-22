@@ -52,7 +52,7 @@ public class Player {
     //
     Room currentRoom;
     //
-    int lightRadius = 200;
+    int lightRadius = 50;
     //
     float veloLimit;//default is 7 multiplied by screen scale
     //
@@ -131,7 +131,6 @@ public class Player {
     private void playerController() {
         controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
             currentRoom.shading.removeActiveSource((float) (this.headHitbox.getShape().getLayoutX() + this.headHitbox.radius), (float) (this.headHitbox.getShape().getLayoutY() + this.headHitbox.radius));
-
             //timers
             animationTimer++;
 

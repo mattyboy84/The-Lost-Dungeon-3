@@ -120,12 +120,6 @@ public class Dungeon {
 */
 
     private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds) {
-        //map[8][9] = 1;
-        //map[10][9] = 1;
-        //map[9][10] = 1;
-        //map[9][8] = 1;
-
-
         int up, down, left, right;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
@@ -160,6 +154,7 @@ public class Dungeon {
                 e.printStackTrace();
             }
         }
+        thread1.clear();
         System.out.println("Prolonged time: " + a);
         rooms.addAll(rooms1);
     }

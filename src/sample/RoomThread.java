@@ -14,8 +14,11 @@ class RoomThread implements Runnable {
     float scaleX, scaleY;
     Rectangle2D screenbounds;
 
+    //thread1.add(new RoomThread(rooms1, i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(thread1.size())));
+    //thread1.get(thread1.size() - 1).start();
 
     public RoomThread(ArrayList<Room> rooms1, int i, int j, int i1, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String name) {
+        {
         this.rooms = rooms1;
         this.i = i;
         this.j = j;
@@ -28,7 +31,8 @@ class RoomThread implements Runnable {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.screenbounds = screenBounds;
-        threadName = name;
+        this.threadName = name;
+    }
         //System.out.println("Creating " +  threadName );
     }
 

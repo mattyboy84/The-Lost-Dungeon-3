@@ -36,6 +36,7 @@ public class Room {
     ArrayList<Rock> rocks = new ArrayList<Rock>();
     //
     String parentThreadName;
+    //ShadingThread shadingThread;
 
     public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName) {
         //System.out.println(Thread.currentThread().getName());
@@ -60,7 +61,7 @@ public class Room {
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " Background Complete");
         //
-        this.shading = new Shading(scaleX, scaleY, screenBounds);
+        this.shading=new Shading(scaleX,scaleY,screenBounds);
         System.out.println("Thread: " + threadName + " Shading Complete");
         //
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
@@ -206,8 +207,8 @@ public class Room {
     }
 
     public void forceOpenDoors(Group group){
-        for (int k = 0; k < doors.size(); k++) {
-            doors.get(k).forceOpen(group);
+        for (Door door : doors) {
+            door.forceOpen(group);
         }
     }
 
