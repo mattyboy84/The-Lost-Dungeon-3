@@ -134,19 +134,15 @@ public class Dungeon {
                     left = roomChecker(i, j, 0, -1);
 
 
-                    thread1.add(new RoomThread(rooms1, i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(thread1.size())));
-                    thread1.get(thread1.size() - 1).start();
-
-
-                    //rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds));
-                    //System.out.println("Room " + (rooms.size() - 1) + " done");
+                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size())));
+                    rooms.get(rooms.size()-1).start();
                 }
             }
         }
         int a = 0;
         int increment = 200;
-        while (rooms1.size() != finRooms) {
-            System.out.println(rooms1.size() + " " + finRooms);
+        while (Room.finishedRoom != finRooms) {
+            System.out.println(Room.finishedRoom + " " + finRooms);
             try {
                 a=a+increment;
                 Thread.sleep(increment);
@@ -154,9 +150,7 @@ public class Dungeon {
                 e.printStackTrace();
             }
         }
-        thread1.clear();
         System.out.println("Prolonged time: " + a);
-        rooms.addAll(rooms1);
     }
 
     private int roomChecker(int i, int j, int II, int JJ) {

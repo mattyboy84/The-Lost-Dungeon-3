@@ -17,7 +17,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Room {
+public class Room implements Runnable {
+    public static int finishedRoom;
+    //
+    private Thread t;
+    private final String threadName;
+    //
 
     Random random = new Random();
     Background background;
@@ -28,6 +33,8 @@ public class Room {
     int type;
     int upType, downType, leftType, rightType;
     int floorLevel;
+    float scaleX,scaleY;
+    Rectangle2D screenBounds;
     //
     JsonObject roomTemplate = null;
     Background_items backgroundItems;
@@ -39,11 +46,9 @@ public class Room {
     //ShadingThread shadingThread;
 
     public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName) {
-        //System.out.println(Thread.currentThread().getName());
         //
         this.parentThreadName = threadName;
-        //
-        this.backgroundItems = new Background_items();
+        this.threadName=threadName;
         //
         this.i = i;
         this.j = j;
@@ -55,6 +60,15 @@ public class Room {
         this.rightType = right;
         //
         this.floorLevel = floorLevel;
+        this.scaleX=scaleX;
+        this.scaleY=scaleY;
+        this.screenBounds=screenBounds;
+        //
+    }
+
+    public void run() {
+        this.backgroundItems = new Background_items();
+
         this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
         //
         //
@@ -87,8 +101,15 @@ public class Room {
             doors.add(new Door("right", 90, this.rightType, this.type, scaleX, scaleY, screenBounds,background));
         }
         System.out.println("Thread: " + threadName + " Doors Complete");
+        finishedRoom+=1;
+    }
 
-        //System.out.println(roomTemplate);
+    public void start() {
+        System.out.println("Starting " +  threadName );
+        if (t == null) {
+            t = new Thread(this, threadName);
+            t.start();
+        }
     }
 
     private void rockAdder(JsonObject rockTemplate, float scaleX, float scaleY) {
@@ -269,6 +290,7 @@ public class Room {
     public String toString() {
         return "Room";
     }
+
 
 
 }
