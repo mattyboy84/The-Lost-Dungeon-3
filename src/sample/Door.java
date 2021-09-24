@@ -25,8 +25,8 @@ public class Door {
     int doorBoundary = 12;
     Rectangle doorTrigger;
     Rectangle doorBlock;
-    int triggerHeight = 80;
-    int triggerWidth=115;
+    int triggerHeight = 90;
+    int triggerWidth=125;
     int blockHeight = 20;
 
     enum State {

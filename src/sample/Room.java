@@ -40,7 +40,7 @@ public class Room implements Runnable {
     Background_items backgroundItems;
     ArrayList<Door> doors = new ArrayList<>();
     ArrayList<Enemy> enemies = new ArrayList<>();
-    ArrayList<Rock> rocks = new ArrayList<Rock>();
+    ArrayList<Rock> rocks = new ArrayList<>();
     //
     String parentThreadName;
     //ShadingThread shadingThread;
@@ -222,7 +222,15 @@ public class Room implements Runnable {
         return a;
     }
 
-    public void openDoors(Group group) {
+    public ArrayList<Rectangle> getDoorTriggers() {//provides an arraylist of doorTriggers
+       ArrayList<Rectangle> a = new ArrayList<>();
+        for (Door door : doors) {
+            a.add(door.getDoorTrigger());
+        }
+    return a;
+    }
+
+        public void openDoors(Group group) {
 
         
     }

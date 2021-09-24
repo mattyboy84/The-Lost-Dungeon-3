@@ -6,14 +6,11 @@ import javafx.geometry.NodeOrientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-
-import java.util.Arrays;
 
 public class Player {
 
@@ -37,7 +34,7 @@ public class Player {
 
     Vecc2f bodyOffset, headOffset;
     Vecc2f bodyDelta, headDelta;
-    Hitbox headHitbox, bodyHitbox, nextFrameBodyHitbox;
+    Hitbox headHitbox, bodyHitbox, nextXFrameBodyHitbox,nextYFrameBodyHitbox;
     //
     Vecc2f direction = new Vecc2f();
     Vecc2f position = new Vecc2f();
@@ -49,16 +46,21 @@ public class Player {
     boolean moving;
     //timers;
     int animationTimer;
+    int doorTriggerTimer;
     //
     Room currentRoom;
     //
-    int lightRadius = 50;
+    int lightRadius = 110;
     //
     float veloLimit;//default is 7 multiplied by screen scale
     //
     boolean northMOVING, eastMOVING, westMOVING, southMOVING;
     //
     Timeline controller;
+    //
+    double g = (1/Math.sqrt(2));
+
+    Circle center = new Circle(1);
 
     public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, Dungeon dungeon) {
         this.avgScale = ((scaleX + scaleY) / 2);
@@ -99,7 +101,9 @@ public class Player {
         this.head.setImage(heads[0]);
         //
         bodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
-        nextFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
+        nextXFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
+        nextYFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
+
         //int radius = (int) (13 * sheetScale * (scaleX + scaleY) / 2);
         headHitbox = new Hitbox("Circle", 12, 12, sheetScale, scaleX, scaleY, 16, 4);
         //caching
@@ -130,9 +134,10 @@ public class Player {
 
     private void playerController() {
         controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
-            currentRoom.shading.removeActiveSource((float) (this.headHitbox.getShape().getLayoutX() + this.headHitbox.radius), (float) (this.headHitbox.getShape().getLayoutY() + this.headHitbox.radius));
+            currentRoom.shading.removeActiveSource((float) (this.headHitbox.getShape().getLayoutX()+(this.headHitbox.radius*g)), (float) (this.headHitbox.getShape().getLayoutY()+(this.headHitbox.radius*g)));
             //timers
             animationTimer++;
+            doorTriggerTimer++;
 
             //
             this.direction.set(velocity.x, velocity.y);
@@ -168,10 +173,24 @@ public class Player {
                     animationTimer = 0;
                 }
             }
-            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX() + this.headHitbox.radius), (float) (this.headHitbox.getShape().getLayoutY() + this.headHitbox.radius), this.lightRadius);
+            if (doorTriggerTimer>=3){
+                doorTriggerChecker();
+                doorTriggerTimer=0;
+            }
+            //center.relocate((float) (this.headHitbox.shape.getBoundsInParent().getMaxX()-((1-g)*this.headHitbox.radius)) , (float) (this.headHitbox.shape.getBoundsInParent().getMaxY()-((1-g)*this.headHitbox.radius)));
+            //System.out.println(headHitbox.shape.getBoundsInParent());
+            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX()+(this.headHitbox.radius*g)), (float) (this.headHitbox.getShape().getLayoutY()+(this.headHitbox.radius*g)), this.lightRadius);
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
+    }
+
+    private void doorTriggerChecker() {
+        for (int i = 0; i <currentRoom.getDoorTriggers().size() ; i++) {
+            if (currentRoom.getDoorTriggers().get(i).getBoundsInParent().intersects(this.bodyHitbox.shape.getBoundsInParent())){
+                System.out.println("a");
+            }
+        }
     }
 
     boolean collide = false;
@@ -179,24 +198,26 @@ public class Player {
     public boolean colliding(){
         //boolean a=false;
         for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
-            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextFrameBodyHitbox.shape.getBoundsInParent()) && !collide) {
+            if ((currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.shape.getBoundsInParent())||
+                    currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextYFrameBodyHitbox.shape.getBoundsInParent())) && !collide) {
                 return true;
             }
         }
-            return false;
+        return false;
     }
 
     private void boundaryChecker() {
         for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
-            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextFrameBodyHitbox.shape.getBoundsInParent()) && !collide) {
+            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.shape.getBoundsInParent())) {
                 collide = true;
-                //if (this.velocity.magnitude() > (this.veloLimit * 0.5)) {
-                    this.velocity.mult((float) 0.8);
-                    this.position.sub(this.velocity);
-                //}
+                this.velocity.mult((float) 0.8);
+
+                this.position.sub(this.velocity);
+            }else {
+                collide=false;
             }
         }
-        collide = false;
+        //collide = false;
     }
 
     private void accDecider() {
@@ -278,23 +299,31 @@ public class Player {
         this.head.relocate(position.x + headOffset.x, position.y + headOffset.y);
         this.headHitbox.getShape().relocate(position.x + headDelta.x - (this.headHitbox.radius), position.y + headDelta.y - (this.headHitbox.radius));
         this.bodyHitbox.getShape().relocate(position.x + bodyDelta.x, position.y + bodyDelta.y);
-        this.nextFrameBodyHitbox.getShape().relocate(bodyHitbox.shape.getLayoutX() + this.velocity.x, bodyHitbox.shape.getLayoutY() + this.velocity.y);
+        this.nextXFrameBodyHitbox.getShape().relocate(bodyHitbox.shape.getLayoutX() + this.velocity.x, bodyHitbox.shape.getLayoutY() + this.velocity.y);
+        this.nextYFrameBodyHitbox.getShape().relocate(bodyHitbox.shape.getLayoutX(), bodyHitbox.shape.getLayoutY() + this.velocity.y);
+
     }
 
     public void load(Group group) {
-        group.getChildren().addAll(this.headHitbox.getShape(), this.nextFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head);
+        group.getChildren().addAll(this.headHitbox.getShape(), this.nextXFrameBodyHitbox.getShape(),this.nextYFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head);
         //
         this.headHitbox.getShape().setViewOrder(-7);
         this.bodyHitbox.getShape().setViewOrder(-7);
-        this.nextFrameBodyHitbox.getShape().setViewOrder(-7);
+        this.nextXFrameBodyHitbox.getShape().setViewOrder(-7);
+        this.nextYFrameBodyHitbox.getShape().setViewOrder(-7);
+
         this.body.setViewOrder(-7);
         this.head.setViewOrder(-7);
+        //
+        group.getChildren().add(center);
+        center.setViewOrder(-12);
         //
         this.body.setVisible(true);
         this.head.setVisible(true);
         this.headHitbox.shape.setVisible(true);
         this.bodyHitbox.shape.setVisible(true);
-        this.nextFrameBodyHitbox.shape.setVisible(true);
+        this.nextXFrameBodyHitbox.shape.setVisible(true);
+        this.nextYFrameBodyHitbox.shape.setVisible(true);
         //
         this.position.set(800, 400);
         relocate();

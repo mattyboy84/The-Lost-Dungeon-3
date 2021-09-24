@@ -108,7 +108,7 @@ public class Background {
     }
 
     public void unload(Group group) {
-        group.getChildren().removeAll(topLeftIMG, topRightIMG, bottomLeftIMG, bottomRightIMG,topLeft, topRight, bottomLeft, bottomRight, leftUp, leftDown, rightUp, rightDown);
+        group.getChildren().removeAll(topLeftIMG, topRightIMG, bottomLeftIMG, bottomRightIMG, topLeft, topRight, bottomLeft, bottomRight, leftUp, leftDown, rightUp, rightDown);
     }
 
     public ArrayList<Rectangle> getBoundaries() {
