@@ -78,6 +78,11 @@ public class Vecc2f {
         this.y = y;
     }
 
+    public Vecc2f(double x, double y) {
+        this.x = (float) x;
+        this.y = (float) y;
+    }
+
     public Vecc2f(Vecc2f v) {
         this.x = v.x;
         this.y = v.y;
@@ -157,7 +162,14 @@ public class Vecc2f {
             float constVar = limit / magnitude();
             this.x = this.x * constVar;
             this.y = this.y * constVar;
+        }
+    }
 
+    public void limit(double limit) {
+        if (limit < magnitude()) {
+            double constVar = limit / magnitude();
+            this.x = (float) (this.x * constVar);
+            this.y = (float) (this.y * constVar);
         }
     }
 
@@ -173,6 +185,12 @@ public class Vecc2f {
         return new Vecc2f(this.x, this.y);
     }
 
+    public Vecc2f add(double x, double y) {
+        this.x = (float) (this.x + x);
+        this.y = (float) (this.y + y);
+        return new Vecc2f(this.x, this.y);
+    }
+
     public Vecc2f sub(Vecc2f vec) {
         this.x = this.x - vec.x;
         this.y = this.y - vec.y;
@@ -182,6 +200,12 @@ public class Vecc2f {
     public Vecc2f sub(float x, float y) {
         this.x = this.x - x;
         this.y = this.y - y;
+        return new Vecc2f(this.x, this.y);
+    }
+
+    public Vecc2f sub(double x, double y) {
+        this.x = (float) (this.x - x);
+        this.y = (float) (this.y - y);
         return new Vecc2f(this.x, this.y);
     }
 
@@ -203,9 +227,19 @@ public class Vecc2f {
         this.y = this.y * n;
     }
 
+    public void mult(double n) {
+        this.x = (float) (this.x * n);
+        this.y = (float) (this.y * n);
+    }
+
     public void div(float divideBy) {
         this.x = (this.x / divideBy);
         this.y = (this.y / divideBy);
+    }
+
+    public void div(double divideBy) {
+        this.x = (float) (this.x / divideBy);
+        this.y = (float) (this.y / divideBy);
     }
 
     public void normalise() {
@@ -236,6 +270,13 @@ public class Vecc2f {
 
     }
 
+    public void setMag(double magnitude) {
+
+        float constA = (float) (magnitude / magnitude());
+        this.x = this.x * constA;
+        this.y = this.y * constA;
+
+    }
 
     /**
      * Returns the square of the distance from this

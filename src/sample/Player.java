@@ -12,7 +12,10 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
-public class Player {
+import java.time.LocalTime;
+import java.util.Random;
+
+public class Player implements Runnable {
 
     //
     int XAnimateCounter, YAnimateCounter;
@@ -20,6 +23,7 @@ public class Player {
     float avgScale;
     String movingDirection;
     int roomX, roomY;
+    float scaleX, scaleY;
     String costume;
     Image[] heads = new Image[6];
     Image[] LR_body = new Image[10];
@@ -34,7 +38,7 @@ public class Player {
 
     Vecc2f bodyOffset, headOffset;
     Vecc2f bodyDelta, headDelta;
-    Hitbox headHitbox, bodyHitbox, nextXFrameBodyHitbox,nextYFrameBodyHitbox;
+    Hitbox headHitbox, bodyHitbox, nextXFrameBodyHitbox, nextYFrameBodyHitbox;
     //
     Vecc2f direction = new Vecc2f();
     Vecc2f position = new Vecc2f();
@@ -45,6 +49,7 @@ public class Player {
     Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.1);
     boolean moving;
     //timers;
+    boolean collide = false;
     int animationTimer;
     int doorTriggerTimer;
     //
@@ -58,13 +63,36 @@ public class Player {
     //
     Timeline controller;
     //
-    double g = (1/Math.sqrt(2));
+    double g = (1 / Math.sqrt(2));
 
     Circle center = new Circle(1);
+    Rectangle2D screenBounds;
+    int sheetScale;
+    Dungeon dungeon;
+    String threadName;
+    private Thread t;
+    Circle c;
 
-    public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, Dungeon dungeon) {
+    LocalTime a = LocalTime.now();
+    Group group;
+
+
+    public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, Dungeon dungeon, String threadName, Group group) {
+        this.group = group;
+        this.costume = costume;
+        this.roomX = startX;
+        this.roomY = startY;
+        System.out.println("StartX: " + this.roomX + " StartY: " + this.roomY);
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.screenBounds = screenBounds;
+        this.sheetScale = sheetScale;
+        this.dungeon = dungeon;
         this.avgScale = ((scaleX + scaleY) / 2);
-        //
+        this.threadName = threadName;
+    }
+
+    public void run() {
         xSpeed.mult(scaleX);
         ySpeed.mult(scaleY);
         veloLimit = 7 * avgScale;
@@ -82,9 +110,7 @@ public class Player {
         this.width = (int) (32 * scaleX * sheetScale);
         this.height = (int) (32 * scaleY * sheetScale);
         //
-        this.costume = costume;
-        this.roomX = startX;
-        this.roomY = startY;
+
         String file = "file:src\\resources\\gfx\\characters\\costumes\\" + this.costume + ".png";
         for (int i = 0; i < this.heads.length; i++) {//head images
             this.heads[i] = (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)), ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
@@ -104,6 +130,7 @@ public class Player {
         nextXFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
         nextYFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
 
+
         //int radius = (int) (13 * sheetScale * (scaleX + scaleY) / 2);
         headHitbox = new Hitbox("Circle", 12, 12, sheetScale, scaleX, scaleY, 16, 4);
         //caching
@@ -118,10 +145,19 @@ public class Player {
             this.headHitbox.getShape().setCacheHint(CacheHint.QUALITY);
         }
         //
+        c = new Circle(1);
+        //
+        playerController(dungeon);
+        //
+    }
 
-        //
-        playerController();
-        //
+    public void start() {
+        System.out.println("");
+        System.out.println("Starting " + threadName);
+        if (t == null) {
+            t = new Thread(this, threadName);
+            t.start();
+        }
     }
 
     private void roomFinder(Dungeon dungeon) {
@@ -132,12 +168,16 @@ public class Player {
         }
     }
 
-    private void playerController() {
-        controller = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
-            currentRoom.shading.removeActiveSource((float) (this.headHitbox.getShape().getLayoutX()+(this.headHitbox.radius*g)), (float) (this.headHitbox.getShape().getLayoutY()+(this.headHitbox.radius*g)));
+    private void playerController(Dungeon dungeon) {
+        controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
+
+            currentRoom.shading.removeActiveSource("Player");
             //timers
             animationTimer++;
             doorTriggerTimer++;
+
+
+            //System.out.println(delta);
 
             //
             this.direction.set(velocity.x, velocity.y);
@@ -148,13 +188,11 @@ public class Player {
             //
             this.velocity.mult((float) 0.95);
             //
-            boundaryChecker();
-            //
             if (this.velocity.magnitude() < 0.2) {
                 moving = false;
                 this.velocity.set(0, 0);
                 //this.position.set((int) this.position.x, (int) this.position.y);
-                if (!colliding()){
+                if (!colliding()) {
                     this.position.set((int) this.position.x, (int) this.position.y);
                 }
                 this.body.setImage(UD_body[2]);
@@ -165,40 +203,72 @@ public class Player {
             this.position.add(this.velocity);
             relocate();
             //
-
+            boundaryChecker();
             //
+            //System.out.println(colliding());
             if (moving) {
                 if (animationTimer >= 6) {
                     playerAnimator();
                     animationTimer = 0;
                 }
             }
-            if (doorTriggerTimer>=3){
-                doorTriggerChecker();
-                doorTriggerTimer=0;
+            if (doorTriggerTimer >= 6) {
+                doorTriggerTimer = 0;
+                doorTriggerChecker(dungeon);
             }
+            //
+            c.relocate(this.position.x, this.position.y);
+            //
+
             //center.relocate((float) (this.headHitbox.shape.getBoundsInParent().getMaxX()-((1-g)*this.headHitbox.radius)) , (float) (this.headHitbox.shape.getBoundsInParent().getMaxY()-((1-g)*this.headHitbox.radius)));
             //System.out.println(headHitbox.shape.getBoundsInParent());
-            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX()+(this.headHitbox.radius*g)), (float) (this.headHitbox.getShape().getLayoutY()+(this.headHitbox.radius*g)), this.lightRadius);
+            //System.out.println("Position: " + this.position + " Velocity: " + this.velocity);
+            //System.out.println("-------------------");
+            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX() + (this.headHitbox.radius * g)), (float) (this.headHitbox.getShape().getLayoutY() + (this.headHitbox.radius * g)), this.lightRadius, "Player");
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
     }
 
-    private void doorTriggerChecker() {
-        for (int i = 0; i <currentRoom.getDoorTriggers().size() ; i++) {
-            if (currentRoom.getDoorTriggers().get(i).getBoundsInParent().intersects(this.bodyHitbox.shape.getBoundsInParent())){
-                System.out.println("a");
+    private void doorTriggerChecker(Dungeon dungeon) {
+        for (int i = 0; i < currentRoom.doors.size(); i++) {
+            if (currentRoom.doors.get(i).getDoorTrigger().getBoundsInParent().intersects(this.bodyHitbox.shape.getBoundsInParent())) {
+                this.position.set(currentRoom.doors.get(i).relocatePos);
+                //this.position.set(400,500);
+                this.acceleration.set(0, 0);
+                this.velocity.set(0, 0);
+                switch (currentRoom.doors.get(i).direction) {
+                    case "up" -> this.roomX = this.roomX - 1;
+                    case "down" -> this.roomX = this.roomX + 1;
+                    case "left" -> this.roomY = this.roomY - 1;
+                    case "right" -> this.roomY = this.roomY + 1;
+                }
+                Room nextRoom = new Room();
+                for (int l = 0; l < dungeon.rooms.size(); l++) {
+                    if (this.roomX == dungeon.rooms.get(l).getI() && this.roomY == dungeon.rooms.get(l).getJ()) {
+                        nextRoom = dungeon.rooms.get(l);
+                    }
+                }//
+                System.out.println("Room moved");
+                nextRoom.loadBackground(group);
+                nextRoom.loadShading(group);
+                //nextRoom.shading.shade();
+                currentRoom.unloadBackground(group);
+                currentRoom.unloadShading(group);
+                //
+                currentRoom.unload(group);
+                nextRoom.load(group);
+                currentRoom = nextRoom;
+                System.out.println(roomX + " " + roomY);
             }
         }
     }
 
-    boolean collide = false;
 
-    public boolean colliding(){
+    public boolean colliding() {
         //boolean a=false;
         for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
-            if ((currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.shape.getBoundsInParent())||
+            if ((currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.shape.getBoundsInParent()) ||
                     currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextYFrameBodyHitbox.shape.getBoundsInParent())) && !collide) {
                 return true;
             }
@@ -210,15 +280,29 @@ public class Player {
         for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
             if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.shape.getBoundsInParent())) {
                 collide = true;
-                this.velocity.mult((float) 0.8);
-
                 this.position.sub(this.velocity);
-            }else {
-                collide=false;
+                this.velocity.mult((float) 0.8);
+                //this.velocity.set(this.velocity.x*0.8,this.velocity.y);
+                this.acceleration.mult((float) 0.8);
+
+                //
+            } else {
+                collide = false;
+            }
+            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextYFrameBodyHitbox.shape.getBoundsInParent())) {
+                collide = true;
+                this.position.sub(this.velocity);
+                this.velocity.mult((float) 0.8);
+                //this.velocity.set(this.velocity.x,this.velocity.y*0.8);
+                this.acceleration.mult((float) 0.8);
+                //
+            } else {
+                collide = false;
             }
         }
         //collide = false;
     }
+
 
     private void accDecider() {
         this.acceleration.mult((float) 0.95);
@@ -305,7 +389,7 @@ public class Player {
     }
 
     public void load(Group group) {
-        group.getChildren().addAll(this.headHitbox.getShape(), this.nextXFrameBodyHitbox.getShape(),this.nextYFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head);
+        group.getChildren().addAll(this.headHitbox.getShape(), this.nextXFrameBodyHitbox.getShape(), this.nextYFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head, this.c);
         //
         this.headHitbox.getShape().setViewOrder(-7);
         this.bodyHitbox.getShape().setViewOrder(-7);

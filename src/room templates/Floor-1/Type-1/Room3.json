@@ -1,0 +1,161 @@
+{
+  "Background": {
+    "name": "01_basement",
+    "Width": 234,
+    "Height": 156,
+    "Rows": 2,
+    "Columns": 2,
+    "SheetScale": 3,
+    "BorderX": 213,
+    "BorderY": 180
+  },
+  "Props": {
+    "name": "props_01_basement",
+    "SheetScale": 3,
+    "Width": 26,
+    "Height": 26,
+    "Rows": 10,
+    "Columns": 6,
+    "BorderX": 213,
+    "BorderY": 180
+  },
+  "enemies": [
+    {
+      "enemy": "fly",
+      "type": "classic",
+      "filePath": "monster_010_fly",
+      "Health": 4,
+      "SheetScale": 3,
+      "enemyParts": [
+        {
+          "part": "Body",
+          "StartX": 0,
+          "StartY": 0,
+          "Width": 32,
+          "Height": 32,
+          "Rows": 2,
+          "Columns": 1,
+          "Images": 2,
+          "Hitboxes": [
+            {
+              "Type": "Rectangle",
+              "Width": 19,
+              "Height": 15,
+              "xDelta": 7,
+              "yDelta": 5
+            }
+          ],
+          "Light": true,
+          "Radius": 75,
+          "PositionX": 800,
+          "PositionY": 500
+        }
+      ],
+      "hasDeathImages": "True",
+      "DeathFilePath": "src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
+      "DeathStartX": 0,
+      "DeathStartY": 64,
+      "DeathWidth": 64,
+      "DeathHeight": 64,
+      "DeathRows": 4,
+      "DeathColumns": 3,
+      "DeathImages": 11
+    },
+    {
+      "enemy": "attack fly",
+      "type": "classic",
+      "filePath": "monster_010_fly",
+      "Health": 9,
+      "SheetScale": 3,
+      "enemyParts": [
+        {
+          "part": "Body",
+          "StartX": 32,
+          "StartY": 32,
+          "Width": 32,
+          "Height": 32,
+          "Rows": 2,
+          "Columns": 1,
+          "Images": 2,
+          "Hitboxes": [
+            {
+              "Type": "Rectangle",
+              "Width": 19,
+              "Height": 15,
+              "xDelta": 7,
+              "yDelta": 5
+            }
+          ],
+          "Light": true,
+          "Radius": 75,
+          "PositionX": 1400,
+          "PositionY": 700
+        }
+      ],
+      "hasDeathImages": "True",
+      "DeathFilePath": "src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
+      "DeathStartX": 0,
+      "DeathStartY": 64,
+      "DeathWidth": 64,
+      "DeathHeight": 64,
+      "DeathRows": 4,
+      "DeathColumns": 3,
+      "DeathImages": 11
+    }
+  ],
+  "Rocks": {
+    "name": "rocks_basement",
+    "SheetScale": 3.21875,
+    "Width": 32,
+    "Height": 32,
+    "Rows": 4,
+    "Columns": 8,
+    "BorderX": 213,
+    "BorderY": 180,
+    "rocksARR": [
+      {
+        "PositionX": 0,
+        "PositionY": 0,
+        "ImageX": 0,
+        "ImageY": 3
+      },
+      {
+        "PositionX": 103,
+        "PositionY": 0,
+        "ImageX": 1,
+        "ImageY": 3
+      },
+      {
+        "PositionX": 206,
+        "PositionY": 0,
+        "ImageX": 1,
+        "ImageY": 0
+      },
+      {
+        "PositionX": 0,
+        "PositionY": 103,
+        "ImageX": 0,
+        "ImageY": 4
+      },
+      {
+        "PositionX": 103,
+        "PositionY": 103,
+        "ImageX": 1,
+        "ImageY": 4
+      },
+      {
+        "PositionX": 0,
+        "PositionY": 206,
+        "ImageX": 1,
+        "ImageY": 0
+      },
+      {
+        "PositionX": 1391,
+        "PositionY": 617,
+        "ImageX": 0,
+        "ImageY": 0
+      }
+
+    ]
+  }
+}

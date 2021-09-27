@@ -12,10 +12,9 @@ import java.util.Random;
 
 public class Dungeon {
 
-    ArrayList<Neighbour_Rooms> neighbours = new ArrayList<Neighbour_Rooms>();
-    ArrayList<Room> rooms = new ArrayList<Room>();
+    ArrayList<Neighbour_Rooms> neighbours = new ArrayList<>();
+    ArrayList<Room> rooms = new ArrayList<>();
     //Room Threads
-    ArrayList<RoomThread> thread1 = new ArrayList<>();
     ArrayList<Room> rooms1 = new ArrayList<>();
 
     public Dungeon() {
@@ -280,6 +279,8 @@ public class Dungeon {
     public void loadRoom(int x, int y, Group group) {
         for (Room room : rooms) {
             if (room.getI() == x && room.getJ() == y) {
+                room.loadBackground(group);
+                room.loadShading(group);
                 room.load(group);
                 break;
             }

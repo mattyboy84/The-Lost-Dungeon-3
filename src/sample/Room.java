@@ -20,7 +20,7 @@ import java.util.Random;
 public class Room implements Runnable {
     public static int finishedRoom;
     //
-    private Thread t;
+    public Thread t;
     private final String threadName;
     //
 
@@ -66,6 +66,10 @@ public class Room implements Runnable {
         //
     }
 
+    public Room() {
+        threadName="";
+    }
+
     public void run() {
         this.backgroundItems = new Background_items();
 
@@ -90,16 +94,25 @@ public class Room implements Runnable {
         //213 x 180
         if (upType > 0) {
             doors.add(new Door("up", 0, this.upType, this.type, scaleX, scaleY, screenBounds,background));
+        }else {
+            background.extendUp(screenBounds);
         }
         if (downType > 0) {
             doors.add(new Door("down", 180, this.downType, this.type, scaleX, scaleY, screenBounds,background));
+        }else {
+            background.extendDown(screenBounds);
         }
         if (leftType > 0) {
             doors.add(new Door("left", 270, this.leftType, this.type, scaleX, scaleY, screenBounds,background));
+        }else {
+            background.extendLeft(screenBounds);
         }
         if (rightType > 0) {
             doors.add(new Door("right", 90, this.rightType, this.type, scaleX, scaleY, screenBounds,background));
+        }else {
+            background.extendRight(screenBounds);
         }
+
         System.out.println("Thread: " + threadName + " Doors Complete");
         finishedRoom+=1;
     }
@@ -172,8 +185,8 @@ public class Room implements Runnable {
     }
 
     public void load(Group group) {
-        this.background.load(group);
-        this.shading.load(group);
+        //this.shading.load(group);
+        //this.background.load(group);
         this.backgroundItems.load(group);
         //
         for (Door door : doors) {
@@ -192,8 +205,8 @@ public class Room implements Runnable {
     }
 
     public void unload(Group group) {
-        this.background.unload(group);
-        this.shading.unload(group);
+        //this.shading.unload(group);
+        //this.background.unload(group);
         this.backgroundItems.unload(group);
         //
         for (Door door : doors) {
@@ -209,6 +222,19 @@ public class Room implements Runnable {
         }
     }
 
+    public void loadBackground(Group group){
+        this.background.load(group);
+    }
+    public void unloadBackground(Group group){
+        this.background.unload(group);
+    }
+    public void loadShading(Group group){
+        this.shading.load(group);
+    }
+    public void unloadShading(Group group){
+        this.shading.unload(group);
+    }
+
     public ArrayList<Rectangle> getBoundaries(){//provides an arraylist of obstacles.
         ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
         for (Door door : doors) {
@@ -221,7 +247,7 @@ public class Room implements Runnable {
         }
         return a;
     }
-
+/*
     public ArrayList<Rectangle> getDoorTriggers() {//provides an arraylist of doorTriggers
        ArrayList<Rectangle> a = new ArrayList<>();
         for (Door door : doors) {
@@ -229,7 +255,7 @@ public class Room implements Runnable {
         }
     return a;
     }
-
+    */
         public void openDoors(Group group) {
 
         

@@ -81,47 +81,65 @@ public class Shading {
 
     private void timelineStarter(PixelReader pixelReader, Rectangle2D screenBounds, float scaleX, float scaleY) {
         this.timeline = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
-            //
-            overlay.getGraphicsContext2D().clearRect(0, 0, overlay.getWidth(), overlay.getHeight());
-            overlay.getGraphicsContext2D().drawImage(shading.getImage(), 0, 0);
-            //
-            for (Points activeSource : activeSources) {
-                sources.add(new Points(activeSource.getPosition().x, activeSource.getPosition().y, activeSource.getRadius()));
-            }
-            //sources.add(new Points(1500,800,50));
-            //
-            for (Points source : sources) {
-                float localRadius = (int) (source.getRadius() * ((scaleX) + (scaleY)) / 2);
-                for (int i = (int) Math.max((source.getPosition().x - localRadius), 0); i < Math.min((source.getPosition().x + localRadius), screenBounds.getWidth()); i++) {
-                    for (int j = Math.max((int) (source.getPosition().y - localRadius), 0); j < Math.min((source.getPosition().y + localRadius), screenBounds.getHeight()); j++) {
-                        //i = width
-                        //j = height
-                        float d = Math.min(calc(i, j, source.getPosition()), localRadius);
-                        //
-                        if (screen[i][j] == null) {
-                            screen[i][j] = pixelReader.getColor(i, j).getOpacity();
-                        }
-                        overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, screen[i][j] * (d / (localRadius))));
-                        screen[i][j] = screen[i][j] * (d / (localRadius));
-                    }
-                }
-            }
-            screen = new Double[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
-            sources.clear();
+            shade();
         }));
         this.timeline.setCycleCount(Timeline.INDEFINITE);
+    }
+
+    public void shade() {
+        PixelReader pixelReader = shading.getImage().getPixelReader();
+
+        //
+        overlay.getGraphicsContext2D().clearRect(0, 0, overlay.getWidth(), overlay.getHeight());
+        overlay.getGraphicsContext2D().drawImage(shading.getImage(), 0, 0);
+        //
+        for (Points activeSource : activeSources) {
+            sources.add(new Points(activeSource.getPosition().x, activeSource.getPosition().y, activeSource.getRadius()));
+        }
+        //sources.add(new Points(1500,800,50));
+        //
+        for (Points source : sources) {
+            float localRadius = (int) (source.getRadius() * ((scaleX) + (scaleY)) / 2);
+            for (int i = (int) Math.max((source.getPosition().x - localRadius), 0); i < Math.min((source.getPosition().x + localRadius), screenBounds.getWidth()); i++) {
+                for (int j = Math.max((int) (source.getPosition().y - localRadius), 0); j < Math.min((source.getPosition().y + localRadius), screenBounds.getHeight()); j++) {
+                    //i = width
+                    //j = height
+                    float d = Math.min(calc(i, j, source.getPosition()), localRadius);
+                    //
+                    if (screen[i][j] == null) {
+                        screen[i][j] = pixelReader.getColor(i, j).getOpacity();
+                    }
+                    overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, screen[i][j] * (d / (localRadius))));
+                    screen[i][j] = screen[i][j] * (d / (localRadius));
+                }
+            }
+        }
+        screen = new Double[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
+        sources.clear();
     }
 
     public void removeActiveSource(float x, float y) {
         for (int i = 0; i < activeSources.size(); i++) {
             if (activeSources.get(i).getPosition().x == x && activeSources.get(i).getPosition().y == y) {
-                activeSources.remove(i);
+                activeSources.remove(activeSources.get(i));
             }
         }
     }
 
     public void addActiveSource(float x, float y, int radius) {
         activeSources.add(new Points(x, y, (int) (radius*this.avgScale)));
+    }
+
+    public void removeActiveSource(String name) {
+        for (int i = 0; i < activeSources.size(); i++) {
+            if (activeSources.get(i).getName().equals(name)) {
+                activeSources.remove(activeSources.get(i));
+            }
+        }
+    }
+
+    public void addActiveSource(float x, float y, int radius,String name) {
+        activeSources.add(new Points(x, y, (int) (radius*this.avgScale),name));
     }
 
     private int calc(int i, int j, Vecc2f source) {
@@ -134,10 +152,11 @@ public class Shading {
         group.getChildren().addAll(this.overlay);
         this.overlay.setViewOrder(-10);
         this.timeline.play();
+        shade();
     }
 
     public void unload(Group group) {
-        group.getChildren().removeAll(this.shading);
+        group.getChildren().removeAll(this.overlay);
         this.timeline.pause();
     }
 
@@ -145,14 +164,29 @@ public class Shading {
 
         Vecc2f position;
         int radius;
+        String name;
 
         public Points(float x, float y, int i) {
             this.position = new Vecc2f(x, y);
             this.radius = i;
+            this.name="";
+        }
+        public Points(float x, float y, int i,String name) {
+            this.position = new Vecc2f(x, y);
+            this.radius = i;
+            this.name=name;
         }
 
         public Vecc2f getPosition() {
             return position;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public int getRadius() {

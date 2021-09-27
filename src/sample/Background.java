@@ -18,7 +18,7 @@ public class Background {
     ImageView topLeftIMG, topRightIMG, bottomLeftIMG, bottomRightIMG;
     String name;
     int width, height, rows, columns;
-    int borderX, borderY;
+    int borderX, borderY,doorOffsetX,doorOffsetY;
     //
     Rectangle topLeft, topRight, leftUp, leftDown, bottomLeft, bottomRight, rightUp, rightDown;
     //
@@ -36,18 +36,20 @@ public class Background {
         this.borderY = (int) (background.get("BorderY").getAsInt() * scaleY);
         //32 - inline with door
         //
-        int doorOffsetX = (int) (16 * sheetScale * scaleX);
-        int doorOffsetY = (int) (16 * sheetScale * scaleY);
-
+        doorOffsetX = (int) (16 * sheetScale * scaleX);
+        doorOffsetY = (int) (16 * sheetScale * scaleY);
+        //
         topLeft = new Rectangle(0, 0, screenBounds.getWidth() / 2 - doorOffsetX, this.borderY);
         topRight = new Rectangle(screenBounds.getWidth() / 2 + doorOffsetX, 0, screenBounds.getWidth(), this.borderY);
+        //
         bottomLeft = new Rectangle(0, screenBounds.getHeight() - this.borderY, screenBounds.getWidth() / 2 - doorOffsetX, screenBounds.getHeight());
         bottomRight = new Rectangle(screenBounds.getWidth() / 2 + doorOffsetX, screenBounds.getHeight() - this.borderY, screenBounds.getWidth(), screenBounds.getHeight());
+        //
         leftUp = new Rectangle(0, 0, this.borderX, screenBounds.getHeight() / 2 - doorOffsetY);
         leftDown = new Rectangle(0, screenBounds.getHeight() / 2 + doorOffsetY, this.borderX, screenBounds.getHeight());
+        //
         rightUp = new Rectangle(screenBounds.getWidth() - this.borderX, 0, screenBounds.getWidth(), screenBounds.getHeight() / 2 - doorOffsetY);
         rightDown = new Rectangle(screenBounds.getWidth() - this.borderX, screenBounds.getHeight() / 2 + doorOffsetY, screenBounds.getWidth(), screenBounds.getHeight());
-
         //
         int randRow = random.nextInt(this.rows);
         int randCol = random.nextInt(this.columns);
@@ -125,4 +127,19 @@ public class Background {
         return a;
     }
 
+    public void extendUp(Rectangle2D screenBounds) {
+        topLeft = new Rectangle(0, 0, screenBounds.getWidth() / 2 + doorOffsetX, this.borderY);
+    }
+    public void extendDown(Rectangle2D screenBounds) {
+        bottomLeft = new Rectangle(0, screenBounds.getHeight() - this.borderY, screenBounds.getWidth() / 2 + doorOffsetX, screenBounds.getHeight());
+
+    }
+    public void extendLeft(Rectangle2D screenBounds) {
+        leftUp = new Rectangle(0, 0, this.borderX, screenBounds.getHeight() / 2 + doorOffsetY);
+
+    }
+    public void extendRight(Rectangle2D screenBounds) {
+        rightUp = new Rectangle(screenBounds.getWidth() - this.borderX, 0, screenBounds.getWidth(), screenBounds.getHeight() / 2 + doorOffsetY);
+
+    }
 }
