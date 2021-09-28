@@ -185,8 +185,8 @@ public class Room implements Runnable {
     }
 
     public void load(Group group) {
-        //this.shading.load(group);
-        //this.background.load(group);
+        this.shading.load(group);
+        this.background.load(group);
         this.backgroundItems.load(group);
         //
         for (Door door : doors) {
@@ -205,8 +205,8 @@ public class Room implements Runnable {
     }
 
     public void unload(Group group) {
-        //this.shading.unload(group);
-        //this.background.unload(group);
+        this.shading.unload(group);
+        this.background.unload(group);
         this.backgroundItems.unload(group);
         //
         for (Door door : doors) {
@@ -222,18 +222,18 @@ public class Room implements Runnable {
         }
     }
 
-    public void loadBackground(Group group){
-        this.background.load(group);
-    }
-    public void unloadBackground(Group group){
-        this.background.unload(group);
-    }
-    public void loadShading(Group group){
-        this.shading.load(group);
-    }
-    public void unloadShading(Group group){
-        this.shading.unload(group);
-    }
+    //public void loadBackground(Group group){
+    //    this.background.load(group);
+    //}
+    //public void unloadBackground(Group group){
+    //    this.background.unload(group);
+    //}
+    //public void loadShading(Group group){
+    //    this.shading.load(group);
+    //}
+    //public void unloadShading(Group group){
+    //    this.shading.unload(group);
+    //}
 
     public ArrayList<Rectangle> getBoundaries(){//provides an arraylist of obstacles.
         ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());

@@ -233,10 +233,9 @@ public class Player implements Runnable {
     private void doorTriggerChecker(Dungeon dungeon) {
         for (int i = 0; i < currentRoom.doors.size(); i++) {
             if (currentRoom.doors.get(i).getDoorTrigger().getBoundsInParent().intersects(this.bodyHitbox.shape.getBoundsInParent())) {
-                System.out.println("colliding");
+                System.out.println("changing room");
                 this.position.set(currentRoom.doors.get(i).relocatePos);
                 relocate();
-                //this.position.set(400,500);
                 this.acceleration.set(0, 0);
                 this.velocity.set(0, 0);
                 switch (currentRoom.doors.get(i).direction) {
@@ -245,32 +244,9 @@ public class Player implements Runnable {
                     case "left" -> this.roomY = this.roomY - 1;
                     case "right" -> this.roomY = this.roomY + 1;
                 }
-                //Room nextRoom = new Room();
-                currentRoom.unloadBackground(group);
-                currentRoom.unloadShading(group);
                 currentRoom.unload(group);
-                //
-
-                for (int l = 0; l < dungeon.rooms.size(); l++) {
-                    if (this.roomX == dungeon.rooms.get(l).getI() && this.roomY == dungeon.rooms.get(l).getJ()) {
-                        currentRoom = dungeon.rooms.get(l);
-                    }
-                }
-                //
-                currentRoom.loadBackground(group);
-                currentRoom.loadShading(group);
+                roomFinder(dungeon);
                 currentRoom.load(group);
-                //System.out.println("Room moved");
-                //nextRoom.loadBackground(group);
-                //nextRoom.loadShading(group);
-                ////nextRoom.shading.shade();
-                //currentRoom.unloadBackground(group);
-                //currentRoom.unloadShading(group);
-                ////
-                //currentRoom.unload(group);
-                //nextRoom.load(group);
-                //currentRoom = nextRoom;
-                //System.out.println(roomX + " " + roomY);
             }
         }
     }

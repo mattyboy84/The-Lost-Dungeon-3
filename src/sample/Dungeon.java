@@ -279,8 +279,6 @@ public class Dungeon {
     public void loadRoom(int x, int y, Group group) {
         for (Room room : rooms) {
             if (room.getI() == x && room.getJ() == y) {
-                room.loadBackground(group);
-                room.loadShading(group);
                 room.load(group);
                 break;
             }
