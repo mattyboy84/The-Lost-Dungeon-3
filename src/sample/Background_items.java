@@ -10,7 +10,6 @@ import java.util.Random;
 public class Background_items {
 
     ArrayList<Props> props = new ArrayList<>();
-    int propNumber = 11;
 
     Random random = new Random();
 
@@ -18,11 +17,11 @@ public class Background_items {
     }
 
     public void addProps(JsonObject props, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        for (int i = 0; i < propNumber + random.nextInt(5); i++) {
-            this.props.add(new Props(props, scaleX, scaleY, screenBounds));
-
-        }
-
+        if (props.get("Prop").getAsBoolean()){
+            for (int i = 0; i < props.get("Number").getAsInt() + random.nextInt(props.get("RandNumber").getAsInt()); i++) {
+                this.props.add(new Props(props, scaleX, scaleY, screenBounds));
+            }
+    }
 
     }
 

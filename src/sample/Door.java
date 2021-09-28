@@ -67,38 +67,39 @@ public class Door {
                 this.doorTrigger = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), 0, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, triggerHeight);
                 this.doorBlock = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), background.topLeft.getBoundsInParent().getMaxY() - blockHeight, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, blockHeight);
 
-                Rectangle j= new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), background.bottomLeft.getBoundsInParent().getMinY(), (((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2, blockHeight);
+                //Rectangle j= new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), background.bottomLeft.getBoundsInParent().getMinY(), (((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2, blockHeight);
 
-                this.relocatePos = new Vecc2f(j.getBoundsInParent().getMinX(), j.getBoundsInParent().getMinY()-(100 *scaleY));
+                this.relocatePos = new Vecc2f(913,817);
             }
             case "down" -> {
                 this.position = new Vecc2f((float) ((screenBounds.getWidth() / 2) - this.doorFrame.getBoundsInParent().getWidth() / 2), (float) (screenBounds.getHeight() - this.doorFrame.getBoundsInParent().getHeight() - (doorBoundary * scaleY)));
                 this.doorTrigger = new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), screenBounds.getHeight() - (triggerHeight), (((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2, triggerHeight);
                 this.doorBlock = new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), background.bottomLeft.getBoundsInParent().getMinY(), (((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2, blockHeight);
 
-                Rectangle j = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), background.topLeft.getBoundsInParent().getMaxY() - blockHeight, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, blockHeight);
+                //Rectangle j = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), background.topLeft.getBoundsInParent().getMaxY() - blockHeight, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, blockHeight);
 
-                this.relocatePos = new Vecc2f(j.getBoundsInParent().getMinX(), j.getBoundsInParent().getMaxY()+(20*scaleY));
+                this.relocatePos = new Vecc2f(912,182);
             }
             case "left" -> {
                 this.position = new Vecc2f(0 + (doorBoundary * scaleX), (float) ((screenBounds.getHeight() / 2) - (this.doorFrame.getBoundsInParent().getHeight() / 2)));
                 this.doorTrigger = new Rectangle(0, background.leftUp.getBoundsInParent().getMaxY(), triggerWidth, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
                 this.doorBlock = new Rectangle(background.leftUp.getBoundsInParent().getMaxX() - blockHeight, background.leftUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
 
-                Rectangle j = new Rectangle(background.rightUp.getBoundsInParent().getMinX(), background.rightUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
+                //Rectangle j = new Rectangle(background.rightUp.getBoundsInParent().getMinX(), background.rightUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
 
-                this.relocatePos = new Vecc2f(j.getBoundsInParent().getMinX()-(110*scaleX), j.getBoundsInParent().getMinY());
+                this.relocatePos = new Vecc2f(1614,495);
             }
             case "right" -> {
                 this.position = new Vecc2f((float) (screenBounds.getWidth() - this.doorFrame.getBoundsInParent().getWidth() - (doorBoundary * scaleX)), (float) ((screenBounds.getHeight() / 2) - (this.doorFrame.getBoundsInParent().getHeight() / 2)));
                 this.doorTrigger = new Rectangle(screenBounds.getWidth() - triggerWidth, background.rightUp.getBoundsInParent().getMaxY(), triggerWidth, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
                 this.doorBlock = new Rectangle(background.rightUp.getBoundsInParent().getMinX(), background.rightUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
 
-                Rectangle j = new Rectangle(background.leftUp.getBoundsInParent().getMaxX() - blockHeight, background.leftUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
+                //Rectangle j = new Rectangle(background.leftUp.getBoundsInParent().getMaxX() - blockHeight, background.leftUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
 
-                this.relocatePos=new Vecc2f(j.getBoundsInParent().getMaxX()+(40*scaleX),j.getBoundsInParent().getMinY());
+                this.relocatePos=new Vecc2f(220,495);
             }
         }
+        this.relocatePos.set(this.relocatePos.x*scaleX,this.relocatePos.y*scaleY);
         //
         this.doorFrame.setRotate(rotation);
         this.doorShadow.setRotate(rotation);

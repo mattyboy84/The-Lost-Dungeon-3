@@ -101,6 +101,9 @@ public class Main extends Application {
                 case J:
                     player.currentRoom.forceOpenDoors(group);
                     break;
+                case B:
+                    System.out.println(player.position);
+                    break;
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
