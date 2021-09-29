@@ -36,6 +36,9 @@ public class Dungeon {
     int startX;
     int startY;
     Random random = new Random();
+    //
+    Shading shading;
+
 
     /*
     //D:\- JAVA Projects -\- Lost Dungeon -\The-Lost-Dungeon-3\src\resources\gfx\grid
@@ -69,10 +72,10 @@ public class Dungeon {
                 roomAdder();
             }
             //
-            map[this.startX-1][this.startY] = 1;
-            map[this.startX+1][this.startY] = 1;
-            map[this.startX][this.startY+1] = 1;
-            map[this.startX][this.startY-1] = 1;
+            map[this.startX - 1][this.startY] = 1;
+            map[this.startX + 1][this.startY] = 1;
+            map[this.startX][this.startY + 1] = 1;
+            map[this.startX][this.startY - 1] = 1;
             //
 
             for (int[] ints : map) {
@@ -84,6 +87,9 @@ public class Dungeon {
             }
 
         }
+        //
+        this.shading=new Shading(scaleX,scaleY,screenBounds);
+        //
         //dungeon complete
         neighbourAdder();
 
@@ -96,29 +102,11 @@ public class Dungeon {
 
         //Image[][] rocks = rockGetter();
 
-        finalDungeonGen(scaleX, scaleY, screenBounds);
+        finalDungeonGen(scaleX, scaleY, screenBounds,this.shading);
 
     }
-/*
-    private Image[][] rockGetter() {
-        //
-        int sheetScale = rockArray.get("SheetScale").getAsInt();
-        String file ="file:src\\resources\\gfx\\grid\\" + rockArray.get("name").getAsString()+ ".png";
-        int width= (int) (rockArray.get("Width").getAsInt()*scaleX*sheetScale);
-        int height= (int) (rockArray.get("Height").getAsInt()*scaleY*sheetScale);
-        //System.out.println(file);
-        Image[][] rocks = new Image[7][7];
 
-        for (int k = 0; k <rocks.length ; k++) {
-            for (int l = 0; l < rocks[0].length; l++) {
-                rocks[k][l] = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) width*k, (int) height*l, (int) (width), (int) (height))).getImage());
-            }
-        }
-        return rocks;
-    }
-*/
-
-    private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds) {
+    private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
         int up, down, left, right;
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
@@ -132,9 +120,8 @@ public class Dungeon {
 
                     left = roomChecker(i, j, 0, -1);
 
-
-                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size())));
-                    rooms.get(rooms.size()-1).start();
+                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()),this.shading));
+                    rooms.get(rooms.size() - 1).start();
                 }
             }
         }
@@ -143,7 +130,7 @@ public class Dungeon {
         while (Room.finishedRoom != finRooms) {
             System.out.println(Room.finishedRoom + " " + finRooms);
             try {
-                a=a+increment;
+                a = a + increment;
                 Thread.sleep(increment);
             } catch (InterruptedException e) {
                 e.printStackTrace();

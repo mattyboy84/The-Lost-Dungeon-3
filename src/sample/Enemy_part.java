@@ -25,6 +25,7 @@ public class Enemy_part {
     //
     boolean light;
     int lightRadius;
+    Shading shading;
 
 
     public Enemy_part(JsonObject enemyPart, String type, String filePath, int sheetScale, float scaleX, float scaleY, Shading shading) {
@@ -65,7 +66,8 @@ public class Enemy_part {
         this.light = enemyPart.get("Light").getAsBoolean();
         if (this.light) {
             this.lightRadius = enemyPart.get("Radius").getAsInt();
-            shading.addActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())), this.lightRadius);
+            //shading.addActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())), this.lightRadius);
+            this.shading = shading;
             //shading.addActiveSource(this.position.x,this.position.y,this.lightRadius);
             //System.out.println(hitboxes.get(0).xDelta);
 
@@ -94,12 +96,15 @@ public class Enemy_part {
             group.getChildren().add(hitbox.shape);
             hitbox.shape.setViewOrder(-5);
             hitbox.shape.setVisible(true);
-            hitbox.shape.relocate(this.position.x+hitbox.getxDelta(),this.position.y+hitbox.getyDelta());
+            hitbox.shape.relocate(this.position.x + hitbox.getxDelta(), this.position.y + hitbox.getyDelta());
         }
         //Enemy
         group.getChildren().add(this.enemy);
         this.enemy.relocate(this.position.x, this.position.y);
         this.enemy.setViewOrder(-5);
+        //
+        shading.addActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())), this.lightRadius);
+        shading.shade();
     }
 
     public void unload(Group group) {
@@ -107,7 +112,7 @@ public class Enemy_part {
             group.getChildren().remove(hitbox.shape);
         }
         group.getChildren().remove(this.enemy);
-
+        shading.removeActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())));
 
     }
 }

@@ -148,7 +148,11 @@ public class Player implements Runnable {
         //
         c = new Circle(1);
         //
+        try{
         playerController(dungeon);
+        }catch (Exception e){
+
+        }
         //
         loaded=true;
     }

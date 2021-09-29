@@ -16,16 +16,10 @@ import java.util.ArrayList;
 
 public class Shading {
 
-    int offsetX = -20;
-    int offsetY = -28;
-
     float xMult = (float) 1.02;
     float yMult = (float) 1.044;
 
-    int radius;
-    Vecc2f mouse = new Vecc2f(480, 540);//demo pos until character is made
-
-    ImageView shading;
+    Image shading;
     Canvas overlay;
     String file = "file:src\\resources\\gfx\\backdrop\\shading2.0.png";
     Timeline timeline;
@@ -40,7 +34,7 @@ public class Shading {
 
     //        this.topLeft = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
     public Shading(float scaleX, float scaleY, Rectangle2D screenBounds) {
-        this.shading = new ImageView(new Image(file, (int) (screenBounds.getWidth() * xMult), (int) (screenBounds.getHeight() * yMult), false, false));
+        this.shading = new Image(file, (int) (screenBounds.getWidth() * xMult), (int) (screenBounds.getHeight() * yMult), false, false);
         //
         this.scaleX=scaleX;
         this.scaleY=scaleY;
@@ -70,10 +64,10 @@ public class Shading {
         externalTimeline.play();
         */
 
-        this.overlay = new Canvas(shading.getBoundsInParent().getWidth(), shading.getBoundsInParent().getHeight());
-        overlay.relocate(offsetX, offsetY);
+        this.overlay = new Canvas(shading.getWidth(), shading.getHeight());
+        overlay.relocate(-20,-28);//offset cords
         //
-        PixelReader pixelReader = shading.getImage().getPixelReader();
+        PixelReader pixelReader = shading.getPixelReader();
         //
 
         timelineStarter(pixelReader, screenBounds, scaleX, scaleY);
@@ -87,11 +81,11 @@ public class Shading {
     }
 
     public void shade() {
-        PixelReader pixelReader = shading.getImage().getPixelReader();
+        PixelReader pixelReader = shading.getPixelReader();
 
         //
         overlay.getGraphicsContext2D().clearRect(0, 0, overlay.getWidth(), overlay.getHeight());
-        overlay.getGraphicsContext2D().drawImage(shading.getImage(), 0, 0);
+        overlay.getGraphicsContext2D().drawImage(shading, 0, 0);
         //
         for (Points activeSource : activeSources) {
             sources.add(new Points(activeSource.getPosition().x, activeSource.getPosition().y, activeSource.getRadius()));

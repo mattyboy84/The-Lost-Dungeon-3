@@ -45,7 +45,7 @@ public class Room implements Runnable {
     String parentThreadName;
     //ShadingThread shadingThread;
 
-    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName) {
+    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName,Shading shading) {
         //
         this.parentThreadName = threadName;
         this.threadName=threadName;
@@ -64,6 +64,7 @@ public class Room implements Runnable {
         this.scaleY=scaleY;
         this.screenBounds=screenBounds;
         //
+        this.shading=shading;
     }
 
     public Room() {
@@ -75,12 +76,8 @@ public class Room implements Runnable {
 
         this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
         //
-        //
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " Background Complete");
-        //
-        this.shading=new Shading(scaleX,scaleY,screenBounds);
-        System.out.println("Thread: " + threadName + " Shading Complete");
         //
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " BackgroundItems");
@@ -221,19 +218,6 @@ public class Room implements Runnable {
             rock.unload(group);
         }
     }
-
-    //public void loadBackground(Group group){
-    //    this.background.load(group);
-    //}
-    //public void unloadBackground(Group group){
-    //    this.background.unload(group);
-    //}
-    //public void loadShading(Group group){
-    //    this.shading.load(group);
-    //}
-    //public void unloadShading(Group group){
-    //    this.shading.unload(group);
-    //}
 
     public ArrayList<Rectangle> getBoundaries(){//provides an arraylist of obstacles.
         ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
