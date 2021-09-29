@@ -10,10 +10,10 @@
     "BorderY": 180
   },
   "Props": {
-    "Prop": false,
-    "name": "props_01_basement",
-    "Number": 0,
-    "RandNumber": 0,
+    "Prop": true,
+    "name": "props_09_sheol",
+    "Number": 8,
+    "RandNumber": 3,
     "SheetScale": 3,
     "Width": 26,
     "Height": 26,

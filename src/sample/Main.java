@@ -68,7 +68,9 @@ public class Main extends Application {
 
         player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3, dungeon, "playerCon", group);
         player.start();
-        Thread.sleep(1000);
+        while (!Player.loaded){
+            Thread.sleep(100);
+        }
         player.load(group);
         //
         stage.setScene(scene);

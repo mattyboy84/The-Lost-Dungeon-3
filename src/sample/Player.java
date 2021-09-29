@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class Player implements Runnable {
 
+    public static boolean loaded=false;
     //
     int XAnimateCounter, YAnimateCounter;
     //
@@ -149,6 +150,7 @@ public class Player implements Runnable {
         //
         playerController(dungeon);
         //
+        loaded=true;
     }
 
     public void start() {
@@ -175,9 +177,6 @@ public class Player implements Runnable {
             //timers
             animationTimer++;
             doorTriggerTimer++;
-
-
-            //System.out.println(delta);
 
             //
             this.direction.set(velocity.x, velocity.y);
@@ -271,7 +270,6 @@ public class Player implements Runnable {
                 this.velocity.mult((float) 0.8);
                 //this.velocity.set(this.velocity.x*0.8,this.velocity.y);
                 this.acceleration.mult((float) 0.8);
-
                 //
             } else {
                 collide = false;
