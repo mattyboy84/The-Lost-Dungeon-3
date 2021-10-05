@@ -11,7 +11,12 @@ import javafx.scene.shape.Shape;
 
 import java.util.ArrayList;
 
-public class Enemy {
+public class Enemy extends Object{
+    /*
+     public String toString() {
+        return getClass().getName() + "@" + Integer.toHexString(hashCode());
+    }
+     */
 
     JsonObject template;
     //

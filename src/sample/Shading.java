@@ -88,7 +88,7 @@ public class Shading {
         overlay.getGraphicsContext2D().drawImage(shading, 0, 0);
         //
         for (Points activeSource : activeSources) {
-            sources.add(new Points(activeSource.getPosition().x, activeSource.getPosition().y, activeSource.getRadius()));
+            sources.add(new Points(activeSource.getPosition().x, activeSource.getPosition().y, activeSource.getRadius(),1));
         }
         //sources.add(new Points(1500,800,50));
         //
@@ -112,27 +112,27 @@ public class Shading {
         sources.clear();
     }
 
-    public void removeActiveSource(float x, float y) {
+    //public void removeActiveSource(float x, float y) {
+    //    for (int i = 0; i < activeSources.size(); i++) {
+    //        if (activeSources.get(i).getPosition().x == x && activeSources.get(i).getPosition().y == y) {
+    //            activeSources.remove(activeSources.get(i));
+    //        }
+    //    }
+    //}
+
+    //public void addActiveSource(float x, float y, int radius) {
+    //    activeSources.add(new Points(x, y, (int) (radius*this.avgScale)));
+    //}
+
+    public void removeActiveSource(int name) {
         for (int i = 0; i < activeSources.size(); i++) {
-            if (activeSources.get(i).getPosition().x == x && activeSources.get(i).getPosition().y == y) {
+            if (activeSources.get(i).getName()==name) {
                 activeSources.remove(activeSources.get(i));
             }
         }
     }
 
-    public void addActiveSource(float x, float y, int radius) {
-        activeSources.add(new Points(x, y, (int) (radius*this.avgScale)));
-    }
-
-    public void removeActiveSource(String name) {
-        for (int i = 0; i < activeSources.size(); i++) {
-            if (activeSources.get(i).getName().equals(name)) {
-                activeSources.remove(activeSources.get(i));
-            }
-        }
-    }
-
-    public void addActiveSource(float x, float y, int radius,String name) {
+    public void addActiveSource(float x, float y, int radius,int name) {
         activeSources.add(new Points(x, y, (int) (radius*this.avgScale),name));
     }
 
@@ -158,14 +158,15 @@ public class Shading {
 
         Vecc2f position;
         int radius;
-        String name;
+        int name;
 
-        public Points(float x, float y, int i) {
-            this.position = new Vecc2f(x, y);
-            this.radius = i;
-            this.name="";
-        }
-        public Points(float x, float y, int i,String name) {
+        //public Points(float x, float y, int i) {
+        //    this.position = new Vecc2f(x, y);
+        //    this.radius = i;
+        //    this.name="";
+        //}
+
+        public Points(float x, float y, int i,int name) {
             this.position = new Vecc2f(x, y);
             this.radius = i;
             this.name=name;
@@ -175,11 +176,11 @@ public class Shading {
             return position;
         }
 
-        public String getName() {
+        public int getName() {
             return name;
         }
 
-        public void setName(String name) {
+        public void setName(int name) {
             this.name = name;
         }
 

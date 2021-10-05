@@ -42,6 +42,8 @@ public class Room implements Runnable {
     ArrayList<Enemy> enemies = new ArrayList<>();
     ArrayList<Rock> rocks = new ArrayList<>();
     //
+    Door trapDoor;
+    //
     String parentThreadName;
     //ShadingThread shadingThread;
 
@@ -109,6 +111,9 @@ public class Room implements Runnable {
         }else {
             background.extendRight(screenBounds);
         }
+        if (type==3){
+            trapDoor=new Door(scaleX,scaleY,screenBounds);
+        }
 
         System.out.println("Thread: " + threadName + " Doors Complete");
         finishedRoom+=1;
@@ -148,6 +153,7 @@ public class Room implements Runnable {
                 case "fly" -> enemies.add(new Enemy_Fly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
                 case "attack fly" -> enemies.add(new Enemy_attackFly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
             }
+            System.out.println(enemies.get(k).hashCode());// TODO Use hashcode as unique identifier for shading layer
         }
         //System.out.println(scaleX);
     }
@@ -189,6 +195,12 @@ public class Room implements Runnable {
         for (Door door : doors) {
             door.load(group);
         }
+        /*
+        //groundwork for when a boss is defeated.
+        if (type==3){
+            trapDoor.loadTrapDoor(group);
+        }
+         */
         //
 
         for (Enemy enemy : enemies) {
@@ -240,12 +252,13 @@ public class Room implements Runnable {
     return a;
     }
     */
-        public void openDoors(Group group) {
-
-        
+        public void openDoors(Group group) {//opens doors that are closed because of enemies - wont open locked doors
+            for (Door door : doors) {
+                door.open(group);
+            }
     }
 
-    public void forceOpenDoors(Group group){
+    public void forceOpenDoors(Group group){//forces all doors to open
         for (Door door : doors) {
             door.forceOpen(group);
         }

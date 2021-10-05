@@ -12,17 +12,21 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
+import java.io.Console;
 import java.time.LocalTime;
 import java.util.Random;
 
 public class Player implements Runnable {
 
-    public static boolean loaded=false;
+    public static boolean loaded = false;
     //
     int XAnimateCounter, YAnimateCounter;
     //
+    int shootCooldown=45;
+    //
     float avgScale;
-    String movingDirection;
+    String movingDirection = "down";
+    String lookingDirection = "down";
     int roomX, roomY;
     float scaleX, scaleY;
     String costume;
@@ -49,10 +53,14 @@ public class Player implements Runnable {
     Vecc2f xSpeed = new Vecc2f((float) 0.1, 0);
     Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.1);
     boolean moving;
+    boolean attacking;
+    boolean justShot = false;
     //timers;
     boolean collide = false;
     int animationTimer;
     int doorTriggerTimer;
+    int attackingTimer;
+    int shotTimer;
     //
     Room currentRoom;
     //
@@ -61,6 +69,7 @@ public class Player implements Runnable {
     float veloLimit;//default is 7 multiplied by screen scale
     //
     boolean northMOVING, eastMOVING, westMOVING, southMOVING;
+    boolean northLOOKING, eastLOOKING, westLOOKING, southLOOKING;
     //
     Timeline controller;
     //
@@ -83,6 +92,7 @@ public class Player implements Runnable {
         this.costume = costume;
         this.roomX = startX;
         this.roomY = startY;
+        System.out.println("");
         System.out.println("StartX: " + this.roomX + " StartY: " + this.roomY);
         this.scaleX = scaleX;
         this.scaleY = scaleY;
@@ -148,13 +158,13 @@ public class Player implements Runnable {
         //
         c = new Circle(1);
         //
-        try{
-        playerController(dungeon);
-        }catch (Exception e){
+        try {
+            playerController(dungeon);
+        } catch (Exception e) {
 
         }
         //
-        loaded=true;
+        loaded = true;
     }
 
     public void start() {
@@ -170,6 +180,7 @@ public class Player implements Runnable {
         for (int i = 0; i < dungeon.rooms.size(); i++) {
             if (this.roomX == dungeon.rooms.get(i).getI() && this.roomY == dungeon.rooms.get(i).getJ()) {
                 currentRoom = dungeon.rooms.get(i);
+                break;
             }
         }
     }
@@ -177,10 +188,11 @@ public class Player implements Runnable {
     private void playerController(Dungeon dungeon) {
         controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
 
-            currentRoom.shading.removeActiveSource("Player");
+            currentRoom.shading.removeActiveSource(hashCode());
             //timers
             animationTimer++;
             doorTriggerTimer++;
+            attackingTimer++;
 
             //
             this.direction.set(velocity.x, velocity.y);
@@ -191,6 +203,10 @@ public class Player implements Runnable {
             //
             this.velocity.mult((float) 0.95);
             //
+            //
+            this.attacking = this.northLOOKING || this.eastLOOKING || this.westLOOKING || this.southLOOKING;
+            //
+            //
             if (this.velocity.magnitude() < 0.2) {
                 moving = false;
                 this.velocity.set(0, 0);
@@ -199,6 +215,10 @@ public class Player implements Runnable {
                     this.position.set((int) this.position.x, (int) this.position.y);
                 }
                 this.body.setImage(UD_body[2]);
+                if (!justShot) {
+                    this.head.setImage(heads[0]);
+                }
+                this.movingDirection = "down";
                 relocate();
             }
             this.velocity.limit(veloLimit);
@@ -208,13 +228,34 @@ public class Player implements Runnable {
             //
             boundaryChecker();
             //
-            //System.out.println(colliding());
-            if (moving) {
-                if (animationTimer >= 6) {
-                    playerAnimator();
-                    animationTimer = 0;
+            if (!this.northLOOKING && !this.southLOOKING && !this.eastLOOKING && !this.westLOOKING) {
+                lookingDirection = null;
+            }
+            if (!justShot) {
+                MOVINGheadChanger();
+                LOOKINGheadChanger();
+            } else {
+                shotTimer++;
+                if (shotTimer >= (int)(shootCooldown/3)) {
+                    justShot = false;
                 }
             }
+            //
+            attackingDecider();
+            //
+            if (attacking && attackingTimer >= shootCooldown) {
+                SHOOTINGheadChanger();
+                justShot = true;
+                shotTimer=0;
+                attackingTimer = 0;
+            }
+            //
+            if (moving && animationTimer >= 6) {
+                playerAnimator();
+                animationTimer = 0;
+            }
+            //
+            //
             if (doorTriggerTimer >= 6) {
                 doorTriggerTimer = 0;
                 doorTriggerChecker(dungeon);
@@ -222,12 +263,7 @@ public class Player implements Runnable {
             //
             c.relocate(this.position.x, this.position.y);
             //
-
-            //center.relocate((float) (this.headHitbox.shape.getBoundsInParent().getMaxX()-((1-g)*this.headHitbox.radius)) , (float) (this.headHitbox.shape.getBoundsInParent().getMaxY()-((1-g)*this.headHitbox.radius)));
-            //System.out.println(headHitbox.shape.getBoundsInParent());
-            //System.out.println("Position: " + this.position + " Velocity: " + this.velocity);
-            //System.out.println("-------------------");
-            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX() + (this.headHitbox.radius * g)), (float) (this.headHitbox.getShape().getLayoutY() + (this.headHitbox.radius * g)), this.lightRadius, "Player");
+            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX() + (this.headHitbox.radius * g)), (float) (this.headHitbox.getShape().getLayoutY() + (this.headHitbox.radius * g)), this.lightRadius, hashCode());
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
@@ -292,6 +328,29 @@ public class Player implements Runnable {
         //collide = false;
     }
 
+    private void attackingDecider() {
+        if (eastLOOKING && westLOOKING) {
+            eastLOOKING = false;
+            westLOOKING = false;
+        }
+        if (northLOOKING && southLOOKING) {
+            southLOOKING = false;
+            northLOOKING = false;
+        }
+        if (eastLOOKING) {
+            lookingDirection = "east";
+        }
+        if (westLOOKING) {
+            lookingDirection = "west";
+        }
+        if (northLOOKING) {
+            lookingDirection = "north";
+        }
+        if (southLOOKING) {
+            lookingDirection = "south";
+        }
+    }
+
 
     private void accDecider() {
         this.acceleration.mult((float) 0.95);
@@ -348,6 +407,7 @@ public class Player implements Runnable {
             this.movingDirection = "up";
             subPlayerAnimterY();
         }
+        //System.out.println(movingDirection);
     }
 
     private void subPlayerAnimterY() {
@@ -364,6 +424,69 @@ public class Player implements Runnable {
             XAnimateCounter = 0;
         }
         body.setImage(LR_body[XAnimateCounter]);
+    }
+
+    private void SHOOTINGheadChanger() {
+        switch (lookingDirection){
+            case "north":
+                this.head.setImage(heads[5]);
+                break;
+            case "south":
+                this.head.setImage(heads[1]);
+                break;
+            case "west":
+                this.head.setImage(heads[3]);
+                this.head.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                break;
+            case "east":
+                this.head.setImage(heads[3]);
+                this.head.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                break;
+        }
+    }
+
+    private void LOOKINGheadChanger() {
+        if (this.lookingDirection != null) {
+            switch (this.lookingDirection) {
+                case "north":
+                    this.head.setImage(heads[4]);
+                    break;
+                case "south":
+                    this.head.setImage(heads[0]);
+
+                    break;
+                case "west":
+                    this.head.setImage(heads[2]);
+                    this.head.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    break;
+                case "east":
+                    this.head.setImage(heads[2]);
+                    this.head.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+
+                    break;
+            }
+        }
+    }
+
+    private void MOVINGheadChanger() {
+        switch (movingDirection) {
+            case "up":
+                this.head.setImage(heads[4]);
+                break;
+            case "down":
+                this.head.setImage(heads[0]);
+
+                break;
+            case "left":
+                this.head.setImage(heads[2]);
+                this.head.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                break;
+            case "right":
+                this.head.setImage(heads[2]);
+                this.head.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+
+                break;
+        }
     }
 
 
@@ -393,10 +516,10 @@ public class Player implements Runnable {
         //
         this.body.setVisible(true);
         this.head.setVisible(true);
-        this.headHitbox.shape.setVisible(true);
-        this.bodyHitbox.shape.setVisible(true);
-        this.nextXFrameBodyHitbox.shape.setVisible(true);
-        this.nextYFrameBodyHitbox.shape.setVisible(true);
+        this.headHitbox.shape.setVisible(false);
+        this.bodyHitbox.shape.setVisible(false);
+        this.nextXFrameBodyHitbox.shape.setVisible(false);
+        this.nextYFrameBodyHitbox.shape.setVisible(false);
         //
         this.position.set(800, 400);
         relocate();
@@ -433,5 +556,37 @@ public class Player implements Runnable {
 
     public void setSouthMOVING(boolean southMOVING) {
         this.southMOVING = southMOVING;
+    }
+
+    public boolean isNorthLOOKING() {
+        return northLOOKING;
+    }
+
+    public void setNorthLOOKING(boolean northLOOKING) {
+        this.northLOOKING = northLOOKING;
+    }
+
+    public boolean isEastLOOKING() {
+        return eastLOOKING;
+    }
+
+    public void setEastLOOKING(boolean eastLOOKING) {
+        this.eastLOOKING = eastLOOKING;
+    }
+
+    public boolean isWestLOOKING() {
+        return westLOOKING;
+    }
+
+    public void setWestLOOKING(boolean westLOOKING) {
+        this.westLOOKING = westLOOKING;
+    }
+
+    public boolean isSouthLOOKING() {
+        return southLOOKING;
+    }
+
+    public void setSouthLOOKING(boolean southLOOKING) {
+        this.southLOOKING = southLOOKING;
     }
 }

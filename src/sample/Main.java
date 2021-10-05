@@ -71,6 +71,7 @@ public class Main extends Application {
         while (!Player.loaded){
             Thread.sleep(100);
         }
+        player.currentRoom.openDoors(group);
         player.load(group);
         //
         stage.setScene(scene);
@@ -97,6 +98,18 @@ public class Main extends Application {
                 case D:
                     player.setEastMOVING(true);
                     break;
+                case UP:
+                    player.setNorthLOOKING(true);
+                    break;
+                case LEFT:
+                    player.setWestLOOKING(true);
+                    break;
+                case DOWN:
+                    player.setSouthLOOKING(true);
+                    break;
+                case RIGHT:
+                    player.setEastLOOKING(true);
+                    break;
                 case F:
                     stage.setFullScreen(!stage.isFullScreen());
                     break;
@@ -121,6 +134,18 @@ public class Main extends Application {
                     break;
                 case D:
                     player.setEastMOVING(false);
+                    break;
+                case UP:
+                    player.setNorthLOOKING(false);
+                    break;
+                case LEFT:
+                    player.setWestLOOKING(false);
+                    break;
+                case DOWN:
+                    player.setSouthLOOKING(false);
+                    break;
+                case RIGHT:
+                    player.setEastLOOKING(false);
                     break;
             }
         });

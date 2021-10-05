@@ -88,7 +88,7 @@ public class Dungeon {
 
         }
         //
-        this.shading=new Shading(scaleX,scaleY,screenBounds);
+        this.shading = new Shading(scaleX, scaleY, screenBounds);
         //
         //dungeon complete
         neighbourAdder();
@@ -102,7 +102,7 @@ public class Dungeon {
 
         //Image[][] rocks = rockGetter();
 
-        finalDungeonGen(scaleX, scaleY, screenBounds,this.shading);
+        finalDungeonGen(scaleX, scaleY, screenBounds, this.shading);
 
     }
 
@@ -120,7 +120,7 @@ public class Dungeon {
 
                     left = roomChecker(i, j, 0, -1);
 
-                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()),this.shading));
+                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading));
                     rooms.get(rooms.size() - 1).start();
                 }
             }
@@ -186,7 +186,7 @@ public class Dungeon {
                 System.out.print(i + " ");
             }
             for (int j = 0; j < map[0].length; j++) {
-                System.out.print(map[i][j] + "  ");
+                    System.out.print(map[i][j] + "  ");
             }
             System.out.println("");
             //System.out.print(i + " ");

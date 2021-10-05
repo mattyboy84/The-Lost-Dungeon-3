@@ -12,13 +12,13 @@ public class Door {
 
     String[] types = {" ", "door_01_normaldoor", "door_02_treasureroomdoor", "door_10_bossroomdoor"};
     //
-    ImageView doorFrame, doorShadow, doorPartLeft, doorPartRight, doorPartRightLocked;
+    ImageView doorFrame, doorShadow, doorPartLeft, doorPartRight, doorPartRightLocked,trapDoor;
     //
     int spriteScaleX = 4;
     int spriteScaleY = 4;
     //
-    int height = 48;
-    int width = 64;
+    int height;
+    int width;
     //
     Vecc2f position;
     Vecc2f relocatePos;
@@ -30,6 +30,7 @@ public class Door {
     int triggerWidth = 125;
     int blockHeight = 20;
     String direction;
+
     enum State {
         open,
         closed,
@@ -45,6 +46,10 @@ public class Door {
         if (type != 1) {
             a = types[type];
         }
+        //
+        this.height = 48;
+        this.width = 64;
+        //
         this.direction=direction;
 
         this.state = State.closed;
@@ -109,6 +114,17 @@ public class Door {
         //
     }
 
+    public Door(float scaleX, float scaleY, Rectangle2D screenBounds) {
+        this.state = State.closed;
+        this.width=64;
+        this.height=64;
+        this.trapDoor = imageGetter("file:src\\resources\\gfx\\grid\\door_11_trapdoor.png", 0, 0, scaleX, scaleY);
+        this.position=new Vecc2f(screenBounds.getWidth()/2 - ((this.width*spriteScaleX*scaleX)/2),screenBounds.getHeight()/2 - ((this.height*spriteScaleY*scaleY)/2));
+        this.doorTrigger=new Rectangle(this.position.x+(16*spriteScaleX*scaleX),this.position.y+(16*spriteScaleY*scaleY),(32*spriteScaleX*scaleX),(32*spriteScaleY*scaleY));
+
+
+    }
+
     private ImageView imageGetter(String file, int i, int i1, float scaleX, float scaleY) {
         return (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * spriteScaleX), (new Image(file).getHeight() * scaleY * spriteScaleY), false, false).getPixelReader(), (int) (i * ((width * scaleX * spriteScaleX))), (int) (i1 * ((height * scaleY * spriteScaleY))), (int) (width * scaleX * spriteScaleX), (int) (height * scaleY * spriteScaleY))));
     }
@@ -161,23 +177,37 @@ public class Door {
 
         }
     }
+    public void loadTrapDoor(Group group) {
+        group.getChildren().addAll(this.doorTrigger,this.trapDoor);
+        this.trapDoor.relocate(this.position.x,this.position.y);
+    }
 
-    public void forceOpen(Group group) {
-
+    public void open(Group group) {
         switch (state) {
             case open -> {
-
             }
             case closed -> {
                 group.getChildren().removeAll(this.doorPartLeft, this.doorPartRight, this.doorBlock);
+                this.state = State.open;
+            }
+            case locked -> {
+            }
+        }
+    }
+
+    public void forceOpen(Group group) {
+        switch (state) {
+            case open -> {
+            }
+            case closed -> {
+                group.getChildren().removeAll(this.doorPartLeft, this.doorPartRight, this.doorBlock);
+                this.state = State.open;
             }
             case locked -> {
                 group.getChildren().removeAll(this.doorPartLeft, this.doorPartRightLocked, this.doorBlock);
-
+                this.state = State.open;
             }
         }
-        this.state = State.open;
-
     }
 
     public String[] getTypes() {

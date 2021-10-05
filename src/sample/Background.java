@@ -99,14 +99,14 @@ public class Background {
         bottomLeftIMG.setViewOrder(0);
         bottomRightIMG.setViewOrder(0);
         //
-        topLeft.toFront();
-        topRight.toFront();
-        leftUp.toFront();
-        leftDown.toFront();
-        bottomRight.toFront();
-        bottomLeft.toFront();
-        rightDown.toFront();
-        rightUp.toFront();
+        topLeft.setVisible(false);
+        topRight.setVisible(false);
+        leftUp.setVisible(false);
+        leftDown.setVisible(false);
+        bottomRight.setVisible(false);
+        bottomLeft.setVisible(false);
+        rightDown.setVisible(false);
+        rightUp.setVisible(false);
     }
 
     public void unload(Group group) {

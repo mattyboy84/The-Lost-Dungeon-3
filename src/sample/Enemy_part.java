@@ -103,7 +103,7 @@ public class Enemy_part {
         this.enemy.relocate(this.position.x, this.position.y);
         this.enemy.setViewOrder(-5);
         //
-        shading.addActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())), this.lightRadius);
+        shading.addActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())), this.lightRadius,hashCode());
         shading.shade();
     }
 
@@ -112,7 +112,6 @@ public class Enemy_part {
             group.getChildren().remove(hitbox.shape);
         }
         group.getChildren().remove(this.enemy);
-        shading.removeActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())));
-
+        shading.removeActiveSource(hashCode());
     }
 }
