@@ -17,14 +17,12 @@ public class Background_items {
     }
 
     public void addProps(JsonObject props, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        if (props.get("Prop").getAsBoolean()){
+        if (props.get("Prop").getAsBoolean()) {
             for (int i = 0; i < props.get("Number").getAsInt() + random.nextInt(props.get("RandNumber").getAsInt()); i++) {
                 this.props.add(new Props(props, scaleX, scaleY, screenBounds));
             }
+        }
     }
-
-    }
-
 
     public void load(Group group) {
         for (Props prop : props) {

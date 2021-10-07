@@ -77,7 +77,6 @@ public class Dungeon {
             map[this.startX][this.startY + 1] = 1;
             map[this.startX][this.startY - 1] = 1;
             //
-
             for (int[] ints : map) {
                 for (int j = 0; j < map[0].length; j++) {
                     if (ints[j] == 1) {
@@ -85,7 +84,6 @@ public class Dungeon {
                     }
                 }
             }
-
         }
         //
         this.shading = new Shading(scaleX, scaleY, screenBounds);

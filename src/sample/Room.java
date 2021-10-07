@@ -153,7 +153,6 @@ public class Room implements Runnable {
                 case "fly" -> enemies.add(new Enemy_Fly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
                 case "attack fly" -> enemies.add(new Enemy_attackFly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
             }
-            System.out.println(enemies.get(k).hashCode());// TODO Use hashcode as unique identifier for shading layer
         }
         //System.out.println(scaleX);
     }

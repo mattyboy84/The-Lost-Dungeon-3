@@ -408,6 +408,4 @@ public class Vecc2f {
         }
         return 0;
     }
-
-
 }

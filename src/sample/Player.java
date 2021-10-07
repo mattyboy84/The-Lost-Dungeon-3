@@ -187,7 +187,6 @@ public class Player implements Runnable {
 
     private void playerController(Dungeon dungeon) {
         controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
-
             currentRoom.shading.removeActiveSource(hashCode());
             //timers
             animationTimer++;
@@ -475,7 +474,6 @@ public class Player implements Runnable {
                 break;
             case "down":
                 this.head.setImage(heads[0]);
-
                 break;
             case "left":
                 this.head.setImage(heads[2]);
@@ -484,7 +482,6 @@ public class Player implements Runnable {
             case "right":
                 this.head.setImage(heads[2]);
                 this.head.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-
                 break;
         }
     }
@@ -497,7 +494,6 @@ public class Player implements Runnable {
         this.bodyHitbox.getShape().relocate(position.x + bodyDelta.x, position.y + bodyDelta.y);
         this.nextXFrameBodyHitbox.getShape().relocate(bodyHitbox.shape.getLayoutX() + this.velocity.x, bodyHitbox.shape.getLayoutY() + this.velocity.y);
         this.nextYFrameBodyHitbox.getShape().relocate(bodyHitbox.shape.getLayoutX(), bodyHitbox.shape.getLayoutY() + this.velocity.y);
-
     }
 
     public void load(Group group) {
