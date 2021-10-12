@@ -61,7 +61,6 @@ public class Dungeon {
         this.minimumRooms = minRooms;
         this.floorLevel = floorLevel + 1;
 
-
         while (finRooms < minimumRooms) {
             mapclearer();
             map[startX][startY] = 1;
@@ -73,7 +72,7 @@ public class Dungeon {
             }
             //
             map[this.startX - 1][this.startY] = 1;
-            map[this.startX + 1][this.startY] = 1;
+            map[this.startX + 1][this.startY] = 1;//TODO Remember this
             map[this.startX][this.startY + 1] = 1;
             map[this.startX][this.startY - 1] = 1;
             //

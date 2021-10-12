@@ -75,11 +75,7 @@ public class Enemy extends Object{
         }
         //this.position = new Vecc2f((int) (positionX * scaleX), (int) (positionY * scaleY));
 
-        String file = "file:src\\resources\\gfx\\monsters\\" + this.type + "\\" + this.filePath + ".png";
-
         //D:\- JAVA Projects -\- Lost Dungeon -\The-Lost-Dungeon-3\src\resources\gfx\monsters\classic
-
-        //System.out.println(scaleX);
     }
 
 
@@ -100,11 +96,4 @@ public class Enemy extends Object{
 
         //
     }
-    /*
-    public String toString() {
-
-        return "woop";
-    }
-    */
-
 }

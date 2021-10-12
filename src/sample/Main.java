@@ -45,10 +45,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
         System.out.println(screenBounds);
         //1920 x 1080
         //2560 × 1440
+        //3840 x 2160
         //
         Button newGame = new Button("New Game");
         newGame.relocate(300, 300);
@@ -64,7 +64,6 @@ public class Main extends Application {
         dungeon.displayMap();
         //
         dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
-        //
 
         player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3, dungeon, "playerCon", group);
         player.start();
@@ -86,75 +85,35 @@ public class Main extends Application {
 
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
-                case W:
-                    player.setNorthMOVING(true);
-                    break;
-                case A:
-                    player.setWestMOVING(true);
-                    break;
-                case S:
-                    player.setSouthMOVING(true);
-                    break;
-                case D:
-                    player.setEastMOVING(true);
-                    break;
-                case UP:
-                    player.setNorthLOOKING(true);
-                    break;
-                case LEFT:
-                    player.setWestLOOKING(true);
-                    break;
-                case DOWN:
-                    player.setSouthLOOKING(true);
-                    break;
-                case RIGHT:
-                    player.setEastLOOKING(true);
-                    break;
-                case F:
-                    stage.setFullScreen(!stage.isFullScreen());
-                    break;
-                case J:
-                    player.currentRoom.forceOpenDoors(group);
-                    break;
-                case B:
-                    System.out.println(player.position);
-                    break;
+                case W -> player.setNorthMOVING(true);
+                case A -> player.setWestMOVING(true);
+                case S -> player.setSouthMOVING(true);
+                case D -> player.setEastMOVING(true);
+                case UP -> player.setNorthLOOKING(true);
+                case LEFT -> player.setWestLOOKING(true);
+                case DOWN -> player.setSouthLOOKING(true);
+                case RIGHT -> player.setEastLOOKING(true);
+                case F -> stage.setFullScreen(!stage.isFullScreen());
+                case J -> player.currentRoom.forceOpenDoors(group);
+                case B -> System.out.println(player.position);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
             switch (keyEvent.getCode()) {
-                case W:
-                    player.setNorthMOVING(false);
-                    break;
-                case A:
-                    player.setWestMOVING(false);
-                    break;
-                case S:
-                    player.setSouthMOVING(false);
-                    break;
-                case D:
-                    player.setEastMOVING(false);
-                    break;
-                case UP:
-                    player.setNorthLOOKING(false);
-                    break;
-                case LEFT:
-                    player.setWestLOOKING(false);
-                    break;
-                case DOWN:
-                    player.setSouthLOOKING(false);
-                    break;
-                case RIGHT:
-                    player.setEastLOOKING(false);
-                    break;
+                case W -> player.setNorthMOVING(false);
+                case A -> player.setWestMOVING(false);
+                case S -> player.setSouthMOVING(false);
+                case D -> player.setEastMOVING(false);
+                case UP -> player.setNorthLOOKING(false);
+                case LEFT -> player.setWestLOOKING(false);
+                case DOWN -> player.setSouthLOOKING(false);
+                case RIGHT -> player.setEastLOOKING(false);
             }
         });
-
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);
         stage.show();
     }
-
 
     public static void main(String[] args) {
         launch(args);

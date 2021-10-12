@@ -83,9 +83,7 @@ public class Player implements Runnable {
     private Thread t;
     Circle c;
 
-    LocalTime a = LocalTime.now();
     Group group;
-
 
     public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, Dungeon dungeon, String threadName, Group group) {
         this.group = group;
@@ -121,7 +119,6 @@ public class Player implements Runnable {
         this.width = (int) (32 * scaleX * sheetScale);
         this.height = (int) (32 * scaleY * sheetScale);
         //
-
         String file = "file:src\\resources\\gfx\\characters\\costumes\\" + this.costume + ".png";
         for (int i = 0; i < this.heads.length; i++) {//head images
             this.heads[i] = (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)), ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
@@ -350,7 +347,6 @@ public class Player implements Runnable {
         }
     }
 
-
     private void accDecider() {
         this.acceleration.mult((float) 0.95);
         //
@@ -406,7 +402,6 @@ public class Player implements Runnable {
             this.movingDirection = "up";
             subPlayerAnimterY();
         }
-        //System.out.println(movingDirection);
     }
 
     private void subPlayerAnimterY() {
@@ -452,7 +447,6 @@ public class Player implements Runnable {
                     break;
                 case "south":
                     this.head.setImage(heads[0]);
-
                     break;
                 case "west":
                     this.head.setImage(heads[2]);
@@ -461,7 +455,6 @@ public class Player implements Runnable {
                 case "east":
                     this.head.setImage(heads[2]);
                     this.head.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-
                     break;
             }
         }
@@ -486,7 +479,6 @@ public class Player implements Runnable {
         }
     }
 
-
     private void relocate() {
         this.body.relocate(position.x, position.y);
         this.head.relocate(position.x + headOffset.x, position.y + headOffset.y);
@@ -503,7 +495,7 @@ public class Player implements Runnable {
         this.bodyHitbox.getShape().setViewOrder(-7);
         this.nextXFrameBodyHitbox.getShape().setViewOrder(-7);
         this.nextYFrameBodyHitbox.getShape().setViewOrder(-7);
-
+        //
         this.body.setViewOrder(-7);
         this.head.setViewOrder(-7);
         //
@@ -519,7 +511,6 @@ public class Player implements Runnable {
         //
         this.position.set(800, 400);
         relocate();
-
     }
 
     public boolean isNorthMOVING() {

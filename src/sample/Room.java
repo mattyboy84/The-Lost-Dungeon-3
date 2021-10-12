@@ -75,7 +75,7 @@ public class Room implements Runnable {
 
     public void run() {
         this.backgroundItems = new Background_items();
-
+        //
         this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
         //
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
@@ -114,7 +114,6 @@ public class Room implements Runnable {
         if (type==3){
             trapDoor=new Door(scaleX,scaleY,screenBounds);
         }
-
         System.out.println("Thread: " + threadName + " Doors Complete");
         finishedRoom+=1;
     }
@@ -154,12 +153,10 @@ public class Room implements Runnable {
                 case "attack fly" -> enemies.add(new Enemy_attackFly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
             }
         }
-        //System.out.println(scaleX);
     }
 
     private StringBuilder templateGetter() {
         StringBuilder json = new StringBuilder();
-
         File directPath = new File("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type);
         //System.out.println(directPath);
         String[] contents = directPath.list();
@@ -177,7 +174,6 @@ public class Room implements Runnable {
                 json.append(st);
                 //System.out.println(st);
             }
-
             //System.out.println(json);
         } catch (Exception e) {
             System.out.println("Cannot find room template - Room");

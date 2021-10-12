@@ -6,7 +6,6 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-
 import java.util.ArrayList;
 
 public class Enemy_part {
@@ -26,7 +25,6 @@ public class Enemy_part {
     boolean light;
     int lightRadius;
     Shading shading;
-
 
     public Enemy_part(JsonObject enemyPart, String type, String filePath, int sheetScale, float scaleX, float scaleY, Shading shading) {
         this.part = enemyPart.get("part").getAsString();
