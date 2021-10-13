@@ -26,7 +26,7 @@ public class Shading {
     Rectangle2D screenBounds = Screen.getPrimary().getBounds();
     PixelReader pixelReader;
 
-    Double[][] screen = new Double[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
+    Float[][] screen = new Float[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
     ArrayList<Points> sources = new ArrayList<Points>();
     ArrayList<Points> activeSources = new ArrayList<Points>();
     //
@@ -73,7 +73,7 @@ public class Shading {
                         //j = height
                         //
                         if (screen[i][j] == null) {
-                            screen[i][j] = pixelReader.getColor(i, j).getOpacity();
+                            screen[i][j] = (float)(pixelReader.getColor(i, j).getOpacity());
                         }
                         overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, screen[i][j] * (d / (localRadius))));
                         screen[i][j] = screen[i][j] * (d / (localRadius));
@@ -81,7 +81,7 @@ public class Shading {
                 }
             }
         }
-        screen = new Double[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
+        screen = new Float[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
     }
 
     public void removeActiveSource(int name) {
