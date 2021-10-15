@@ -45,6 +45,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        //System.out.println(getParameters().getRaw());
         System.out.println(screenBounds);
         //1920 x 1080
         //2560 × 1440

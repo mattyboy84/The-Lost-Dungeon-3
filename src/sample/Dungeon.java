@@ -49,7 +49,6 @@ public class Dungeon {
      */
     int borderBoundary = 1;//creates a safe zone around the dungeon. As 1, Row/Column 0 and length-1 are free of rooms
 
-
     public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.mapX = mapXWidth;
         this.mapY = mapYWidth;
@@ -61,7 +60,7 @@ public class Dungeon {
         this.minimumRooms = minRooms;
         this.floorLevel = floorLevel + 1;
 
-        while (finRooms < minimumRooms) {
+        while ((finRooms < minimumRooms)) {
             mapclearer();
             map[startX][startY] = 1;
             deltaX = 0;

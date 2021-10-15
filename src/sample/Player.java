@@ -54,9 +54,9 @@ public class Player implements Runnable {
     Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.1);
     boolean moving;
     boolean attacking;
+    boolean collide = false;
     boolean justShot = false;
     //timers;
-    boolean collide = false;
     int animationTimer;
     int doorTriggerTimer;
     int attackingTimer;
@@ -385,7 +385,6 @@ public class Player implements Runnable {
     }
 
     private void playerAnimator() {
-
         float angle = this.direction.toAngle();
         if (angle > 45 && angle < 135) {//right
             this.movingDirection = "right";
