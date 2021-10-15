@@ -12,10 +12,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
-import java.io.Console;
-import java.time.LocalTime;
-import java.util.Random;
-
 public class Player implements Runnable {
 
     public static boolean loaded = false;
@@ -39,8 +35,9 @@ public class Player implements Runnable {
     //
     int width, height;
     //
+    int coinNumber,keyNumber,bombNumber;
+    //
     Vecc2f VECscale = new Vecc2f();
-
     Vecc2f bodyOffset, headOffset;
     Vecc2f bodyDelta, headDelta;
     Hitbox headHitbox, bodyHitbox, nextXFrameBodyHitbox, nextYFrameBodyHitbox;
@@ -63,6 +60,7 @@ public class Player implements Runnable {
     int shotTimer;
     //
     Room currentRoom;
+    Player_Overlay overplay;
     //
     int lightRadius = 110;
     //
@@ -102,6 +100,7 @@ public class Player implements Runnable {
     }
 
     public void run() {
+        overplay=new Player_Overlay(scaleX,scaleY,screenBounds,sheetScale);
         xSpeed.mult(scaleX);
         ySpeed.mult(scaleY);
         veloLimit = 7 * avgScale;
@@ -510,6 +509,9 @@ public class Player implements Runnable {
         //
         this.position.set(800, 400);
         relocate();
+
+
+        overplay.load(group);
     }
 
     public boolean isNorthMOVING() {
