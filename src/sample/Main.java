@@ -96,7 +96,8 @@ public class Main extends Application {
                 case RIGHT -> player.setEastLOOKING(true);
                 case F -> stage.setFullScreen(!stage.isFullScreen());
                 case J -> player.currentRoom.forceOpenDoors(group);
-                case B -> System.out.println(player.position);
+                case B -> player.updateCoins(1);
+
             }
         });
         scene.setOnKeyReleased(keyEvent -> {

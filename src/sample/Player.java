@@ -18,7 +18,7 @@ public class Player implements Runnable {
     //
     int XAnimateCounter, YAnimateCounter;
     //
-    int shootCooldown=45;
+    int shootCooldown = 45;
     //
     float avgScale;
     String movingDirection = "down";
@@ -35,7 +35,8 @@ public class Player implements Runnable {
     //
     int width, height;
     //
-    int coinNumber,keyNumber,bombNumber;
+    int coinNumber = 0, keyNumber = 0, bombNumber = 0;
+    int score = 100;
     //
     Vecc2f VECscale = new Vecc2f();
     Vecc2f bodyOffset, headOffset;
@@ -58,6 +59,7 @@ public class Player implements Runnable {
     int doorTriggerTimer;
     int attackingTimer;
     int shotTimer;
+    int scoreTimer;
     //
     Room currentRoom;
     Player_Overlay overplay;
@@ -100,7 +102,7 @@ public class Player implements Runnable {
     }
 
     public void run() {
-        overplay=new Player_Overlay(scaleX,scaleY,screenBounds,sheetScale);
+        overplay = new Player_Overlay(scaleX, scaleY, screenBounds, sheetScale, score);
         xSpeed.mult(scaleX);
         ySpeed.mult(scaleY);
         veloLimit = 7 * avgScale;
@@ -154,6 +156,8 @@ public class Player implements Runnable {
         //
         c = new Circle(1);
         //
+        updateItems();
+
         try {
             playerController(dungeon);
         } catch (Exception e) {
@@ -172,14 +176,7 @@ public class Player implements Runnable {
         }
     }
 
-    private void roomFinder(Dungeon dungeon) {
-        for (int i = 0; i < dungeon.rooms.size(); i++) {
-            if (this.roomX == dungeon.rooms.get(i).getI() && this.roomY == dungeon.rooms.get(i).getJ()) {
-                currentRoom = dungeon.rooms.get(i);
-                break;
-            }
-        }
-    }
+
 
     private void playerController(Dungeon dungeon) {
         controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
@@ -188,6 +185,7 @@ public class Player implements Runnable {
             animationTimer++;
             doorTriggerTimer++;
             attackingTimer++;
+            scoreTimer++;
 
             //
             this.direction.set(velocity.x, velocity.y);
@@ -231,7 +229,7 @@ public class Player implements Runnable {
                 LOOKINGheadChanger();
             } else {
                 shotTimer++;
-                if (shotTimer >= (int)(shootCooldown/3)) {
+                if (shotTimer >= (int) (shootCooldown / 3)) {
                     justShot = false;
                 }
             }
@@ -241,7 +239,7 @@ public class Player implements Runnable {
             if (attacking && attackingTimer >= shootCooldown) {
                 SHOOTINGheadChanger();
                 justShot = true;
-                shotTimer=0;
+                shotTimer = 0;
                 attackingTimer = 0;
             }
             //
@@ -250,10 +248,13 @@ public class Player implements Runnable {
                 animationTimer = 0;
             }
             //
-            //
             if (doorTriggerTimer >= 6) {
                 doorTriggerTimer = 0;
                 doorTriggerChecker(dungeon);
+            }
+            if (scoreTimer>=60){
+                scoreTimer=1;
+                updateScore(-1);
             }
             //
             c.relocate(this.position.x, this.position.y);
@@ -262,6 +263,15 @@ public class Player implements Runnable {
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
+    }
+
+    private void roomFinder(Dungeon dungeon) {
+        for (int i = 0; i < dungeon.rooms.size(); i++) {
+            if (this.roomX == dungeon.rooms.get(i).getI() && this.roomY == dungeon.rooms.get(i).getJ()) {
+                currentRoom = dungeon.rooms.get(i);
+                break;
+            }
+        }
     }
 
     private void doorTriggerChecker(Dungeon dungeon) {
@@ -285,6 +295,31 @@ public class Player implements Runnable {
         }
     }
 
+    public void updateScore(int diff) {
+        this.score += diff;
+        overplay.updateScore(score);
+    }
+
+    private void updateItems() {
+        updateCoins(0);
+        updateKeys(0);
+        updateBombs(0);
+    }
+
+    public void updateCoins(int diff) {
+        this.coinNumber += diff;
+        overplay.updateCoinNumber(this.coinNumber);
+    }
+
+    public void updateKeys(int diff) {
+        this.keyNumber += diff;
+        overplay.updateKeyNumber(this.keyNumber);
+    }
+
+    public void updateBombs(int diff) {
+        this.bombNumber += diff;
+        overplay.updateBombNumber(this.bombNumber);
+    }
 
     public boolean colliding() {
         //boolean a=false;
@@ -419,7 +454,7 @@ public class Player implements Runnable {
     }
 
     private void SHOOTINGheadChanger() {
-        switch (lookingDirection){
+        switch (lookingDirection) {
             case "north":
                 this.head.setImage(heads[5]);
                 break;
