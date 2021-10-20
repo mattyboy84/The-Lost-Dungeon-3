@@ -97,6 +97,7 @@ public class Main extends Application {
                 case F -> stage.setFullScreen(!stage.isFullScreen());
                 case J -> player.currentRoom.forceOpenDoors(group);
                 case B -> player.updateCoins(1);
+                case TAB -> player.overlay.over();
 
             }
         });

@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class Player_Overlay {
@@ -15,9 +14,11 @@ public class Player_Overlay {
     String file = "file:src\\resources\\gfx\\ui\\hudpickups.png";
 
     ImageView icon_coin, icon_bomb, icon_key;
-    Vecc2f posCoin, posKey, posBomb, posScore;
+    Vecc2f posCoin, posKey, posBomb, posScore, posTime;
     Text txtCoin, txtKey, txtBomb;
     Text txtScore;
+    Text txtTime;
+    int hour = 0, minute = 0, second = 0;
 
     public Player_Overlay(float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int score) {
         float g = ((scaleX + scaleY) / 2);
@@ -34,9 +35,9 @@ public class Player_Overlay {
         this.txtBomb = new Text("00");
         this.txtKey = new Text("00");
         //
-        this.txtCoin.setOpacity(0.8);
-        this.txtBomb.setOpacity(0.8);
-        this.txtKey.setOpacity(0.8);
+        this.txtCoin.setOpacity(0.9);
+        this.txtBomb.setOpacity(0.9);
+        this.txtKey.setOpacity(0.9);
         //
         Font font = Font.loadFont("file:src\\resources\\font\\upheavtt.ttf", 50 * g);
         //
@@ -44,12 +45,25 @@ public class Player_Overlay {
         this.txtBomb.setFont(font);
         this.txtKey.setFont(font);
         //
+        this.txtCoin.setStroke(Color.WHITE);
+        this.txtCoin.setStrokeWidth(1.5 * g);
+        this.txtBomb.setStroke(Color.WHITE);
+        this.txtBomb.setStrokeWidth(1.5 * g);
+        this.txtKey.setStroke(Color.WHITE);
+        this.txtKey.setStrokeWidth(1.5 * g);
+        //
         this.txtScore = new Text("Score: " + score);
         this.txtScore.setFill(Color.WHITE);
         this.txtScore.setFont(font);
         this.posScore = new Vecc2f(((screenBounds.getWidth() / 2) - (this.txtScore.getBoundsInParent().getWidth() / 2)) * scaleX, 180 * scaleY);
-        this.txtScore.setOpacity(0.5);
-
+        this.txtScore.relocate(this.posScore.x, this.posScore.y);
+        this.txtScore.setOpacity(0.4);
+        //
+        this.txtTime = new Text("Time: 00:00:00");
+        this.txtTime.setFill(Color.WHITE);
+        this.txtTime.setFont(font);
+        this.posTime = new Vecc2f(((screenBounds.getWidth() / 2) - (this.txtTime.getBoundsInParent().getWidth() / 2)) * scaleX, (this.txtScore.getBoundsInParent().getMaxY()));
+        this.txtTime.setOpacity(0.4);
 
     }
 
@@ -60,7 +74,7 @@ public class Player_Overlay {
     }
 
     public void load(Group group) {
-        group.getChildren().addAll(this.icon_bomb, this.icon_coin, this.icon_key, this.txtCoin, this.txtKey, this.txtBomb, this.txtScore);
+        group.getChildren().addAll(this.icon_bomb, this.icon_coin, this.icon_key, this.txtCoin, this.txtKey, this.txtBomb, this.txtScore, this.txtTime);
         //
         this.icon_coin.relocate(posCoin.x, posCoin.y);
         this.icon_bomb.relocate(posBomb.x, posBomb.y);
@@ -74,14 +88,49 @@ public class Player_Overlay {
         this.txtBomb.relocate(this.posBomb.x + (this.icon_bomb.getBoundsInParent().getWidth()), this.posBomb.y);
         this.txtKey.relocate(this.posKey.x + (this.icon_key.getBoundsInParent().getWidth()), this.posKey.y);
         this.txtScore.relocate(this.posScore.x, this.posScore.y);
+        this.txtTime.relocate(this.posTime.x, this.posTime.y);
         //
         this.txtCoin.setViewOrder(-11);
         this.txtBomb.setViewOrder(-11);
         this.txtKey.setViewOrder(-11);
         this.txtScore.setViewOrder(-11);
+        this.txtTime.setViewOrder(-11);
+        //
+        //this.txtTime.setVisible(false);
+        //this.txtScore.setVisible(false);
     }
 
-    public void updateScore(int score){
+    public void updateTime() {
+        if (hour < 99) {
+            StringBuilder result = new StringBuilder();
+            second++;
+            if (second > 59) {
+                minute++;
+                second = 0;
+            }
+            if (minute > 59) {
+                hour++;
+                minute = 0;
+            }
+
+            if (hour<10){
+                result.append("0");
+            }
+            result.append(hour).append(":");
+            if (minute<10){
+                result.append("0");
+            }
+            result.append(minute).append(":");
+            if (second<10){
+                result.append("0");
+            }
+            result.append(second);
+        txtTime.setText("Time: " + result);
+        }
+
+    }
+
+    public void updateScore(int score) {
         this.txtScore.setText("Score: " + score);
     }
 
@@ -107,5 +156,8 @@ public class Player_Overlay {
         }
     }
 
-
+    public void over() {
+        this.txtScore.setVisible(!this.txtScore.isVisible());
+        this.txtTime.setVisible(!this.txtTime.isVisible());
+    }
 }

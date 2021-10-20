@@ -54,6 +54,7 @@ public class Player implements Runnable {
     boolean attacking;
     boolean collide = false;
     boolean justShot = false;
+    boolean start=false;
     //timers;
     int animationTimer;
     int doorTriggerTimer;
@@ -62,7 +63,7 @@ public class Player implements Runnable {
     int scoreTimer;
     //
     Room currentRoom;
-    Player_Overlay overplay;
+    Player_Overlay overlay;
     //
     int lightRadius = 110;
     //
@@ -102,7 +103,7 @@ public class Player implements Runnable {
     }
 
     public void run() {
-        overplay = new Player_Overlay(scaleX, scaleY, screenBounds, sheetScale, score);
+        overlay = new Player_Overlay(scaleX, scaleY, screenBounds, sheetScale, score);
         xSpeed.mult(scaleX);
         ySpeed.mult(scaleY);
         veloLimit = 7 * avgScale;
@@ -252,9 +253,10 @@ public class Player implements Runnable {
                 doorTriggerTimer = 0;
                 doorTriggerChecker(dungeon);
             }
-            if (scoreTimer>=60){
+            if (scoreTimer>=60 && start){//waits until initial movement then starts the UI
                 scoreTimer=1;
                 updateScore(-1);
+                updateTime();
             }
             //
             c.relocate(this.position.x, this.position.y);
@@ -264,6 +266,8 @@ public class Player implements Runnable {
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
     }
+
+
 
     private void roomFinder(Dungeon dungeon) {
         for (int i = 0; i < dungeon.rooms.size(); i++) {
@@ -295,9 +299,13 @@ public class Player implements Runnable {
         }
     }
 
+    private void updateTime() {
+        overlay.updateTime();
+    }
+
     public void updateScore(int diff) {
         this.score += diff;
-        overplay.updateScore(score);
+        overlay.updateScore(score);
     }
 
     private void updateItems() {
@@ -308,17 +316,17 @@ public class Player implements Runnable {
 
     public void updateCoins(int diff) {
         this.coinNumber += diff;
-        overplay.updateCoinNumber(this.coinNumber);
+        overlay.updateCoinNumber(this.coinNumber);
     }
 
     public void updateKeys(int diff) {
         this.keyNumber += diff;
-        overplay.updateKeyNumber(this.keyNumber);
+        overlay.updateKeyNumber(this.keyNumber);
     }
 
     public void updateBombs(int diff) {
         this.bombNumber += diff;
-        overplay.updateBombNumber(this.bombNumber);
+        overlay.updateBombNumber(this.bombNumber);
     }
 
     public boolean colliding() {
@@ -546,7 +554,13 @@ public class Player implements Runnable {
         relocate();
 
 
-        overplay.load(group);
+        overlay.load(group);
+    }
+
+    private void startChecker() {
+        if (!start){
+            start=true;
+        }
     }
 
     public boolean isNorthMOVING() {
@@ -555,14 +569,18 @@ public class Player implements Runnable {
 
     public void setNorthMOVING(boolean northMOVING) {
         this.northMOVING = northMOVING;
+        startChecker();
     }
+
+
 
     public boolean isEastMOVING() {
         return eastMOVING;
     }
 
     public void setEastMOVING(boolean eastMOVING) {
-        this.eastMOVING = eastMOVING;
+        this.eastMOVING = eastMOVING;        startChecker();
+
     }
 
     public boolean isWestMOVING() {
@@ -570,7 +588,8 @@ public class Player implements Runnable {
     }
 
     public void setWestMOVING(boolean westMOVING) {
-        this.westMOVING = westMOVING;
+        this.westMOVING = westMOVING;        startChecker();
+
     }
 
     public boolean isSouthMOVING() {
@@ -578,7 +597,8 @@ public class Player implements Runnable {
     }
 
     public void setSouthMOVING(boolean southMOVING) {
-        this.southMOVING = southMOVING;
+        this.southMOVING = southMOVING;        startChecker();
+
     }
 
     public boolean isNorthLOOKING() {
@@ -586,7 +606,8 @@ public class Player implements Runnable {
     }
 
     public void setNorthLOOKING(boolean northLOOKING) {
-        this.northLOOKING = northLOOKING;
+        this.northLOOKING = northLOOKING;        startChecker();
+
     }
 
     public boolean isEastLOOKING() {
@@ -594,7 +615,8 @@ public class Player implements Runnable {
     }
 
     public void setEastLOOKING(boolean eastLOOKING) {
-        this.eastLOOKING = eastLOOKING;
+        this.eastLOOKING = eastLOOKING;        startChecker();
+
     }
 
     public boolean isWestLOOKING() {
@@ -602,7 +624,8 @@ public class Player implements Runnable {
     }
 
     public void setWestLOOKING(boolean westLOOKING) {
-        this.westLOOKING = westLOOKING;
+        this.westLOOKING = westLOOKING;        startChecker();
+
     }
 
     public boolean isSouthLOOKING() {
@@ -610,6 +633,7 @@ public class Player implements Runnable {
     }
 
     public void setSouthLOOKING(boolean southLOOKING) {
-        this.southLOOKING = southLOOKING;
+        this.southLOOKING = southLOOKING;        startChecker();
+
     }
 }
