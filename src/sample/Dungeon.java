@@ -188,7 +188,7 @@ public class Dungeon {
             //System.out.print(i + " ");
         }
         System.out.print("-");//start with 1 to account for I column
-
+        //
         for (int i = 0; i < map.length; i++) {//3 for every unit in map,
             System.out.print("---");
         }

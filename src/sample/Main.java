@@ -15,24 +15,25 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
 
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-    Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+    static Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 
     //
     //1080p
-    int madeWithWidth = 1920;
-    int madeWithHeight = 1080;
+    static int madeWithWidth = 1920;
+    static int madeWithHeight = 1080;
     //
-    int screenWidth = (int) screenBounds.getWidth();
-    int screenHeight = (int) screenBounds.getHeight();
+    static int screenWidth = (int) screenBounds.getWidth();
+    static int screenHeight = (int) screenBounds.getHeight();
     //
-    float scaleX = (float) screenWidth / madeWithWidth;
-    float scaleY = (float) screenHeight / madeWithHeight;
+    static float scaleX = (float) screenWidth / madeWithWidth;
+    static float scaleY = (float) screenHeight / madeWithHeight;
 
     Group group = new Group();
     Group menuGroup = new Group();
@@ -41,10 +42,16 @@ public class Main extends Application {
     //
     Dungeon dungeon = new Dungeon();
     Player player = new Player();
+    static boolean p;
 
 
     @Override
     public void start(Stage stage) throws Exception {
+        if (scaleX==1){
+            p=false;
+        }else {
+            p=true;
+        }
         //System.out.println(getParameters().getRaw());
         System.out.println(screenBounds);
         //1920 x 1080
@@ -83,7 +90,6 @@ public class Main extends Application {
                 System.out.println("load game");
             }
         });
-
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case W -> player.setNorthMOVING(true);
@@ -96,9 +102,12 @@ public class Main extends Application {
                 case RIGHT -> player.setEastLOOKING(true);
                 case F -> stage.setFullScreen(!stage.isFullScreen());
                 case J -> player.currentRoom.forceOpenDoors(group);
-                case B -> player.updateCoins(1);
+                //case B -> player.updateCoins(3);
                 case TAB -> player.overlay.over();
-
+                case C-> player.increaseHealth(1,group);
+                case V-> player.decreaseHealth(1,group);
+                case B-> player.increaseMaxHealth(2,group);
+                case N-> player.decreaseMaxHealth(2,group);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {

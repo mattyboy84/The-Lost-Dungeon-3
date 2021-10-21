@@ -37,6 +37,8 @@ public class Player implements Runnable {
     //
     int coinNumber = 0, keyNumber = 0, bombNumber = 0;
     int score = 100;
+    int health = 6, TOTAL_Health = 6;
+    final int  MIN_Health = 0, MAXIMUM_HEALTH=32;
     //
     Vecc2f VECscale = new Vecc2f();
     Vecc2f bodyOffset, headOffset;
@@ -54,7 +56,7 @@ public class Player implements Runnable {
     boolean attacking;
     boolean collide = false;
     boolean justShot = false;
-    boolean start=false;
+    boolean start = false;
     //timers;
     int animationTimer;
     int doorTriggerTimer;
@@ -104,6 +106,7 @@ public class Player implements Runnable {
 
     public void run() {
         overlay = new Player_Overlay(scaleX, scaleY, screenBounds, sheetScale, score);
+        overlay.updateHealth(health,TOTAL_Health,MAXIMUM_HEALTH,group);
         xSpeed.mult(scaleX);
         ySpeed.mult(scaleY);
         veloLimit = 7 * avgScale;
@@ -178,7 +181,6 @@ public class Player implements Runnable {
     }
 
 
-
     private void playerController(Dungeon dungeon) {
         controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
             currentRoom.shading.removeActiveSource(hashCode());
@@ -187,7 +189,6 @@ public class Player implements Runnable {
             doorTriggerTimer++;
             attackingTimer++;
             scoreTimer++;
-
             //
             this.direction.set(velocity.x, velocity.y);
             this.direction.limit(1);
@@ -253,8 +254,8 @@ public class Player implements Runnable {
                 doorTriggerTimer = 0;
                 doorTriggerChecker(dungeon);
             }
-            if (scoreTimer>=60 && start){//waits until initial movement then starts the UI
-                scoreTimer=1;
+            if (scoreTimer >= 60 && start) {//waits until initial movement then starts the UI
+                scoreTimer = 1;
                 updateScore(-1);
                 updateTime();
             }
@@ -266,7 +267,6 @@ public class Player implements Runnable {
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
     }
-
 
 
     private void roomFinder(Dungeon dungeon) {
@@ -297,6 +297,38 @@ public class Player implements Runnable {
                 currentRoom.load(group);
             }
         }
+    }
+
+    public void increaseHealth(int change,Group group) {
+        this.health += change;
+        this.health = Math.min(this.health, TOTAL_Health);
+        overlay.updateHealth(this.health,this.TOTAL_Health,this.MAXIMUM_HEALTH,group);
+    }
+
+    public void decreaseHealth(int change,Group group) {
+        this.health -= change;
+        this.health = Math.max(this.health, MIN_Health);
+        overlay.updateHealth(this.health,this.TOTAL_Health,this.MAXIMUM_HEALTH,group);
+    }
+    public void increaseMaxHealth(int change,Group group) {
+        this.TOTAL_Health += change;
+        if(TOTAL_Health>=MAXIMUM_HEALTH){
+            TOTAL_Health=MAXIMUM_HEALTH;
+            //this.health=MAXIMUM_HEALTH;
+        }else {
+            this.health+=2;
+        }
+        overlay.updateHealth(this.health,this.TOTAL_Health,this.MAXIMUM_HEALTH,group);
+    }
+
+    public void decreaseMaxHealth(int change,Group group) {
+        this.TOTAL_Health -= change;
+        if (TOTAL_Health<MIN_Health){
+            TOTAL_Health=MIN_Health;
+        }else {
+            this.health-=2;
+        }
+        overlay.updateHealth(this.health,this.TOTAL_Health,this.MAXIMUM_HEALTH,group);
     }
 
     private void updateTime() {
@@ -558,8 +590,8 @@ public class Player implements Runnable {
     }
 
     private void startChecker() {
-        if (!start){
-            start=true;
+        if (!start) {
+            start = true;
         }
     }
 
@@ -573,13 +605,13 @@ public class Player implements Runnable {
     }
 
 
-
     public boolean isEastMOVING() {
         return eastMOVING;
     }
 
     public void setEastMOVING(boolean eastMOVING) {
-        this.eastMOVING = eastMOVING;        startChecker();
+        this.eastMOVING = eastMOVING;
+        startChecker();
 
     }
 
@@ -588,7 +620,8 @@ public class Player implements Runnable {
     }
 
     public void setWestMOVING(boolean westMOVING) {
-        this.westMOVING = westMOVING;        startChecker();
+        this.westMOVING = westMOVING;
+        startChecker();
 
     }
 
@@ -597,7 +630,8 @@ public class Player implements Runnable {
     }
 
     public void setSouthMOVING(boolean southMOVING) {
-        this.southMOVING = southMOVING;        startChecker();
+        this.southMOVING = southMOVING;
+        startChecker();
 
     }
 
@@ -606,7 +640,8 @@ public class Player implements Runnable {
     }
 
     public void setNorthLOOKING(boolean northLOOKING) {
-        this.northLOOKING = northLOOKING;        startChecker();
+        this.northLOOKING = northLOOKING;
+        startChecker();
 
     }
 
@@ -615,7 +650,8 @@ public class Player implements Runnable {
     }
 
     public void setEastLOOKING(boolean eastLOOKING) {
-        this.eastLOOKING = eastLOOKING;        startChecker();
+        this.eastLOOKING = eastLOOKING;
+        startChecker();
 
     }
 
@@ -624,7 +660,8 @@ public class Player implements Runnable {
     }
 
     public void setWestLOOKING(boolean westLOOKING) {
-        this.westLOOKING = westLOOKING;        startChecker();
+        this.westLOOKING = westLOOKING;
+        startChecker();
 
     }
 
@@ -633,7 +670,8 @@ public class Player implements Runnable {
     }
 
     public void setSouthLOOKING(boolean southLOOKING) {
-        this.southLOOKING = southLOOKING;        startChecker();
+        this.southLOOKING = southLOOKING;
+        startChecker();
 
     }
 }

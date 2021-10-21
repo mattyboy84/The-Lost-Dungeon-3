@@ -9,6 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
+
 public class Player_Overlay {
 
     String file = "file:src\\resources\\gfx\\ui\\hudpickups.png";
@@ -19,6 +21,9 @@ public class Player_Overlay {
     Text txtScore;
     Text txtTime;
     int hour = 0, minute = 0, second = 0;
+    ArrayList<Heart> hearts = new ArrayList<Heart>();
+    //
+    boolean halfHeart = false;
 
     public Player_Overlay(float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int score) {
         float g = ((scaleX + scaleY) / 2);
@@ -55,14 +60,14 @@ public class Player_Overlay {
         this.txtScore = new Text("Score: " + score);
         this.txtScore.setFill(Color.WHITE);
         this.txtScore.setFont(font);
-        this.posScore = new Vecc2f(((screenBounds.getWidth() / 2) - (this.txtScore.getBoundsInParent().getWidth() / 2)) * scaleX, 180 * scaleY);
+        this.posScore = new Vecc2f(((screenBounds.getWidth() / 2)) - ((this.txtScore.getBoundsInParent().getWidth() / 2)), 180 * scaleY);
         this.txtScore.relocate(this.posScore.x, this.posScore.y);
         this.txtScore.setOpacity(0.4);
         //
         this.txtTime = new Text("Time: 00:00:00");
         this.txtTime.setFill(Color.WHITE);
         this.txtTime.setFont(font);
-        this.posTime = new Vecc2f(((screenBounds.getWidth() / 2) - (this.txtTime.getBoundsInParent().getWidth() / 2)) * scaleX, (this.txtScore.getBoundsInParent().getMaxY()));
+        this.posTime = new Vecc2f(((screenBounds.getWidth() / 2)) - ((this.txtTime.getBoundsInParent().getWidth() / 2)), (this.txtScore.getBoundsInParent().getMaxY()));
         this.txtTime.setOpacity(0.4);
 
     }
@@ -113,19 +118,19 @@ public class Player_Overlay {
                 minute = 0;
             }
 
-            if (hour<10){
+            if (hour < 10) {
                 result.append("0");
             }
             result.append(hour).append(":");
-            if (minute<10){
+            if (minute < 10) {
                 result.append("0");
             }
             result.append(minute).append(":");
-            if (second<10){
+            if (second < 10) {
                 result.append("0");
             }
             result.append(second);
-        txtTime.setText("Time: " + result);
+            txtTime.setText("Time: " + result);
         }
 
     }
@@ -159,5 +164,87 @@ public class Player_Overlay {
     public void over() {
         this.txtScore.setVisible(!this.txtScore.isVisible());
         this.txtTime.setVisible(!this.txtTime.isVisible());
+    }
+
+    public void updateHealth(int health, int total_health, int maximum_health, Group group) {
+        halfHeart = false;
+        int a = total_health;
+        int b = health;
+        int diff = a - b;
+        for (Heart heart : hearts) {
+            try {
+                heart.remove(group);
+            } catch (Exception e) {
+
+            }
+        }
+        hearts.clear();
+
+        if (b % 2 == 1) {
+            b -= 1;
+            halfHeart = true;
+        }
+        if ((diff % 2) == 1) {
+            diff = diff - 1;
+        }
+        for (int i = 0; i < b / 2; i++) {
+            hearts.add(new Heart(hearts.size(), 2, maximum_health));
+        }
+        if (halfHeart) {
+            hearts.add(new Heart(hearts.size(), 1, maximum_health));
+        }
+        for (int i = 0; i < diff / 2; i++) {
+            hearts.add(new Heart(hearts.size(), 0, maximum_health));
+        }
+        for (Heart heart : hearts) {
+            heart.load(group);
+        }
+    }
+
+    private class Heart {
+        Vecc2f position;
+        ImageView heart;
+        String file = "file:src\\resources\\gfx\\ui\\ui_hearts.png";
+        int sheetScale = Main.p ? 3 : 4;
+        int width_heart = (int) ((16 * sheetScale) * 0.8);
+        //
+        ImageView heart_FULL = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * sheetScale), (new Image(file).getHeight() * sheetScale),
+                false, true).getPixelReader(), (int) (0 * sheetScale),
+                (int) (0 * sheetScale), (int) (16 * sheetScale), (int) (16 * sheetScale))));
+        //
+        ImageView heart_HALF = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * sheetScale), (new Image(file).getHeight() * sheetScale),
+                false, true).getPixelReader(), (int) (16 * sheetScale),
+                (int) (0 * sheetScale), (int) (16 * sheetScale), (int) (16 * sheetScale))));
+        //
+        ImageView heart_EMPTY = (new ImageView(new WritableImage(new Image(file, Math.round(new Image(file).getWidth() * sheetScale), (new Image(file).getHeight() * sheetScale),
+                false, true).getPixelReader(), (int) (32 * sheetScale),
+                (int) (0 * sheetScale), (int) (16 * sheetScale), (int) (16 * sheetScale))));
+
+        public Heart(int size, int a, int MAX) {
+            switch (a) {
+                case 2://full heart
+                    this.heart = heart_FULL;
+                    break;
+                case 1://half heart
+                    this.heart = heart_HALF;
+                    break;
+                case 0:
+                    this.heart = heart_EMPTY;
+                    break;
+            }
+
+
+            this.position = new Vecc2f((size >= (MAX / 4)) ? (size-(int)(MAX/4))*width_heart : size*width_heart, (size >= (MAX / 4)) ? width_heart : 0);
+        }
+
+        public void remove(Group group) {
+            group.getChildren().remove(this.heart);
+        }
+
+        public void load(Group group) {
+            group.getChildren().add(this.heart);
+            this.heart.relocate(this.position.x, this.position.y);
+            this.heart.setViewOrder(-11);
+        }
     }
 }
