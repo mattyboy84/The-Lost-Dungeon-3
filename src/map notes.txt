@@ -1,0 +1,7 @@
+file minimap2
+
+Visited
+Unvisited
+Current
+
+default room: 18 x 16           108 by 48
