@@ -312,7 +312,7 @@ public class Player implements Runnable {
     }
     public void increaseMaxHealth(int change,Group group) {
         this.TOTAL_Health += change;
-        if(TOTAL_Health>=MAXIMUM_HEALTH){
+        if(TOTAL_Health>MAXIMUM_HEALTH){
             TOTAL_Health=MAXIMUM_HEALTH;
             //this.health=MAXIMUM_HEALTH;
         }else {

@@ -47,11 +47,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        if (scaleX==1){
-            p=false;
-        }else {
-            p=true;
-        }
+        p= scaleX != 1;
         //System.out.println(getParameters().getRaw());
         System.out.println(screenBounds);
         //1920 x 1080

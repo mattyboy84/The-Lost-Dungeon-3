@@ -101,8 +101,8 @@ public class Player_Overlay {
         this.txtScore.setViewOrder(-11);
         this.txtTime.setViewOrder(-11);
         //
-        //this.txtTime.setVisible(false);
-        //this.txtScore.setVisible(false);
+        this.txtTime.setVisible(false);
+        this.txtScore.setVisible(false);
     }
 
     public void updateTime() {
@@ -118,21 +118,21 @@ public class Player_Overlay {
                 minute = 0;
             }
 
-            if (hour < 10) {
-                result.append("0");
-            }
+            check(hour,result);
             result.append(hour).append(":");
-            if (minute < 10) {
-                result.append("0");
-            }
+            check(minute,result);
             result.append(minute).append(":");
-            if (second < 10) {
-                result.append("0");
-            }
+            check(second,result);
             result.append(second);
+
             txtTime.setText("Time: " + result);
         }
+    }
 
+    private void check(int check, StringBuilder result) {
+        if (check < 10) {
+            result.append("0");
+        }
     }
 
     public void updateScore(int score) {
@@ -205,7 +205,7 @@ public class Player_Overlay {
         Vecc2f position;
         ImageView heart;
         String file = "file:src\\resources\\gfx\\ui\\ui_hearts.png";
-        int sheetScale = Main.p ? 3 : 4;
+        int sheetScale = Main.p ? 2 : 3;
         int width_heart = (int) ((16 * sheetScale) * 0.8);
         //
         ImageView heart_FULL = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * sheetScale), (new Image(file).getHeight() * sheetScale),
@@ -234,7 +234,7 @@ public class Player_Overlay {
             }
 
 
-            this.position = new Vecc2f((size >= (MAX / 4)) ? (size-(int)(MAX/4))*width_heart : size*width_heart, (size >= (MAX / 4)) ? width_heart : 0);
+            this.position = new Vecc2f((200 * Main.scaleX) + ((size >= (MAX / 4)) ? (size - (MAX / 4)) * width_heart : size * width_heart), (50 * Main.scaleY) + ((size >= (MAX / 4)) ? width_heart : 0));
         }
 
         public void remove(Group group) {
