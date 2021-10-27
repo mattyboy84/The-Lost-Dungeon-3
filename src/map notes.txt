@@ -1,7 +1,21 @@
-file minimap2
 
 Visited
 Unvisited
 Current
 
-default room: 18 x 16           108 by 48
+
+file minimap1
+default room: 9 x 8
+
+27 x 160 visited delta
+27 x 192 unvisited delta
+27 x 224 current delta
+
+
+
+file minimap2
+default room 18 x 16
+
+108 x 48 visited delta
+108 x 112 unvisited delta
+108 x 176 current delta

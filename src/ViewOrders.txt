@@ -10,6 +10,7 @@ Player Tears/Attacks -8
 foreground insects (tiny flies etc) -9
 Shading layer -10
 UI Layer (Health, coins/keys/bombs counter,dungeon map,overlay text) -11
+UI Map overlay border (appears on top of minimap) -12
 
 
 

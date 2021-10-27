@@ -1,23 +1,13 @@
 package sample;
 
-import com.google.gson.JsonObject;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends Application {
 
@@ -65,7 +55,7 @@ public class Main extends Application {
         //    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
         int floor = 0;
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
-        dungeon.displayMap();
+        Dungeon.displayMap(dungeon.map);
         //
         dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
 
@@ -98,12 +88,13 @@ public class Main extends Application {
                 case RIGHT -> player.setEastLOOKING(true);
                 case F -> stage.setFullScreen(!stage.isFullScreen());
                 case J -> player.currentRoom.forceOpenDoors(group);
-                //case B -> player.updateCoins(3);
-                case TAB -> player.overlay.over();
+                case M -> player.overlay.revealMap();
+                case TAB -> player.overlay.over(group);
                 case C-> player.increaseHealth(1,group);
                 case V-> player.decreaseHealth(1,group);
                 case B-> player.increaseMaxHealth(2,group);
                 case N-> player.decreaseMaxHealth(2,group);
+                case I -> player.overlay.miniMap.updateMinimap(9,9);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {

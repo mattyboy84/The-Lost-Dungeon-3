@@ -75,6 +75,11 @@ public class Dungeon {
             map[this.startX][this.startY + 1] = 1;
             map[this.startX][this.startY - 1] = 1;
             //
+            map[this.startX - 2][this.startY] = 1;
+            map[this.startX - 3][this.startY] = 1;
+            map[this.startX + 2][this.startY] = 1;
+            map[this.startX + 3][this.startY] = 1;
+            //
             for (int[] ints : map) {
                 for (int j = 0; j < map[0].length; j++) {
                     if (ints[j] == 1) {
@@ -161,7 +166,7 @@ public class Dungeon {
         finRooms++;
     }
 
-    public void displayMap() {
+    public static void displayMap(int[][] map) {
         System.out.println("I down, J across");
         StringBuilder a = new StringBuilder();
         a.append("   ");
@@ -182,7 +187,7 @@ public class Dungeon {
                 System.out.print(i + " ");
             }
             for (int j = 0; j < map[0].length; j++) {
-                    System.out.print(map[i][j] + "  ");
+                System.out.print(map[i][j] + "  ");
             }
             System.out.println("");
             //System.out.print(i + " ");

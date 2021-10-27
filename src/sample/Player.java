@@ -38,7 +38,7 @@ public class Player implements Runnable {
     int coinNumber = 0, keyNumber = 0, bombNumber = 0;
     int score = 100;
     int health = 6, TOTAL_Health = 6;
-    final int  MIN_Health = 0, MAXIMUM_HEALTH=32;
+    final int MIN_Health = 0, MAXIMUM_HEALTH = 32;
     //
     Vecc2f VECscale = new Vecc2f();
     Vecc2f bodyOffset, headOffset;
@@ -105,8 +105,13 @@ public class Player implements Runnable {
     }
 
     public void run() {
-        overlay = new Player_Overlay(scaleX, scaleY, screenBounds, sheetScale, score);
-        overlay.updateHealth(health,TOTAL_Health,MAXIMUM_HEALTH,group);
+        overlay = new Player_Overlay(scaleX, scaleY, screenBounds, sheetScale, score, dungeon.map);
+        overlay.updateHealth(health, TOTAL_Health, MAXIMUM_HEALTH, group);
+        overlay.showMap(group);
+
+        overlay.miniMap.updateMinimap(this.roomX, this.roomY);
+        overlay.largeMap.updateLargemap(this.roomX, this.roomY, screenBounds);
+
         xSpeed.mult(scaleX);
         ySpeed.mult(scaleY);
         veloLimit = 7 * avgScale;
@@ -292,6 +297,10 @@ public class Player implements Runnable {
                     case "left" -> this.roomY = this.roomY - 1;
                     case "right" -> this.roomY = this.roomY + 1;
                 }
+
+                overlay.miniMap.updateMinimap(this.roomX, this.roomY);
+                overlay.largeMap.updateLargemap(this.roomX, this.roomY,screenBounds);
+
                 currentRoom.unload(group);
                 roomFinder(dungeon);
                 currentRoom.load(group);
@@ -299,36 +308,37 @@ public class Player implements Runnable {
         }
     }
 
-    public void increaseHealth(int change,Group group) {
+    public void increaseHealth(int change, Group group) {
         this.health += change;
         this.health = Math.min(this.health, TOTAL_Health);
-        overlay.updateHealth(this.health,this.TOTAL_Health,this.MAXIMUM_HEALTH,group);
+        overlay.updateHealth(this.health, this.TOTAL_Health, this.MAXIMUM_HEALTH, group);
     }
 
-    public void decreaseHealth(int change,Group group) {
+    public void decreaseHealth(int change, Group group) {
         this.health -= change;
         this.health = Math.max(this.health, MIN_Health);
-        overlay.updateHealth(this.health,this.TOTAL_Health,this.MAXIMUM_HEALTH,group);
-    }
-    public void increaseMaxHealth(int change,Group group) {
-        this.TOTAL_Health += change;
-        if(TOTAL_Health>MAXIMUM_HEALTH){
-            TOTAL_Health=MAXIMUM_HEALTH;
-            //this.health=MAXIMUM_HEALTH;
-        }else {
-            this.health+=2;
-        }
-        overlay.updateHealth(this.health,this.TOTAL_Health,this.MAXIMUM_HEALTH,group);
+        overlay.updateHealth(this.health, this.TOTAL_Health, this.MAXIMUM_HEALTH, group);
     }
 
-    public void decreaseMaxHealth(int change,Group group) {
-        this.TOTAL_Health -= change;
-        if (TOTAL_Health<MIN_Health){
-            TOTAL_Health=MIN_Health;
-        }else {
-            this.health-=2;
+    public void increaseMaxHealth(int change, Group group) {
+        this.TOTAL_Health += change;
+        if (TOTAL_Health > MAXIMUM_HEALTH) {
+            TOTAL_Health = MAXIMUM_HEALTH;
+            //this.health=MAXIMUM_HEALTH;
+        } else {
+            this.health += 2;
         }
-        overlay.updateHealth(this.health,this.TOTAL_Health,this.MAXIMUM_HEALTH,group);
+        overlay.updateHealth(this.health, this.TOTAL_Health, this.MAXIMUM_HEALTH, group);
+    }
+
+    public void decreaseMaxHealth(int change, Group group) {
+        this.TOTAL_Health -= change;
+        if (TOTAL_Health < MIN_Health) {
+            TOTAL_Health = MIN_Health;
+        } else {
+            this.health -= 2;
+        }
+        overlay.updateHealth(this.health, this.TOTAL_Health, this.MAXIMUM_HEALTH, group);
     }
 
     private void updateTime() {

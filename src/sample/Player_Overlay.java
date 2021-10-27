@@ -10,8 +10,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public class Player_Overlay {
+public class Player_Overlay{
 
     String file = "file:src\\resources\\gfx\\ui\\hudpickups.png";
 
@@ -22,10 +23,15 @@ public class Player_Overlay {
     Text txtTime;
     int hour = 0, minute = 0, second = 0;
     ArrayList<Heart> hearts = new ArrayList<Heart>();
+    DungeonMap miniMap;
+    DungeonMap largeMap;
+
+    String map="minimap";
+
     //
     boolean halfHeart = false;
 
-    public Player_Overlay(float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int score) {
+    public Player_Overlay(float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int score, int[][] map) {
         float g = ((scaleX + scaleY) / 2);
 
         this.icon_coin = imageGetter(scaleX, scaleY, sheetScale, 0, 0);
@@ -69,6 +75,10 @@ public class Player_Overlay {
         this.txtTime.setFont(font);
         this.posTime = new Vecc2f(((screenBounds.getWidth() / 2)) - ((this.txtTime.getBoundsInParent().getWidth() / 2)), (this.txtScore.getBoundsInParent().getMaxY()));
         this.txtTime.setOpacity(0.4);
+        //
+        miniMap=new DungeonMap("file:src\\resources\\gfx\\ui\\minimap1.png",9,8,27,160,27,192,27,224,map,scaleX,scaleY,screenBounds,4);
+        largeMap=new DungeonMap("file:src\\resources\\gfx\\ui\\minimap2.png",18,16,108,48,108,112,108,176,map,scaleX,scaleY,screenBounds,3);
+        //largeMap.center(screenBounds);
 
     }
 
@@ -117,12 +127,11 @@ public class Player_Overlay {
                 hour++;
                 minute = 0;
             }
-
-            check(hour,result);
+            check(hour, result);
             result.append(hour).append(":");
-            check(minute,result);
+            check(minute, result);
             result.append(minute).append(":");
-            check(second,result);
+            check(second, result);
             result.append(second);
 
             txtTime.setText("Time: " + result);
@@ -161,9 +170,27 @@ public class Player_Overlay {
         }
     }
 
-    public void over() {
+    public void over(Group group) {
         this.txtScore.setVisible(!this.txtScore.isVisible());
         this.txtTime.setVisible(!this.txtTime.isVisible());
+        switch (map){
+            case "minimap":
+               miniMap.unload(group);
+               map="largemap";
+                break;
+            case "largemap":
+               largeMap.unload(group);
+               map="minimap";
+                break;
+        }
+        switch (map){
+            case "minimap":
+                miniMap.load(group);
+                break;
+            case "largemap":
+                largeMap.load(group);
+                break;
+        }
     }
 
     public void updateHealth(int health, int total_health, int maximum_health, Group group) {
@@ -199,6 +226,15 @@ public class Player_Overlay {
         for (Heart heart : hearts) {
             heart.load(group);
         }
+    }
+
+    public void showMap(Group group) {
+        miniMap.load(group);
+    }
+
+    public void revealMap() {
+        miniMap.reveal();
+        largeMap.reveal();
     }
 
     private class Heart {
