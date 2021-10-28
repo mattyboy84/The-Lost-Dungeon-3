@@ -145,9 +145,7 @@ public class DungeonMap {
 
                                         break;
                                 }
-
-                                //mapPiece[j].piece.setVisible(false);
-                                //iconCheck(mapPiece[j].icon, false);
+                                iconCheck(mapPiece[j].icon, false);
                             }
                         }
                     }

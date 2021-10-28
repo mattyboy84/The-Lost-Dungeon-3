@@ -75,14 +75,10 @@ public class Dungeon {
             map[this.startX][this.startY + 1] = 1;
             map[this.startX][this.startY - 1] = 1;
             //
-            map[this.startX - 2][this.startY] = 1;
-            map[this.startX - 3][this.startY] = 1;
-            map[this.startX + 2][this.startY] = 1;
-            map[this.startX + 3][this.startY] = 1;
             //
             for (int[] ints : map) {
                 for (int j = 0; j < map[0].length; j++) {
-                    if (ints[j] == 1) {
+                    if (ints[j] >= 1) {
                         finRooms++;
                     }
                 }
