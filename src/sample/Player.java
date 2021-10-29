@@ -107,7 +107,7 @@ public class Player implements Runnable {
     public void run() {
         overlay = new Player_Overlay(scaleX, scaleY, screenBounds, sheetScale, score, dungeon.map);
         overlay.updateHealth(health, TOTAL_Health, MAXIMUM_HEALTH, group);
-        overlay.showMap(group);
+        overlay.miniMap.load(group);
 
         overlay.miniMap.updateMinimap(this.roomX, this.roomY);
         overlay.largeMap.updateLargemap(this.roomX, this.roomY, screenBounds);

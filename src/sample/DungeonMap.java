@@ -94,11 +94,7 @@ public class DungeonMap {
         for (DungeonMap.mapPiece[] mapPiece : mapPieces) {
             for (int j = 0; j < mapPieces[0].length; j++) {
                 if (mapPiece[j] != null) {
-                    mapPiece[j].position.add(((screenBounds.getWidth()) - maxX), -minY);
-                    mapPiece[j].piece.relocate(mapPiece[j].position.x, mapPiece[j].position.y);
-                    if (mapPiece[j].icon != null) {
-                        mapPiece[j].icon.relocate(mapPiece[j].position.x, mapPiece[j].position.y);
-                    }
+                    mapPiece[j].updatePos(mapPiece[j].position.x+((screenBounds.getWidth()) - maxX),mapPiece[j].position.y + -minY);
                 }
             }
         }
@@ -107,8 +103,6 @@ public class DungeonMap {
 
     private void update(int X, int Y) {
         seenChecker(X + 0, Y + 0);
-        mapPieces[X][Y].current = true;
-
         seenChecker(X + 0, Y + 1);
         seenChecker(X + 1, Y + 0);
         seenChecker(X + 0, Y + -1);
@@ -119,33 +113,26 @@ public class DungeonMap {
         for (DungeonMap.mapPiece[] mapPiece : mapPieces) {
             for (int j = 0; j < mapPieces[0].length; j++) {
                 if (mapPiece[j] != null) {
-                    mapPiece[j].piece.setVisible(false);
-                    iconCheck(mapPiece[j].icon, false);
+                    mapPiece[j].updateVis(false);
                     mapPiece[j].current = false;
                     if (mapPiece[j].seen) {
                         mapPiece[j].piece.setImage(mapPiece[j].unvisited_piece);
-                        mapPiece[j].piece.setVisible(true);
-                        iconCheck(mapPiece[j].icon, true);
+                        mapPiece[j].updateVis(true);
                     }
                     if (mapPiece[j].visited) {
                         mapPiece[j].piece.setImage(mapPiece[j].visited_piece);
-                        mapPiece[j].piece.setVisible(true);
-                        iconCheck(mapPiece[j].icon, true);
+                        mapPiece[j].updateVis(true);
                     }
                     if (edges[0] != null) {
                         for (int i = 0; i < edges.length; i++) {
                             if (mapPiece[j].piece.getBoundsInParent().intersects(edges[i].getBoundsInParent())) {
-                                //System.out.println((edges[i].getBoundsInParent()));
                                 switch (i) {
-                                    case 1://bottom
-                                        mapPiece[j].cutOffBottom(edges[i].getBoundsInParent());
-                                        break;
-                                    case 2://left
-                                        mapPiece[j].cutOffLeft(edges[2].getBoundsInParent());
-
-                                        break;
+                                    case 1 ->//bottom
+                                            mapPiece[j].cutOffBottom(edges[i].getBoundsInParent());
+                                    case 2 ->//left
+                                            mapPiece[j].cutOffLeft(edges[2].getBoundsInParent());
                                 }
-                                iconCheck(mapPiece[j].icon, false);
+                                mapPiece[j].iconCheck(false);
                             }
                         }
                     }
@@ -158,8 +145,7 @@ public class DungeonMap {
                 for (int j = 0; j < mapPieces[0].length; j++) {
                     if (piece[j] != null) {
                         if (!(piece[j].piece.getBoundsInParent().intersects(this.border.getBoundsInParent()))) {
-                            piece[j].piece.setVisible(false);
-                            iconCheck(piece[j].icon, false);
+                            piece[j].updateVis(false);
                         }
                     }
                 }
@@ -171,13 +157,6 @@ public class DungeonMap {
         mapPieces[X][Y].piece.setVisible(true);
         if (mapPieces[X][Y].icon != null) {
             mapPieces[X][Y].icon.setVisible(true);
-        }
-    }
-
-
-    private void iconCheck(ImageView icon, boolean b) {
-        if (icon != null) {
-            icon.setVisible(b);
         }
     }
 
@@ -263,38 +242,34 @@ public class DungeonMap {
             position = new Vecc2f(i * (width * scaleX * sheetScale), j * (height * scaleY * sheetScale));
 
             scaleX = (float) (scaleX * (this.piece.getBoundsInParent().getWidth() / 16));
-            scaleY = (float) (scaleY * (this.piece.getBoundsInParent().getHeight() / 16));
+            scaleY = (float) (scaleY * (this.piece.getBoundsInParent().getHeight() / 16));//scales the icon sheet so that the icons are same width & height as their room
 
             if (type > 1) {
                 switch (type) {
                     case 2 ->//shop
-                            iconGetter("file:src\\resources\\gfx\\ui\\minimap_icons.png", scaleX, scaleY, 64, 0);
+                            iconGetter(scaleX, scaleY, 64, 0);
                     case 3 ->//boss
-                            iconGetter("file:src\\resources\\gfx\\ui\\minimap_icons.png", scaleX, scaleY, 0, 16);
+                            iconGetter(scaleX, scaleY, 0, 16);
                 }
             }
         }
 
-        private void iconGetter(String file, float scaleX, float scaleY, int startX, int startY) {
-            this.icon = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX),
-                    (new Image(file).getHeight() * scaleY), false, false).getPixelReader(),
+        private void iconGetter(float scaleX, float scaleY, int startX, int startY) {
+            this.icon = (new ImageView(new WritableImage(new Image("file:src\\resources\\gfx\\ui\\minimap_icons.png", (new Image("file:src\\resources\\gfx\\ui\\minimap_icons.png").getWidth() * scaleX),
+                    (new Image("file:src\\resources\\gfx\\ui\\minimap_icons.png").getHeight() * scaleY), false, false).getPixelReader(),
                     (int) (startX * scaleX), (int) (startY * scaleY), (int) ((16 * scaleX)), (int) (16 * scaleY))));
-
         }
 
         public void load(Group group) {
             group.getChildren().addAll(this.piece);
             this.piece.relocate(this.position.x, this.position.y);
             this.piece.setViewOrder(-11);
-            this.piece.setOpacity(1);
 
             if (this.icon != null) {
                 group.getChildren().add(this.icon);
                 this.icon.relocate(this.position.x, this.position.y);
                 this.icon.setViewOrder(-11);
-                this.icon.setOpacity(1);
             }
-
         }
 
         public void updatePos(double v, double v1) {
@@ -303,7 +278,6 @@ public class DungeonMap {
             if (this.icon != null) {
                 this.icon.relocate(this.position.x, this.position.y);
             }
-
         }
 
         public void unload(Group group) {
@@ -311,7 +285,6 @@ public class DungeonMap {
             if (this.icon != null) {
                 group.getChildren().remove(this.icon);
             }
-
         }
 
         public void cutOffBottom(Bounds edge) {
@@ -320,13 +293,10 @@ public class DungeonMap {
 
             this.piece.setImage((new ImageView(new WritableImage(this.piece.getImage().getPixelReader(),
                     (int) (0), (int) (0), (int) (this.piece.getBoundsInParent().getWidth()), (int) (this.piece.getBoundsInParent().getHeight() - as))).getImage()));
-
         }
 
         public void cutOffLeft(Bounds edge) {
-
             int as = (int) Math.abs(this.piece.getBoundsInParent().getMinX() - edge.getMinX()) + 1;
-
             this.piece.setImage((new ImageView(new WritableImage(this.piece.getImage().getPixelReader(),
                     (int) (as), (int) (0), (int) (this.piece.getBoundsInParent().getWidth() - as), (int) (this.piece.getBoundsInParent().getHeight()))).getImage()));
             this.alt = true;
@@ -334,6 +304,17 @@ public class DungeonMap {
             this.position.add(as, 0);
             this.piece.relocate(this.position.x, this.position.y);
 
+        }
+
+        public void iconCheck(boolean b) {
+            if (icon != null) {
+                icon.setVisible(b);
+            }
+        }
+
+        public void updateVis(boolean b) {
+            this.piece.setVisible(b);
+            iconCheck(b);
         }
     }
 }

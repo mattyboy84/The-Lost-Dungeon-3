@@ -173,24 +173,16 @@ public class Player_Overlay{
     public void over(Group group) {
         this.txtScore.setVisible(!this.txtScore.isVisible());
         this.txtTime.setVisible(!this.txtTime.isVisible());
-        switch (map){
-            case "minimap":
-               miniMap.unload(group);
-               map="largemap";
-                break;
-            case "largemap":
-               largeMap.unload(group);
-               map="minimap";
-                break;
+        if (map.equals("minimap")){
+            miniMap.unload(group);
+            map="largemap";
+            largeMap.load(group);
+        }else {
+            largeMap.unload(group);
+            map="minimap";
+            miniMap.load(group);
         }
-        switch (map){
-            case "minimap":
-                miniMap.load(group);
-                break;
-            case "largemap":
-                largeMap.load(group);
-                break;
-        }
+
     }
 
     public void updateHealth(int health, int total_health, int maximum_health, Group group) {
@@ -226,10 +218,6 @@ public class Player_Overlay{
         for (Heart heart : hearts) {
             heart.load(group);
         }
-    }
-
-    public void showMap(Group group) {
-        miniMap.load(group);
     }
 
     public void revealMap() {
