@@ -37,7 +37,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        p= scaleX != 1;
+        p = scaleX != 1;
         //System.out.println(getParameters().getRaw());
         System.out.println(screenBounds);
         //1920 x 1080
@@ -50,27 +50,26 @@ public class Main extends Application {
         loadGame.relocate(450, 300);
         System.out.println("ScaleX: " + scaleX + " ScaleY: " + scaleY);
         menuGroup.getChildren().addAll(newGame, loadGame);
-
-        // newGame.setOnMouseClicked(mouseEvent -> {
-        //    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
         int floor = 0;
+        //
+        //
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
         Dungeon.displayMap(dungeon.map);
         //
-        dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
-
         player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3, dungeon, "playerCon", group);
         player.start();
-        while (!Player.loaded){
-            Thread.sleep(100);
-        }
-        player.currentRoom.openDoors(group);
-        player.load(group);
         //
-        stage.setScene(scene);
-        //    }
-        //});
-
+        //
+        newGame.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY && Player.loaded) {
+                dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
+                player.currentRoom.openDoors(group);
+                player.load(group);
+                //
+                stage.setScene(scene);
+            }
+        });
+        //
         loadGame.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                 System.out.println("load game");
@@ -90,11 +89,11 @@ public class Main extends Application {
                 case J -> player.currentRoom.forceOpenDoors(group);
                 case M -> player.overlay.revealMap();
                 case TAB -> player.overlay.over(group);
-                case C-> player.increaseHealth(1,group);
-                case V-> player.decreaseHealth(1,group);
-                case B-> player.increaseMaxHealth(2,group);
-                case N-> player.decreaseMaxHealth(2,group);
-                case I -> player.overlay.miniMap.updateMinimap(9,9);
+                case C -> player.increaseHealth(1, group);
+                case V -> player.decreaseHealth(1, group);
+                case B -> player.increaseMaxHealth(2, group);
+                case N -> player.decreaseMaxHealth(2, group);
+                case I -> player.overlay.miniMap.updateMinimap(9, 9);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
@@ -109,7 +108,7 @@ public class Main extends Application {
                 case RIGHT -> player.setEastLOOKING(false);
             }
         });
-        stage.setScene(scene);//bypassed the menu scene for now
+        stage.setScene(menuScene);//bypassed the menu scene for now
         stage.setFullScreen(true);
         stage.show();
     }

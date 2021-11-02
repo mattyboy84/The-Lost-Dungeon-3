@@ -10,7 +10,7 @@
     "BorderY": 180
   },
   "Props": {
- "Prop": true,
+    "Prop": true,
     "name": "props_01_basement",
     "Number": 11,
     "RandNumber": 5,

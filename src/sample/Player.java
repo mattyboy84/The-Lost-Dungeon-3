@@ -76,7 +76,6 @@ public class Player implements Runnable {
     //
     Timeline controller;
     //
-    double g = (1 / Math.sqrt(2));
 
     Circle center = new Circle(1);
     Rectangle2D screenBounds;
@@ -267,7 +266,7 @@ public class Player implements Runnable {
             //
             c.relocate(this.position.x, this.position.y);
             //
-            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX() + (this.headHitbox.radius * g)), (float) (this.headHitbox.getShape().getLayoutY() + (this.headHitbox.radius * g)), this.lightRadius, hashCode());
+            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX() + (this.headHitbox.radius * (1 / Math.sqrt(2)))), (float) (this.headHitbox.getShape().getLayoutY() + (this.headHitbox.radius * (1 / Math.sqrt(2)))), this.lightRadius, hashCode());
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();

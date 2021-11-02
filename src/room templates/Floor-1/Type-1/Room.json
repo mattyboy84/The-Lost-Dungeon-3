@@ -151,6 +151,24 @@
         "PositionY": 206,
         "ImageX": 1,
         "ImageY": 0
+      },
+      {
+        "PositionX": 0,
+        "PositionY": 515,
+        "ImageX": 1,
+        "ImageY": 0
+      },
+      {
+        "PositionX": 103,
+        "PositionY": 515,
+        "ImageX": 2,
+        "ImageY": 0
+      },
+      {
+        "PositionX": 103,
+        "PositionY": 618,
+        "ImageX": 0,
+        "ImageY": 0
       }
     ]
   }

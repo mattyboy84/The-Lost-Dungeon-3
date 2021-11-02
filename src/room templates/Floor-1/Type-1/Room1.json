@@ -10,7 +10,7 @@
     "BorderY": 180
   },
   "Props": {
- "Prop": true,
+    "Prop": true,
     "name": "props_01_basement",
     "Number": 11,
     "RandNumber": 5,
@@ -156,6 +156,24 @@
         "PositionX": 1391,
         "PositionY": 0,
         "ImageX": 0,
+        "ImageY": 0
+      },
+      {
+        "PositionX": 1288,
+        "PositionY": 618,
+        "ImageX": 1,
+        "ImageY": 0
+      },
+      {
+        "PositionX": 1288,
+        "PositionY": 515,
+        "ImageX": 0,
+        "ImageY": 0
+      },
+      {
+        "PositionX": 1391,
+        "PositionY": 515,
+        "ImageX": 2,
         "ImageY": 0
       }
     ]
