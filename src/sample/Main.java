@@ -58,17 +58,20 @@ public class Main extends Application {
         //
         player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3, dungeon, "playerCon", group);
         player.start();
+        while (!Player.loaded){
+            Thread.sleep(100);
+        }
         //
         //
-        newGame.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY && Player.loaded) {
+        //newGame.setOnMouseClicked(mouseEvent -> {
+        //    if (mouseEvent.getButton() == MouseButton.PRIMARY && Player.loaded) {
                 dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
                 player.currentRoom.openDoors(group);
                 player.load(group);
                 //
                 stage.setScene(scene);
-            }
-        });
+       //     }
+       // });
         //
         loadGame.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
@@ -108,7 +111,7 @@ public class Main extends Application {
                 case RIGHT -> player.setEastLOOKING(false);
             }
         });
-        stage.setScene(menuScene);//bypassed the menu scene for now
+        stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);
         stage.show();
     }

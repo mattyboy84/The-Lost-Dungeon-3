@@ -25,85 +25,13 @@
   "enemies": [
     {
       "enemy": "fly",
-      "type": "classic",
-      "filePath": "monster_010_fly",
-      "Health": 4,
-      "SheetScale": 3,
-      "enemyParts": [
-        {
-          "part": "Body",
-          "StartX": 0,
-          "StartY": 0,
-          "Width": 32,
-          "Height": 32,
-          "Rows": 2,
-          "Columns": 1,
-          "Images": 2,
-          "Hitboxes": [
-            {
-              "Type": "Rectangle",
-              "Width": 19,
-              "Height": 15,
-              "xDelta": 7,
-              "yDelta": 5
-            }
-          ],
-          "Light": true,
-          "Radius": 75,
-          "PositionX": 800,
-          "PositionY": 500
-        }
-      ],
-      "hasDeathImages": "True",
-      "DeathFilePath": "src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
-      "DeathStartX": 0,
-      "DeathStartY": 64,
-      "DeathWidth": 64,
-      "DeathHeight": 64,
-      "DeathRows": 4,
-      "DeathColumns": 3,
-      "DeathImages": 11
+      "PositionX": 800,
+      "PositionY": 500
     },
     {
       "enemy": "attack fly",
-      "type": "classic",
-      "filePath": "monster_010_fly",
-      "Health": 9,
-      "SheetScale": 3,
-      "enemyParts": [
-        {
-          "part": "Body",
-          "StartX": 32,
-          "StartY": 32,
-          "Width": 32,
-          "Height": 32,
-          "Rows": 2,
-          "Columns": 1,
-          "Images": 2,
-          "Hitboxes": [
-            {
-              "Type": "Rectangle",
-              "Width": 19,
-              "Height": 15,
-              "xDelta": 7,
-              "yDelta": 5
-            }
-          ],
-          "Light": true,
-          "Radius": 75,
-          "PositionX": 1400,
-          "PositionY": 700
-        }
-      ],
-      "hasDeathImages": "True",
-      "DeathFilePath": "src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
-      "DeathStartX": 0,
-      "DeathStartY": 64,
-      "DeathWidth": 64,
-      "DeathHeight": 64,
-      "DeathRows": 4,
-      "DeathColumns": 3,
-      "DeathImages": 11
+      "PositionX": 1400,
+      "PositionY": 700
     }
   ],
   "Rocks": {

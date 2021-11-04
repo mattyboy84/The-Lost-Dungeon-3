@@ -33,7 +33,7 @@ public class Room implements Runnable {
     int type;
     int upType, downType, leftType, rightType;
     int floorLevel;
-    float scaleX,scaleY;
+    float scaleX, scaleY;
     Rectangle2D screenBounds;
     //
     JsonObject roomTemplate = null;
@@ -47,10 +47,10 @@ public class Room implements Runnable {
     String parentThreadName;
     //ShadingThread shadingThread;
 
-    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName,Shading shading) {
+    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName, Shading shading) {
         //
         this.parentThreadName = threadName;
-        this.threadName=threadName;
+        this.threadName = threadName;
         //
         this.i = i;
         this.j = j;
@@ -62,21 +62,21 @@ public class Room implements Runnable {
         this.rightType = right;
         //
         this.floorLevel = floorLevel;
-        this.scaleX=scaleX;
-        this.scaleY=scaleY;
-        this.screenBounds=screenBounds;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.screenBounds = screenBounds;
         //
-        this.shading=shading;
+        this.shading = shading;
     }
 
     public Room() {
-        threadName="";
+        threadName = "";
     }
 
     public void run() {
         this.backgroundItems = new Background_items();
         //
-        this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetter())).getAsJsonObject();
+        this.roomTemplate = new JsonParser().parse(String.valueOf(roomTemplateGetter("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type))).getAsJsonObject();
         //
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " Background Complete");
@@ -92,34 +92,34 @@ public class Room implements Runnable {
         //
         //213 x 180
         if (upType > 0) {
-            doors.add(new Door("up", 0, this.upType, this.type, scaleX, scaleY, screenBounds,background));
-        }else {
+            doors.add(new Door("up", 0, this.upType, this.type, scaleX, scaleY, screenBounds, background));
+        } else {
             background.extendUp(screenBounds);
         }
         if (downType > 0) {
-            doors.add(new Door("down", 180, this.downType, this.type, scaleX, scaleY, screenBounds,background));
-        }else {
+            doors.add(new Door("down", 180, this.downType, this.type, scaleX, scaleY, screenBounds, background));
+        } else {
             background.extendDown(screenBounds);
         }
         if (leftType > 0) {
-            doors.add(new Door("left", 270, this.leftType, this.type, scaleX, scaleY, screenBounds,background));
-        }else {
+            doors.add(new Door("left", 270, this.leftType, this.type, scaleX, scaleY, screenBounds, background));
+        } else {
             background.extendLeft(screenBounds);
         }
         if (rightType > 0) {
-            doors.add(new Door("right", 90, this.rightType, this.type, scaleX, scaleY, screenBounds,background));
-        }else {
+            doors.add(new Door("right", 90, this.rightType, this.type, scaleX, scaleY, screenBounds, background));
+        } else {
             background.extendRight(screenBounds);
         }
-        if (type==3){
-            trapDoor=new Door(scaleX,scaleY,screenBounds);
+        if (type == 3) {
+            trapDoor = new Door(scaleX, scaleY, screenBounds);
         }
         System.out.println("Thread: " + threadName + " Doors Complete");
-        finishedRoom+=1;
+        finishedRoom += 1;
     }
 
     public void start() {
-        System.out.println("Starting " +  threadName );
+        System.out.println("Starting " + threadName);
         if (t == null) {
             t = new Thread(this, threadName);
             t.start();
@@ -148,37 +148,43 @@ public class Room implements Runnable {
 
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
         for (int k = 0; k < enemyArray.size(); k++) {
+
+            JsonObject a = new JsonParser().parse(String.valueOf(templateGetterSub("src\\enemy templates\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
+            Vecc2f pos = new Vecc2f(enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
+
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
-                case "fly" -> enemies.add(new Enemy_Fly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
-                case "attack fly" -> enemies.add(new Enemy_attackFly(enemyArray.get(k).getAsJsonObject(), scaleX, scaleY, screenBounds, shading));
+                case "fly" -> enemies.add(new Enemy_Fly(a, pos, scaleX, scaleY, screenBounds, shading));
+                case "attack fly" -> enemies.add(new Enemy_attackFly(a, pos, scaleX, scaleY, screenBounds, shading));
             }
         }
     }
 
-    private StringBuilder templateGetter() {
-        StringBuilder json = new StringBuilder();
-        File directPath = new File("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type);
-        //System.out.println(directPath);
+    private StringBuilder roomTemplateGetter(String file1) {
+        File directPath = new File(file1);
         String[] contents = directPath.list();
-        //System.out.println(contents.length);
         String room = null;
+
         if (contents != null) {
             room = contents[random.nextInt(contents.length)];
         }
+
+        return templateGetterSub("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type + "\\" + room);
+    }
+
+    private StringBuilder templateGetterSub(String file2) {
+        StringBuilder json = new StringBuilder();
         try {
-            File file = new File("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type + "\\" + room);
-            //System.out.println(file);
+            File file = new File(file2);
+
             BufferedReader br = new BufferedReader(new FileReader(file));
+
             String st;
             while ((st = br.readLine()) != null) {
                 json.append(st);
-                //System.out.println(st);
             }
-            //System.out.println(json);
         } catch (Exception e) {
             System.out.println("Cannot find room template - Room");
         }
-        //System.out.println(json);
         return json;
     }
 
@@ -226,7 +232,7 @@ public class Room implements Runnable {
         }
     }
 
-    public ArrayList<Rectangle> getBoundaries(){//provides an arraylist of obstacles.
+    public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
         ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
         for (Door door : doors) {
             if (door.getState() == Door.State.closed) {
@@ -238,22 +244,23 @@ public class Room implements Runnable {
         }
         return a;
     }
-/*
-    public ArrayList<Rectangle> getDoorTriggers() {//provides an arraylist of doorTriggers
-       ArrayList<Rectangle> a = new ArrayList<>();
-        for (Door door : doors) {
-            a.add(door.getDoorTrigger());
-        }
-    return a;
-    }
-    */
-        public void openDoors(Group group) {//opens doors that are closed because of enemies - wont open locked doors
+
+    /*
+        public ArrayList<Rectangle> getDoorTriggers() {//provides an arraylist of doorTriggers
+           ArrayList<Rectangle> a = new ArrayList<>();
             for (Door door : doors) {
-                door.open(group);
+                a.add(door.getDoorTrigger());
             }
+        return a;
+        }
+        */
+    public void openDoors(Group group) {//opens doors that are closed because of enemies - wont open locked doors
+        for (Door door : doors) {
+            door.open(group);
+        }
     }
 
-    public void forceOpenDoors(Group group){//forces all doors to open
+    public void forceOpenDoors(Group group) {//forces all doors to open
         for (Door door : doors) {
             door.forceOpen(group);
         }
@@ -316,7 +323,6 @@ public class Room implements Runnable {
     public String toString() {
         return "Room";
     }
-
 
 
 }

@@ -26,7 +26,7 @@ public class Enemy_part {
     int lightRadius;
     Shading shading;
 
-    public Enemy_part(JsonObject enemyPart, String type, String filePath, int sheetScale, float scaleX, float scaleY, Shading shading) {
+    public Enemy_part(JsonObject enemyPart, String type, String filePath, int sheetScale, float scaleX, float scaleY, Shading shading, Vecc2f pos) {
         this.part = enemyPart.get("part").getAsString();
         this.startX = (int) (enemyPart.get("StartX").getAsInt() * scaleX * sheetScale);
         this.startY = (int) (enemyPart.get("StartY").getAsInt() * scaleY * sheetScale);
@@ -54,7 +54,7 @@ public class Enemy_part {
             }
         }
         //
-        this.position = new Vecc2f((int) (enemyPart.get("PositionX").getAsInt() * scaleX), (int) (enemyPart.get("PositionY").getAsInt() * scaleY));
+        this.position = new Vecc2f(pos.x*scaleX,pos.y*scaleY);
         //
 
         hitboxGenerator(enemyPart.getAsJsonArray("Hitboxes").getAsJsonArray(), sheetScale, scaleX, scaleY);

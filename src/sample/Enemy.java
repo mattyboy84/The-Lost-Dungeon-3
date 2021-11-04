@@ -45,7 +45,7 @@ public class Enemy extends Object{
     int sheetScale;
 
 
-    public Enemy(JsonObject enemyTemplate, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
+    public Enemy(JsonObject enemyTemplate,Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
         this.template = enemyTemplate;
         //System.out.println(this.template);
         this.name = enemyTemplate.get("enemy").getAsString();
@@ -57,7 +57,7 @@ public class Enemy extends Object{
 
         //System.out.println(enemyTemplate);
         for (int i = 0; i < enemyTemplate.get("enemyParts").getAsJsonArray().size(); i++) {
-            parts.add(new Enemy_part(enemyTemplate.get("enemyParts").getAsJsonArray().get(i).getAsJsonObject(), this.type, this.filePath, sheetScale, scaleX, scaleY, shading));
+            parts.add(new Enemy_part(enemyTemplate.get("enemyParts").getAsJsonArray().get(i).getAsJsonObject(), this.type, this.filePath, sheetScale, scaleX, scaleY, shading,pos));
         }
         ////////////////
 

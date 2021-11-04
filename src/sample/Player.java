@@ -244,6 +244,7 @@ public class Player implements Runnable {
             //
             if (attacking && attackingTimer >= shootCooldown) {
                 SHOOTINGheadChanger();
+                //shoot tear
                 justShot = true;
                 shotTimer = 0;
                 attackingTimer = 0;
@@ -299,7 +300,7 @@ public class Player implements Runnable {
 
                 overlay.miniMap.updateMinimap(this.roomX, this.roomY);
                 overlay.largeMap.updateLargemap(this.roomX, this.roomY,screenBounds);
-
+//separate
                 currentRoom.unload(group);
                 roomFinder(dungeon);
                 currentRoom.load(group);
