@@ -21,8 +21,8 @@ public class Player implements Runnable {
     int shootCooldown = 45;
     //
     float avgScale;
-    String movingDirection = "down";
-    String lookingDirection = "down";
+    String movingDirection = "south";
+    String lookingDirection = "south";
     int roomX, roomY;
     float scaleX, scaleY;
     String costume;
@@ -217,7 +217,7 @@ public class Player implements Runnable {
                 if (!justShot) {
                     this.head.setImage(heads[0]);
                 }
-                this.movingDirection = "down";
+                this.movingDirection = "south";
                 relocate();
             }
             this.velocity.limit(veloLimit);
@@ -299,8 +299,7 @@ public class Player implements Runnable {
                 }
 
                 overlay.miniMap.updateMinimap(this.roomX, this.roomY);
-                overlay.largeMap.updateLargemap(this.roomX, this.roomY,screenBounds);
-//separate
+                overlay.largeMap.updateLargemap(this.roomX, this.roomY, screenBounds);
                 currentRoom.unload(group);
                 roomFinder(dungeon);
                 currentRoom.load(group);
@@ -440,14 +439,12 @@ public class Player implements Runnable {
         this.acceleration = eastMOVING ? (acceleration.add(xSpeed)) : this.acceleration;
         this.acceleration = westMOVING ? (acceleration.sub(xSpeed)) : this.acceleration;
         //
-        if (eastMOVING && westMOVING) {
-            acceleration.x = 0;
-            velocity.x = 0;
-        }
-        if (northMOVING && southMOVING) {
-            acceleration.y = 0;
-            velocity.y = 0;
-        }
+        this.acceleration.x = (eastLOOKING && westLOOKING) ? (acceleration.x = 0) : (acceleration.x);
+        this.velocity.x = (eastLOOKING && westLOOKING) ? (velocity.x = 0) : (velocity.x);
+        //
+        this.acceleration.y = (eastLOOKING && westLOOKING) ? (acceleration.y = 0) : (acceleration.y);
+        this.velocity.y = (eastLOOKING && westLOOKING) ? (velocity.y = 0) : (velocity.y);
+        //
         if (!northMOVING && !westMOVING && !eastMOVING && !southMOVING) {
             this.acceleration.set(0, 0);
         }
@@ -471,96 +468,64 @@ public class Player implements Runnable {
     private void playerAnimator() {
         float angle = this.direction.toAngle();
         if (angle > 45 && angle < 135) {//right
-            this.movingDirection = "right";
+            this.movingDirection = "east";
             body.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-            subPlayerAnimterX();
-        } else if (angle > 135 && angle < 225) {//down
-            this.movingDirection = "down";
-            subPlayerAnimterY();
+            subPlayerAnimator(XAnimateCounter, LR_body);
         } else if (angle > 225 && angle < 315) {//left
-            this.movingDirection = "left";
+            this.movingDirection = "west";
             body.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            subPlayerAnimterX();
+            subPlayerAnimator(XAnimateCounter, LR_body);
+            //
+        } else if (angle > 135 && angle < 225) {//down
+            this.movingDirection = "south";
+            subPlayerAnimator(YAnimateCounter, UD_body);
         } else if (angle > 315 || angle < 45) {//up
-            this.movingDirection = "up";
-            subPlayerAnimterY();
+            this.movingDirection = "north";
+            subPlayerAnimator(YAnimateCounter, UD_body);
         }
     }
 
-    private void subPlayerAnimterY() {
-        YAnimateCounter++;
-        if (YAnimateCounter > UD_body.length - 1) {
-            YAnimateCounter = 0;
+    private void subPlayerAnimator(int counter, Image[] arr) {
+        counter++;
+        if (counter > arr.length - 1) {
+            counter = 0;
         }
-        body.setImage(UD_body[YAnimateCounter]);
-    }
-
-    private void subPlayerAnimterX() {
-        XAnimateCounter++;
-        if (XAnimateCounter > LR_body.length - 1) {
-            XAnimateCounter = 0;
-        }
-        body.setImage(LR_body[XAnimateCounter]);
+        body.setImage(arr[counter]);
     }
 
     private void SHOOTINGheadChanger() {
-        switch (lookingDirection) {
-            case "north":
-                this.head.setImage(heads[5]);
-                break;
-            case "south":
-                this.head.setImage(heads[1]);
-                break;
-            case "west":
-                this.head.setImage(heads[3]);
-                this.head.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                break;
-            case "east":
-                this.head.setImage(heads[3]);
-                this.head.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-                break;
-        }
+        BASEheadChanger(this.lookingDirection, 5, 1, 3, 3);
     }
 
     private void LOOKINGheadChanger() {
         if (this.lookingDirection != null) {
-            switch (this.lookingDirection) {
-                case "north":
-                    this.head.setImage(heads[4]);
-                    break;
-                case "south":
-                    this.head.setImage(heads[0]);
-                    break;
-                case "west":
-                    this.head.setImage(heads[2]);
-                    this.head.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    break;
-                case "east":
-                    this.head.setImage(heads[2]);
-                    this.head.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-                    break;
-            }
+            BASEheadChanger(this.lookingDirection, 4, 0, 2, 2);
         }
     }
 
     private void MOVINGheadChanger() {
-        switch (movingDirection) {
-            case "up":
-                this.head.setImage(heads[4]);
+        BASEheadChanger(this.movingDirection, 4, 0, 2, 2);
+    }
+
+    private void BASEheadChanger(String sw, int i, int i1, int i2, int i3) {
+        switch (sw) {
+            case "north":
+                this.head.setImage(heads[i]);
                 break;
-            case "down":
-                this.head.setImage(heads[0]);
+            case "south":
+                this.head.setImage(heads[i1]);
                 break;
-            case "left":
-                this.head.setImage(heads[2]);
+            case "west":
+                this.head.setImage(heads[i2]);
                 this.head.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 break;
-            case "right":
-                this.head.setImage(heads[2]);
+            case "east":
+                this.head.setImage(heads[i3]);
                 this.head.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
                 break;
         }
     }
+
 
     private void relocate() {
         this.body.relocate(position.x, position.y);
