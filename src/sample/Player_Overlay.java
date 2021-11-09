@@ -57,12 +57,17 @@ public class Player_Overlay{
         this.txtBomb.setFont(font);
         this.txtKey.setFont(font);
         //
-        this.txtCoin.setStroke(Color.WHITE);
-        this.txtCoin.setStrokeWidth(1.5 * g);
-        this.txtBomb.setStroke(Color.WHITE);
-        this.txtBomb.setStrokeWidth(1.5 * g);
-        this.txtKey.setStroke(Color.WHITE);
-        this.txtKey.setStrokeWidth(1.5 * g);
+        this.txtCoin.setStroke(Color.BLACK);
+        this.txtCoin.setFill(Color.WHITE);
+        this.txtCoin.setStrokeWidth(2.5 * g);
+        //
+        this.txtBomb.setStroke(Color.BLACK);
+        this.txtBomb.setFill(Color.WHITE);
+        this.txtBomb.setStrokeWidth(2.5 * g);
+        //
+        this.txtKey.setStroke(Color.BLACK);
+        this.txtKey.setFill(Color.WHITE);
+        this.txtKey.setStrokeWidth(2.5 * g);
         //
         this.txtScore = new Text("Score: " + score);
         this.txtScore.setFill(Color.WHITE);

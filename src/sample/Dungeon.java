@@ -14,9 +14,7 @@ public class Dungeon {
 
     ArrayList<Neighbour_Rooms> neighbours = new ArrayList<>();
     ArrayList<Room> rooms = new ArrayList<>();
-    //Room Threads
-    ArrayList<Room> rooms1 = new ArrayList<>();
-
+    
     public Dungeon() {
     }
 
@@ -38,15 +36,7 @@ public class Dungeon {
     Random random = new Random();
     //
     Shading shading;
-
-
-    /*
-    //D:\- JAVA Projects -\- Lost Dungeon -\The-Lost-Dungeon-3\src\resources\gfx\grid
-    grid_pit
-    props_01_basement
-    rocks_basement
-    grid_bridge
-     */
+    
     int borderBoundary = 1;//creates a safe zone around the dungeon. As 1, Row/Column 0 and length-1 are free of rooms
 
     public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {

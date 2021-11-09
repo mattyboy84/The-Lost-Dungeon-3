@@ -35,7 +35,7 @@ public class Player implements Runnable {
     //
     int width, height;
     //
-    int coinNumber = 0, keyNumber = 0, bombNumber = 0;
+    int coinNumber = 5, keyNumber = 1, bombNumber = 3;
     int score = 100;
     int health = 6, TOTAL_Health = 6;
     final int MIN_Health = 0, MAXIMUM_HEALTH = 32;

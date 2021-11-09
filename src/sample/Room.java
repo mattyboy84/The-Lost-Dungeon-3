@@ -82,7 +82,7 @@ public class Room implements Runnable {
         System.out.println("Thread: " + threadName + " Background Complete");
         //
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
-        System.out.println("Thread: " + threadName + " BackgroundItems");
+        System.out.println("Thread: " + threadName + " BackgroundItems Complete");
         //
         enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
         System.out.println("Thread: " + threadName + " Enemies Complete");
@@ -149,7 +149,7 @@ public class Room implements Runnable {
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
         for (int k = 0; k < enemyArray.size(); k++) {
 
-            JsonObject a = new JsonParser().parse(String.valueOf(templateGetterSub("src\\enemy templates\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
+            JsonObject a = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\classic\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {

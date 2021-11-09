@@ -1,0 +1,33 @@
+Heart:
+pickup_001_heart
+Start: 0,0
+Width: 32, Height: 32
+Hitbox dimensions: 14,11
+Hitbox delta 8,10
+
+Half-Heart:
+pickup_001_heart
+Start: 32,0
+Width: 32, Height: 32
+Hitbox dimensions: 13,11
+Hitbox delta 9,10
+
+Coin:
+
+
+
+
+
+Key:
+pickup_003_key
+start 0,0
+Width: 16, Height: 32
+Hitbox dimensions: 12,18
+Hitbox delta 2,6
+
+Bomb:
+pickup_016_bomb
+start 0,0
+Width: 32, Height: 32
+Hitbox dimensions: 15,16
+Hitbox delta 9,8
