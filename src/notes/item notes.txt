@@ -13,10 +13,11 @@ Hitbox dimensions: 13,11
 Hitbox delta 9,10
 
 Coin:
-
-
-
-
+pickup_002_coin
+start: 0,0
+Width: 32, Height: 16
+Hitbox dimensions: 18,12
+Hitbox delta 7,3
 
 Key:
 pickup_003_key

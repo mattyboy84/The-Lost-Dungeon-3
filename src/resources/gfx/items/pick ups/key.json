@@ -1,1 +1,16 @@
-{}
+{
+  "item": "key",
+  "Sprite": "pickup_003_key",
+  "SheetScale": 2,
+  "StartX": 0,
+  "StartY": 0,
+  "Width": 16,
+  "Height": 32,
+  "Hitbox": {
+    "Type": "Rectangle",
+    "Width": 12,
+    "Height": 18,
+    "xDelta": 2,
+    "yDelta": 6
+  }
+}

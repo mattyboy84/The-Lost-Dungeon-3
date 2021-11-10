@@ -1,16 +1,16 @@
 {
-  "item": "bomb",
-  "Sprite":"pickup_016_bomb",
+  "item": "half-heart",
+  "Sprite": "pickup_001_heart",
   "SheetScale": 2,
-  "StartX": 0,
+  "StartX": 32,
   "StartY": 0,
   "Width": 32,
   "Height": 32,
   "Hitbox": {
     "Type": "Rectangle",
-    "Width": 15,
-    "Height": 16,
+    "Width": 13,
+    "Height": 11,
     "xDelta": 9,
-    "yDelta": 8
+    "yDelta": 10
   }
 }

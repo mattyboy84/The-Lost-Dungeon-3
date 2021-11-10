@@ -22,6 +22,7 @@
     "BorderX": 213,
     "BorderY": 180
   },
+  "items": [],
   "enemies": [],
   "Rocks": {
     "name": "rocks_basement",

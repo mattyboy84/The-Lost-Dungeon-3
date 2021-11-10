@@ -40,6 +40,7 @@ public class Room implements Runnable {
     Background_items backgroundItems;
     ArrayList<Door> doors = new ArrayList<>();
     ArrayList<Enemy> enemies = new ArrayList<>();
+    ArrayList<Item> items = new ArrayList<>();
     ArrayList<Rock> rocks = new ArrayList<>();
     //
     Door trapDoor;
@@ -84,6 +85,9 @@ public class Room implements Runnable {
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " BackgroundItems Complete");
         //
+        itemAdder(this.roomTemplate.getAsJsonArray("items"),scaleX,scaleY,screenBounds);
+        System.out.println("Thread: " + threadName + " Items Complete");
+        //
         enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
         System.out.println("Thread: " + threadName + " Enemies Complete");
         //
@@ -118,6 +122,8 @@ public class Room implements Runnable {
         finishedRoom += 1;
     }
 
+
+
     public void start() {
         System.out.println("Starting " + threadName);
         if (t == null) {
@@ -144,6 +150,23 @@ public class Room implements Runnable {
             int d = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageY").getAsInt();
             rocks.add(new Rock(a, b, c, d, name, sheetScale, width, height, rows, columns, borderX, borderY, scaleX, scaleY));
         }
+    }
+
+    private void itemAdder(JsonArray itemsArray, float scaleX, float scaleY, Rectangle2D screenBounds) {
+        for (int k = 0; k <itemsArray.size() ; k++) {
+            JsonObject a = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\items\\pick ups\\" + itemsArray.get(k).getAsJsonObject().get("item").getAsString() + ".json"))).getAsJsonObject();
+            Vecc2f pos = new Vecc2f(itemsArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), itemsArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
+
+            switch(itemsArray.get(k).getAsJsonObject().get("item").getAsString()){
+                case "coin":
+                    items.add(new Item_Coin(a,pos,scaleX,scaleY,screenBounds));
+                    break;
+
+            }
+
+
+        }
+
     }
 
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
@@ -203,7 +226,10 @@ public class Room implements Runnable {
         }
          */
         //
-
+        for (Item item : items) {
+            item.load(group);
+        }
+        //
         for (Enemy enemy : enemies) {
             enemy.load(group);
         }
@@ -221,6 +247,10 @@ public class Room implements Runnable {
         //
         for (Door door : doors) {
             door.unload(group);
+        }
+        //
+        for (Item item : items) {
+            item.unload(group);
         }
         //
         for (Enemy enemy : enemies) {
@@ -245,15 +275,6 @@ public class Room implements Runnable {
         return a;
     }
 
-    /*
-        public ArrayList<Rectangle> getDoorTriggers() {//provides an arraylist of doorTriggers
-           ArrayList<Rectangle> a = new ArrayList<>();
-            for (Door door : doors) {
-                a.add(door.getDoorTrigger());
-            }
-        return a;
-        }
-        */
     public void openDoors(Group group) {//opens doors that are closed because of enemies - wont open locked doors
         for (Door door : doors) {
             door.open(group);

@@ -1,1 +1,16 @@
-{ }
+{
+  "item": "heart",
+  "Sprite": "pickup_001_heart",
+  "SheetScale": 2,
+  "StartX": 0,
+  "StartY": 0,
+  "Width": 32,
+  "Height": 32,
+  "Hitbox": {
+    "Type": "Rectangle",
+    "Width": 14,
+    "Height": 11,
+    "xDelta": 8,
+    "yDelta": 10
+  }
+}
