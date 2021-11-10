@@ -1,5 +1,6 @@
 {
   "item": "bomb",
+  "Effect": 1,
   "Sprite":"pickup_016_bomb",
   "SheetScale": 2,
   "StartX": 0,

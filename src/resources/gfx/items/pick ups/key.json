@@ -1,5 +1,6 @@
 {
   "item": "key",
+  "Effect": 1,
   "Sprite": "pickup_003_key",
   "SheetScale": 2,
   "StartX": 0,

@@ -7,11 +7,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 
+import java.util.ArrayList;
+
 public class Item {
 
     Hitbox hitbox;
     Vecc2f position;
     ImageView item;
+    int effect;
 
     public Item() {
 
@@ -24,6 +27,8 @@ public class Item {
         int startY = a.get("StartY").getAsInt();
         int width = a.get("Width").getAsInt();
         int height = a.get("Height").getAsInt();
+        //
+        this.effect=a.get("Effect").getAsInt();
 
         this.position = new Vecc2f(pos.x, pos.y);
 
@@ -50,5 +55,8 @@ public class Item {
     public void unload(Group group) {
         group.getChildren().removeAll(this.item,this.hitbox.getShape());
 
+    }
+
+    public void checkCollision(Player player, ArrayList<Item> items, Group group) {
     }
 }

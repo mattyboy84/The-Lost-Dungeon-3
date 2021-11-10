@@ -1,5 +1,6 @@
 {
   "item": "half-heart",
+  "Effect": 1,
   "Sprite": "pickup_001_heart",
   "SheetScale": 2,
   "StartX": 32,

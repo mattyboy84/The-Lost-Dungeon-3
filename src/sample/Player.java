@@ -227,6 +227,8 @@ public class Player implements Runnable {
             //
             boundaryChecker();
             //
+            itemCollisionChecker();
+            //
             if (!this.northLOOKING && !this.southLOOKING && !this.eastLOOKING && !this.westLOOKING) {
                 lookingDirection = null;
             }
@@ -271,6 +273,12 @@ public class Player implements Runnable {
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
+    }
+
+    private void itemCollisionChecker() {
+        for (int i = 0; i <currentRoom.items.size() ; i++) {
+            currentRoom.items.get(i).checkCollision(this,currentRoom.items,group);
+        }
     }
 
 

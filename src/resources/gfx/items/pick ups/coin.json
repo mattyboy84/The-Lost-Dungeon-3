@@ -1,5 +1,6 @@
 {
   "item": "coin",
+  "Effect": 1,
   "Sprite": "pickup_002_coin",
   "SheetScale": 2,
   "StartX": 0,
@@ -11,6 +12,6 @@
     "Width": 18,
     "Height": 12,
     "xDelta": 7,
-    "yDelta": 2
+    "yDelta": 3
   }
 }
