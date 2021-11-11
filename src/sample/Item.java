@@ -28,18 +28,23 @@ public class Item {
         int width = a.get("Width").getAsInt();
         int height = a.get("Height").getAsInt();
         //
-        this.effect=a.get("Effect").getAsInt();
+        this.effect = a.get("Effect").getAsInt();
 
         this.position = new Vecc2f(pos.x, pos.y);
 
         String file = "file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png";
-        this.item = (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)),
-                ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
-                (int) ((startX * sheetScale * scaleX)), (int) ((startY * sheetScale * scaleY)), (int) (width * scaleX * sheetScale), (int) (height * scaleY * sheetScale))));
+        this.item = imageGetter(file, scaleX, scaleY, sheetScale, startX, startY, width, height);
 
         this.hitbox = new Hitbox(a.getAsJsonObject("Hitbox"), sheetScale, scaleX, scaleY);
 
         //this.item = new ImageView("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png");
+    }
+
+
+    public static ImageView imageGetter(String file, float scaleX, float scaleY, int sheetScale, int startX, int startY, int width, int height) {
+        return (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)),
+                ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
+                (int) ((startX * sheetScale * scaleX)), (int) ((startY * sheetScale * scaleY)), (int) (width * scaleX * sheetScale), (int) (height * scaleY * sheetScale))));
     }
 
     public void load(Group group) {
@@ -53,7 +58,7 @@ public class Item {
     }
 
     public void unload(Group group) {
-        group.getChildren().removeAll(this.item,this.hitbox.getShape());
+        group.getChildren().removeAll(this.item, this.hitbox.getShape());
 
     }
 

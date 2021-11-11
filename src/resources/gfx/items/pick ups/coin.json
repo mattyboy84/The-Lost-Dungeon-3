@@ -13,5 +13,43 @@
     "Height": 12,
     "xDelta": 7,
     "yDelta": 3
-  }
+  },
+  "IdleAnimation": [
+    {
+      "StartX": 0,
+      "StartY": 0,
+      "Width": 32,
+      "Height": 16
+    },
+    {
+      "StartX": 32,
+      "StartY": 0,
+      "Width": 32,
+      "Height": 16
+    },
+    {
+      "StartX": 0,
+      "StartY": 16,
+      "Width": 32,
+      "Height": 16
+    },
+    {
+      "StartX": 32,
+      "StartY": 16,
+      "Width": 32,
+      "Height": 16
+    },
+    {
+      "StartX": 0,
+      "StartY": 32,
+      "Width": 32,
+      "Height": 16
+    },
+    {
+      "StartX": 32,
+      "StartY": 32,
+      "Width": 32,
+      "Height": 16
+    }
+  ]
 }
