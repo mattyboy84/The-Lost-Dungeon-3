@@ -154,14 +154,16 @@ public class Room implements Runnable {
 
     private void itemAdder(JsonArray itemsArray, float scaleX, float scaleY, Rectangle2D screenBounds) {
         for (int k = 0; k <itemsArray.size() ; k++) {
+
             JsonObject a = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\items\\pick ups\\" + itemsArray.get(k).getAsJsonObject().get("item").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(itemsArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), itemsArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
-            switch(itemsArray.get(k).getAsJsonObject().get("item").getAsString()){
-                case "coin":
-                    items.add(new Item_Coin(a,pos,scaleX,scaleY,screenBounds));
-                    break;
-
+            switch (itemsArray.get(k).getAsJsonObject().get("item").getAsString()) {
+                case "coin" -> items.add(new Item_Coin(a, pos, scaleX, scaleY, screenBounds));
+                case "key" -> items.add(new Item_Key(a, pos, scaleX, scaleY, screenBounds));
+                case "bomb" -> items.add(new Item_Bomb(a, pos, scaleX, scaleY, screenBounds));
+                case "heart" -> items.add(new Item_Heart(a, pos, scaleX, scaleY, screenBounds));
+                case "half-heart" -> items.add(new Item_HalfHeart(a, pos, scaleX, scaleY, screenBounds));
             }
 
 

@@ -16,7 +16,7 @@ public class Player implements Runnable {
 
     public static boolean loaded = false;
     //
-    int XAnimateCounter, YAnimateCounter;
+    int XAnimateCounter, YAnimateCounter,animateCounter;
     //
     int shootCooldown = 45;
     //
@@ -478,27 +478,27 @@ public class Player implements Runnable {
         if (angle > 45 && angle < 135) {//right
             this.movingDirection = "east";
             body.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-            subPlayerAnimator(XAnimateCounter, LR_body);
+            subPlayerAnimator(LR_body);
         } else if (angle > 225 && angle < 315) {//left
             this.movingDirection = "west";
             body.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            subPlayerAnimator(XAnimateCounter, LR_body);
+            subPlayerAnimator(LR_body);
             //
         } else if (angle > 135 && angle < 225) {//down
             this.movingDirection = "south";
-            subPlayerAnimator(YAnimateCounter, UD_body);
+            subPlayerAnimator(UD_body);
         } else if (angle > 315 || angle < 45) {//up
             this.movingDirection = "north";
-            subPlayerAnimator(YAnimateCounter, UD_body);
+            subPlayerAnimator(UD_body);
         }
     }
 
-    private void subPlayerAnimator(int counter, Image[] arr) {
-        counter++;
-        if (counter > arr.length - 1) {
-            counter = 0;
+    private void subPlayerAnimator(Image[] arr) {
+        animateCounter++;
+        if (animateCounter > arr.length - 1) {
+            animateCounter = 0;
         }
-        body.setImage(arr[counter]);
+        body.setImage(arr[animateCounter]);
     }
 
     private void SHOOTINGheadChanger() {
