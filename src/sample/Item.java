@@ -55,10 +55,21 @@ public class Item {
         this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
         this.hitbox.getShape().setViewOrder(-4);
         this.hitbox.getShape().setVisible(false);
+        //
+        postLoader();
+    }
+
+    public void postLoader() {
+
     }
 
     public void unload(Group group) {
         group.getChildren().removeAll(this.item, this.hitbox.getShape());
+        //
+        postUnLoader();
+    }
+
+    protected void postUnLoader() {
 
     }
 

@@ -53,21 +53,12 @@ public class Item_Coin extends Item {
     }
 
     @Override
-    public void load(Group group) {
-        group.getChildren().addAll(this.item, this.hitbox.getShape());
-        this.item.relocate(this.position.x, this.position.y);
-        this.item.setViewOrder(-4);
-        //
-        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
-        this.hitbox.getShape().setViewOrder(-4);
-        this.hitbox.getShape().setVisible(false);
-        //
+    public void postLoader() {
         this.idleTimeline.play();
     }
 
     @Override
-    public void unload(Group group) {
-        group.getChildren().removeAll(this.item, this.hitbox.getShape());
+    public void postUnLoader() {
         this.idleTimeline.pause();
     }
 }
