@@ -51,5 +51,37 @@
       "Width": 32,
       "Height": 16
     }
+  ],
+  "PickupAnimation": [
+    {
+      "StartX": 64,
+      "StartY": 0,
+      "Width": 64,
+      "Height": 64
+    },
+ {
+      "StartX": 128,
+      "StartY": 0,
+      "Width": 64,
+      "Height": 64
+    },
+ {
+      "StartX": 192,
+      "StartY": 0,
+      "Width": 64,
+      "Height": 64
+    },
+ {
+      "StartX": 64,
+      "StartY": 64,
+      "Width": 64,
+      "Height": 64
+    },
+ {
+      "StartX": 128,
+      "StartY": 64,
+      "Width": 64,
+      "Height": 64
+    }
   ]
 }

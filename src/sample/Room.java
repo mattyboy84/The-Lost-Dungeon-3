@@ -85,7 +85,7 @@ public class Room implements Runnable {
         this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " BackgroundItems Complete");
         //
-        itemAdder(this.roomTemplate.getAsJsonArray("items"),scaleX,scaleY,screenBounds);
+        itemAdder(this.roomTemplate.getAsJsonArray("items"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " Items Complete");
         //
         enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
@@ -123,7 +123,6 @@ public class Room implements Runnable {
     }
 
 
-
     public void start() {
         System.out.println("Starting " + threadName);
         if (t == null) {
@@ -153,7 +152,7 @@ public class Room implements Runnable {
     }
 
     private void itemAdder(JsonArray itemsArray, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        for (int k = 0; k <itemsArray.size() ; k++) {
+        for (int k = 0; k < itemsArray.size(); k++) {
 
             JsonObject a = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\items\\pick ups\\" + itemsArray.get(k).getAsJsonObject().get("item").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(itemsArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), itemsArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
@@ -267,7 +266,7 @@ public class Room implements Runnable {
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
         ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
         for (Door door : doors) {
-            if (door.getState() == Door.State.closed) {
+            if (door.getState() == Door.State.closed || door.getState() == Door.State.locked) {
                 a.add(door.getDoorBlock());
             }
         }

@@ -13,5 +13,31 @@
     "Height": 18,
     "xDelta": 2,
     "yDelta": 6
-  }
+  },
+  "Sparkle": [
+    {
+      "StartX": 32,
+      "StartY": 32,
+      "Width": 8,
+      "Height": 16
+    },
+    {
+      "StartX": 40,
+      "StartY": 32,
+      "Width": 8,
+      "Height": 16
+    },
+    {
+      "StartX": 48,
+      "StartY": 32,
+      "Width": 8,
+      "Height": 16
+    },
+    {
+      "StartX": 56,
+      "StartY": 32,
+      "Width": 8,
+      "Height": 16
+    }
+  ]
 }

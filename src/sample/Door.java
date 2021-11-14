@@ -52,7 +52,7 @@ public class Door {
         //
         this.direction=direction;
 
-        this.state = State.closed;
+        this.state = State.open;
         String file = "file:src\\resources\\gfx\\grid\\" + a + ".png";
         //System.out.println(directionType);
 
@@ -138,11 +138,13 @@ public class Door {
         this.doorFrame.relocate(position.x, position.y);
         this.doorShadow.relocate(position.x, position.y);
         this.doorPartRight.relocate(position.x, position.y);
+        this.doorPartRightLocked.relocate(position.x, position.y);
         this.doorPartLeft.relocate(position.x, position.y);
         //
         this.doorFrame.setViewOrder(-3);
         this.doorShadow.setViewOrder(-3);
         this.doorPartRight.setViewOrder(-3);
+        this.doorPartRightLocked.setViewOrder(-3);
         this.doorPartLeft.setViewOrder(-3);
         //
         this.doorTrigger.toFront();
@@ -191,6 +193,8 @@ public class Door {
                 this.state = State.open;
             }
             case locked -> {
+                group.getChildren().removeAll(this.doorPartLeft,this.doorPartRightLocked,this.doorBlock);
+                this.state = State.open;
             }
         }
     }

@@ -15,6 +15,8 @@ public class Item {
     Vecc2f position;
     ImageView item;
     int effect;
+    float scaleX,scaleY;
+    int sheetScale;
 
     public Item() {
 
@@ -22,7 +24,9 @@ public class Item {
 
 
     public Item(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        int sheetScale = a.get("SheetScale").getAsInt();
+        this.scaleX=scaleX;
+        this.scaleY=scaleY;
+        this.sheetScale = a.get("SheetScale").getAsInt();
         int startX = a.get("StartX").getAsInt();
         int startY = a.get("StartY").getAsInt();
         int width = a.get("Width").getAsInt();
@@ -56,20 +60,20 @@ public class Item {
         this.hitbox.getShape().setViewOrder(-4);
         this.hitbox.getShape().setVisible(false);
         //
-        postLoader();
+        postLoader(group);
     }
 
-    public void postLoader() {
+    public void postLoader(Group group) {
 
     }
 
     public void unload(Group group) {
         group.getChildren().removeAll(this.item, this.hitbox.getShape());
         //
-        postUnLoader();
+        postUnLoader(group);
     }
 
-    protected void postUnLoader() {
+    protected void postUnLoader(Group group) {
 
     }
 

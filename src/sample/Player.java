@@ -225,7 +225,7 @@ public class Player implements Runnable {
             this.position.add(this.velocity);
             relocate();
             //
-            boundaryChecker();
+            boundaryChecker(group);
             //
             itemCollisionChecker();
             //
@@ -389,7 +389,14 @@ public class Player implements Runnable {
         return false;
     }
 
-    private void boundaryChecker() {
+    private void boundaryChecker(Group group) {
+        for (int i = 0; i <currentRoom.doors.size() ; i++) {
+            if (currentRoom.doors.get(i).getDoorBlock().getBoundsInParent().intersects(this.bodyHitbox.shape.getBoundsInParent()) &&(currentRoom.doors.get(i).state == Door.State.locked )){
+                System.out.println("opening locked door");
+                currentRoom.doors.get(i).open(group);
+                updateKeys(-1);
+            }
+        }
         for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
             if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.shape.getBoundsInParent())) {
                 collide = true;
