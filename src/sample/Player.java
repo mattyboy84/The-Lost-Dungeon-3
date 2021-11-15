@@ -16,7 +16,7 @@ public class Player implements Runnable {
 
     public static boolean loaded = false;
     //
-    int XAnimateCounter, YAnimateCounter,animateCounter;
+    int XAnimateCounter, YAnimateCounter, animateCounter;
     //
     int shootCooldown = 45;
     //
@@ -276,8 +276,8 @@ public class Player implements Runnable {
     }
 
     private void itemCollisionChecker() {
-        for (int i = 0; i <currentRoom.items.size() ; i++) {
-            currentRoom.items.get(i).checkCollision(this,currentRoom.items,group);
+        for (int i = 0; i < currentRoom.items.size(); i++) {
+            currentRoom.items.get(i).checkCollision(this, currentRoom.items, group);
         }
     }
 
@@ -311,6 +311,10 @@ public class Player implements Runnable {
                 currentRoom.unload(group);
                 roomFinder(dungeon);
                 currentRoom.load(group);
+                //
+                if (currentRoom.enemies.size() == 0) {
+                    currentRoom.openDoors(group);
+                }
             }
         }
     }
@@ -364,18 +368,24 @@ public class Player implements Runnable {
     }
 
     public void updateCoins(int diff) {
-        this.coinNumber += diff;
-        overlay.updateCoinNumber(this.coinNumber);
+        if (this.coinNumber < Player_Overlay.MAX_ITEM_NUMBER) {
+            this.coinNumber += diff;
+            overlay.updateCoinNumber(this.coinNumber);
+        }
     }
 
     public void updateKeys(int diff) {
-        this.keyNumber += diff;
-        overlay.updateKeyNumber(this.keyNumber);
+        if (this.keyNumber < Player_Overlay.MAX_ITEM_NUMBER) {
+            this.keyNumber += diff;
+            overlay.updateKeyNumber(this.keyNumber);
+        }
     }
 
     public void updateBombs(int diff) {
-        this.bombNumber += diff;
-        overlay.updateBombNumber(this.bombNumber);
+        if (this.bombNumber < Player_Overlay.MAX_ITEM_NUMBER) {
+            this.bombNumber += diff;
+            overlay.updateBombNumber(this.bombNumber);
+        }
     }
 
     public boolean colliding() {
@@ -390,10 +400,10 @@ public class Player implements Runnable {
     }
 
     private void boundaryChecker(Group group) {
-        for (int i = 0; i <currentRoom.doors.size() ; i++) {
-            if (currentRoom.doors.get(i).getDoorBlock().getBoundsInParent().intersects(this.bodyHitbox.shape.getBoundsInParent()) &&(currentRoom.doors.get(i).state == Door.State.locked )){
+        for (int i = 0; i < currentRoom.doors.size(); i++) {
+            if (currentRoom.doors.get(i).getDoorBlock().getBoundsInParent().intersects(this.bodyHitbox.shape.getBoundsInParent()) && (currentRoom.doors.get(i).state == Door.State.locked)) {
                 System.out.println("opening locked door");
-                currentRoom.doors.get(i).open(group);
+                currentRoom.doors.get(i).forceOpen(group);
                 updateKeys(-1);
             }
         }

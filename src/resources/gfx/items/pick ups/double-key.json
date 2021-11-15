@@ -1,11 +1,11 @@
 {
-  "item": "key",
-  "Effect": 1,
+  "item": "double-key",
+  "Effect": 2,
   "Sprite": "pickup_003_key",
   "SheetScale": 2,
-  "StartX": 0,
+  "StartX": 32,
   "StartY": 0,
-  "Width": 16,
+  "Width": 32,
   "Height": 32,
   "Hitbox": {
     "Type": "Rectangle",
@@ -14,8 +14,8 @@
     "xDelta": 2,
     "yDelta": 6
   },
-  "SparkleOffsetX": 1,
-  "SparkleOffsetY": 1,
+  "SparkleOffsetX": 5,
+  "SparkleOffsetY": 5,
   "Sparkle": [
     {
       "StartX": 32,

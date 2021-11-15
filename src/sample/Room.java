@@ -27,6 +27,7 @@ public class Room implements Runnable {
     Random random = new Random();
     Background background;
     Shading shading;
+    String room;
 
     int i;
     int j;
@@ -119,6 +120,7 @@ public class Room implements Runnable {
             trapDoor = new Door(scaleX, scaleY, screenBounds);
         }
         System.out.println("Thread: " + threadName + " Doors Complete");
+        //
         finishedRoom += 1;
     }
 
@@ -158,16 +160,21 @@ public class Room implements Runnable {
             Vecc2f pos = new Vecc2f(itemsArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), itemsArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
             switch (itemsArray.get(k).getAsJsonObject().get("item").getAsString()) {
+                //might be able to combine unique items (heart & half-heart etc) into one class -
+                //depends on how different they become
                 case "coin" -> items.add(new Item_Coin(a, pos, scaleX, scaleY, screenBounds));
+
                 case "key" -> items.add(new Item_Key(a, pos, scaleX, scaleY, screenBounds));
+                case "double-key" -> items.add(new Item_DoubleKey(a, pos, scaleX, scaleY, screenBounds));
+
                 case "bomb" -> items.add(new Item_Bomb(a, pos, scaleX, scaleY, screenBounds));
+                case "double-bomb" -> items.add(new Item_DoubleBomb(a, pos, scaleX, scaleY, screenBounds));
+
                 case "heart" -> items.add(new Item_Heart(a, pos, scaleX, scaleY, screenBounds));
                 case "half-heart" -> items.add(new Item_HalfHeart(a, pos, scaleX, scaleY, screenBounds));
+                case "double-heart" -> items.add(new Item_DoubleHeart(a, pos, scaleX, scaleY, screenBounds));
             }
-
-
         }
-
     }
 
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
@@ -191,7 +198,7 @@ public class Room implements Runnable {
         if (contents != null) {
             room = contents[random.nextInt(contents.length)];
         }
-
+        this.room = room;
         return templateGetterSub("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type + "\\" + room);
     }
 

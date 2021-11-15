@@ -8,11 +8,13 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Random;
+
 public class Door {
 
     String[] types = {" ", "door_01_normaldoor", "door_02_treasureroomdoor", "door_10_bossroomdoor"};
     //
-    ImageView doorFrame, doorShadow, doorPartLeft, doorPartRight, doorPartRightLocked,trapDoor;
+    ImageView doorFrame, doorShadow, doorPartLeft, doorPartRight, doorPartRightLocked, trapDoor;
     //
     int spriteScaleX = 4;
     int spriteScaleY = 4;
@@ -30,6 +32,7 @@ public class Door {
     int triggerWidth = 125;
     int blockHeight = 20;
     String direction;
+    Random random = new Random();
 
     enum State {
         open,
@@ -38,7 +41,6 @@ public class Door {
     }
 
     State state;
-
 
     public Door(String direction, int rotation, int directionType, int type, float scaleX, float scaleY, Rectangle2D screenBounds, Background background) {
         //String file = "file:src\\resources\\gfx\\grid\\" + this.name + ".png";
@@ -50,9 +52,12 @@ public class Door {
         this.height = 48;
         this.width = 64;
         //
-        this.direction=direction;
+        this.direction = direction;
 
-        this.state = State.open;
+        int chance = (type == 1 && (!a.equals("door_01_normaldoor"))) ? 30 : 0;
+        //30 percent chance that a door in a normal room that leads to a special room is locked
+        this.state = ((random.nextInt(100)) < chance) ? (State.locked) : (State.closed);
+        //
         String file = "file:src\\resources\\gfx\\grid\\" + a + ".png";
         //System.out.println(directionType);
 
@@ -74,7 +79,7 @@ public class Door {
 
                 //Rectangle j= new Rectangle(background.bottomLeft.getBoundsInParent().getMaxX(), background.bottomLeft.getBoundsInParent().getMinY(), (((screenBounds.getWidth() / 2) - background.bottomLeft.getWidth())) * 2, blockHeight);
 
-                this.relocatePos = new Vecc2f(913,817);
+                this.relocatePos = new Vecc2f(913, 817);
             }
             case "down" -> {
                 this.position = new Vecc2f((float) ((screenBounds.getWidth() / 2) - this.doorFrame.getBoundsInParent().getWidth() / 2), (float) (screenBounds.getHeight() - this.doorFrame.getBoundsInParent().getHeight() - (doorBoundary * scaleY)));
@@ -83,7 +88,7 @@ public class Door {
 
                 //Rectangle j = new Rectangle(background.topLeft.getBoundsInParent().getMaxX(), background.topLeft.getBoundsInParent().getMaxY() - blockHeight, (((screenBounds.getWidth() / 2) - background.topLeft.getWidth())) * 2, blockHeight);
 
-                this.relocatePos = new Vecc2f(912,182);
+                this.relocatePos = new Vecc2f(912, 182);
             }
             case "left" -> {
                 this.position = new Vecc2f(0 + (doorBoundary * scaleX), (float) ((screenBounds.getHeight() / 2) - (this.doorFrame.getBoundsInParent().getHeight() / 2)));
@@ -92,7 +97,7 @@ public class Door {
 
                 //Rectangle j = new Rectangle(background.rightUp.getBoundsInParent().getMinX(), background.rightUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.rightUp.getHeight())) * 2);
 
-                this.relocatePos = new Vecc2f(1614,495);
+                this.relocatePos = new Vecc2f(1614, 495);
             }
             case "right" -> {
                 this.position = new Vecc2f((float) (screenBounds.getWidth() - this.doorFrame.getBoundsInParent().getWidth() - (doorBoundary * scaleX)), (float) ((screenBounds.getHeight() / 2) - (this.doorFrame.getBoundsInParent().getHeight() / 2)));
@@ -101,10 +106,10 @@ public class Door {
 
                 //Rectangle j = new Rectangle(background.leftUp.getBoundsInParent().getMaxX() - blockHeight, background.leftUp.getBoundsInParent().getMaxY(), blockHeight, (((screenBounds.getHeight() / 2) - background.leftUp.getHeight())) * 2);
 
-                this.relocatePos=new Vecc2f(220,495);
+                this.relocatePos = new Vecc2f(220, 495);
             }
         }
-        this.relocatePos.set(this.relocatePos.x*scaleX,this.relocatePos.y*scaleY);
+        this.relocatePos.set(this.relocatePos.x * scaleX, this.relocatePos.y * scaleY);
         //
         this.doorFrame.setRotate(rotation);
         this.doorShadow.setRotate(rotation);
@@ -116,13 +121,11 @@ public class Door {
 
     public Door(float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.state = State.closed;
-        this.width=64;
-        this.height=64;
+        this.width = 64;
+        this.height = 64;
         this.trapDoor = imageGetter("file:src\\resources\\gfx\\grid\\door_11_trapdoor.png", 0, 0, scaleX, scaleY);
-        this.position=new Vecc2f(screenBounds.getWidth()/2 - ((this.width*spriteScaleX*scaleX)/2),screenBounds.getHeight()/2 - ((this.height*spriteScaleY*scaleY)/2));
-        this.doorTrigger=new Rectangle(this.position.x+(16*spriteScaleX*scaleX),this.position.y+(16*spriteScaleY*scaleY),(32*spriteScaleX*scaleX),(32*spriteScaleY*scaleY));
-
-
+        this.position = new Vecc2f(screenBounds.getWidth() / 2 - ((this.width * spriteScaleX * scaleX) / 2), screenBounds.getHeight() / 2 - ((this.height * spriteScaleY * scaleY) / 2));
+        this.doorTrigger = new Rectangle(this.position.x + (16 * spriteScaleX * scaleX), this.position.y + (16 * spriteScaleY * scaleY), (32 * spriteScaleX * scaleX), (32 * spriteScaleY * scaleY));
     }
 
     private ImageView imageGetter(String file, int i, int i1, float scaleX, float scaleY) {
@@ -176,12 +179,12 @@ public class Door {
         try {
             group.getChildren().removeAll(this.doorTrigger, this.doorBlock);
         } catch (Exception e) {
-
         }
     }
+
     public void loadTrapDoor(Group group) {
-        group.getChildren().addAll(this.doorTrigger,this.trapDoor);
-        this.trapDoor.relocate(this.position.x,this.position.y);
+        group.getChildren().addAll(this.doorTrigger, this.trapDoor);
+        this.trapDoor.relocate(this.position.x, this.position.y);
     }
 
     public void open(Group group) {
@@ -193,8 +196,6 @@ public class Door {
                 this.state = State.open;
             }
             case locked -> {
-                group.getChildren().removeAll(this.doorPartLeft,this.doorPartRightLocked,this.doorBlock);
-                this.state = State.open;
             }
         }
     }
@@ -212,70 +213,6 @@ public class Door {
                 this.state = State.open;
             }
         }
-    }
-
-    public String[] getTypes() {
-        return types;
-    }
-
-    public void setTypes(String[] types) {
-        this.types = types;
-    }
-
-    public ImageView getDoorFrame() {
-        return doorFrame;
-    }
-
-    public void setDoorFrame(ImageView doorFrame) {
-        this.doorFrame = doorFrame;
-    }
-
-    public ImageView getDoorShadow() {
-        return doorShadow;
-    }
-
-    public void setDoorShadow(ImageView doorShadow) {
-        this.doorShadow = doorShadow;
-    }
-
-    public ImageView getDoorPartLeft() {
-        return doorPartLeft;
-    }
-
-    public void setDoorPartLeft(ImageView doorPartLeft) {
-        this.doorPartLeft = doorPartLeft;
-    }
-
-    public ImageView getDoorPartRight() {
-        return doorPartRight;
-    }
-
-    public void setDoorPartRight(ImageView doorPartRight) {
-        this.doorPartRight = doorPartRight;
-    }
-
-    public ImageView getDoorPartRightLocked() {
-        return doorPartRightLocked;
-    }
-
-    public void setDoorPartRightLocked(ImageView doorPartRightLocked) {
-        this.doorPartRightLocked = doorPartRightLocked;
-    }
-
-    public int getSpriteScaleX() {
-        return spriteScaleX;
-    }
-
-    public void setSpriteScaleX(int spriteScaleX) {
-        this.spriteScaleX = spriteScaleX;
-    }
-
-    public int getSpriteScaleY() {
-        return spriteScaleY;
-    }
-
-    public void setSpriteScaleY(int spriteScaleY) {
-        this.spriteScaleY = spriteScaleY;
     }
 
     public int getHeight() {

@@ -6,14 +6,13 @@ import javafx.scene.Group;
 
 import java.util.ArrayList;
 
-public class Item_HalfHeart extends Item {
-    public Item_HalfHeart(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
+public class Item_DoubleHeart extends Item {
+    public Item_DoubleHeart(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
         super(a, pos, scaleX, scaleY, screenBounds);
     }
 
     @Override
     public void checkCollision(Player player, ArrayList<Item> items, Group group) {
-
         if ((player.bodyHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent()))) {
             if (!(player.health == player.TOTAL_Health)) {//not at full health - pick it up
                 player.increaseHealth(this.effect, group);

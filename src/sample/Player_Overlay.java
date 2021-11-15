@@ -15,6 +15,8 @@ import java.util.Map;
 
 public class Player_Overlay{
 
+    public static final int MAX_ITEM_NUMBER = 99;
+
     String file = "file:src\\resources\\gfx\\ui\\hudpickups.png";
 
     ImageView icon_coin, icon_bomb, icon_key;

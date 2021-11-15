@@ -1,0 +1,17 @@
+{
+  "item": "double-heart",
+  "Effect": 4,
+  "Sprite": "pickup_001_heart",
+  "SheetScale": 2,
+  "StartX": 64,
+  "StartY": 64,
+  "Width": 32,
+  "Height": 32,
+  "Hitbox": {
+    "Type": "Rectangle",
+    "Width": 13,
+    "Height": 11,
+    "xDelta": 9,
+    "yDelta": 10
+  }
+}

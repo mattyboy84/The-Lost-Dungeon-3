@@ -24,29 +24,9 @@
   },
   "items": [
     {
-      "item": "coin",
-      "PositionX": 600,
-      "PositionY": 600
-    },
-    {
-      "item": "key",
-      "PositionX": 700,
-      "PositionY": 600
-    },
-    {
-      "item": "bomb",
-      "PositionX": 800,
-      "PositionY": 600
-    },
-    {
       "item": "heart",
-      "PositionX": 900,
-      "PositionY": 600
-    },
-    {
-      "item": "half-heart",
-      "PositionX": 1000,
-      "PositionY": 600
+      "PositionX": 0,
+      "PositionY": 515
     }
   ],
   "enemies": [
@@ -119,7 +99,6 @@
         "ImageX": 0,
         "ImageY": 0
       }
-
     ]
   }
 }

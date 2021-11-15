@@ -97,6 +97,7 @@ public class Main extends Application {
                 case B -> player.increaseMaxHealth(2, group);
                 case N -> player.decreaseMaxHealth(2, group);
                 case I -> player.overlay.miniMap.updateMinimap(9, 9);
+                case U -> System.out.println(player.currentRoom.room);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {

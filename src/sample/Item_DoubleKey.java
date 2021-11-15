@@ -12,7 +12,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 
-public class Item_Key extends Item implements Item_Animation{
+public class Item_DoubleKey extends Item {
 
     ImageView sparkle = new ImageView();
     Image[] spark = new Image[4];
@@ -21,7 +21,7 @@ public class Item_Key extends Item implements Item_Animation{
     Timeline idleTimeline;
     int idlePointer=0;
 
-    public Item_Key(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
+    public Item_DoubleKey(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
         super(a, pos, scaleX, scaleY, screenBounds);
         //
         JsonArray array = a.getAsJsonArray("Sparkle");
@@ -34,8 +34,8 @@ public class Item_Key extends Item implements Item_Animation{
 
             spark[i] = Item.imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png", scaleX, scaleY, a.get("SheetScale").getAsInt(), startX, startY, width, height).getImage();
         }
-        sparkleOffsetX= (int) (a.get("SparkleOffsetX").getAsInt()*scaleX);
-        sparkleOffsetY= (int) (a.get("SparkleOffsetY").getAsInt()*scaleY);
+        sparkleOffsetX = (int) (a.get("SparkleOffsetX").getAsInt() * scaleX)*sheetScale;
+        sparkleOffsetY = (int) (a.get("SparkleOffsetY").getAsInt() * scaleY)*sheetScale;
 
         sparkle.setImage(spark[0]);
         idleTimelineSetup();
@@ -53,7 +53,7 @@ public class Item_Key extends Item implements Item_Animation{
 
     @Override
     public void checkCollision(Player player, ArrayList<Item> items, Group group) {
-        if (player.bodyHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())&& (player.keyNumber<Player_Overlay.MAX_ITEM_NUMBER)) {
+        if (player.bodyHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent()) && (player.keyNumber < Player_Overlay.MAX_ITEM_NUMBER)) {
             player.updateKeys(this.effect);
             group.getChildren().remove(this.sparkle);
             unload(group);
@@ -65,7 +65,7 @@ public class Item_Key extends Item implements Item_Animation{
     public void postLoader(Group group) {
         try {
             group.getChildren().add(this.sparkle);
-            this.sparkle.relocate(this.position.x+sparkleOffsetX,this.position.y+sparkleOffsetY);
+            this.sparkle.relocate(this.position.x + sparkleOffsetX, this.position.y + sparkleOffsetY);
             this.sparkle.setViewOrder(-4);
             this.idleTimeline.play();
         } catch (Exception ignored) {
@@ -80,7 +80,4 @@ public class Item_Key extends Item implements Item_Animation{
         } catch (Exception ignored) {
         }
     }
-
-
-
 }

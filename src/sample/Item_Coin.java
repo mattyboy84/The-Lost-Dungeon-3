@@ -72,7 +72,7 @@ public class Item_Coin extends Item implements Item_Animation{
 
     @Override
     public void checkCollision(Player player, ArrayList<Item> items, Group group) {
-        if (player.bodyHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent()) && !(pickupTimeline.getStatus()== Animation.Status.RUNNING)) {
+        if (player.bodyHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent()) && !(pickupTimeline.getStatus()== Animation.Status.RUNNING)&& (player.coinNumber<Player_Overlay.MAX_ITEM_NUMBER)) {
 
             player.updateCoins(this.effect);
             this.idleTimeline.stop();

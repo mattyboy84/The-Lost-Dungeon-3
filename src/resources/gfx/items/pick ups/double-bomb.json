@@ -1,0 +1,17 @@
+{
+  "item": "double-bomb",
+  "Effect": 2,
+  "Sprite": "pickup_016_bomb",
+  "SheetScale": 2,
+  "StartX": 32,
+  "StartY": 0,
+  "Width": 32,
+  "Height": 32,
+  "Hitbox": {
+    "Type": "Rectangle",
+    "Width": 15,
+    "Height": 16,
+    "xDelta": 9,
+    "yDelta": 8
+  }
+}

@@ -15,7 +15,7 @@ public class Item {
     Vecc2f position;
     ImageView item;
     int effect;
-    float scaleX,scaleY;
+    float scaleX, scaleY;
     int sheetScale;
 
     public Item() {
@@ -24,8 +24,8 @@ public class Item {
 
 
     public Item(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        this.scaleX=scaleX;
-        this.scaleY=scaleY;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
         this.sheetScale = a.get("SheetScale").getAsInt();
         int startX = a.get("StartX").getAsInt();
         int startY = a.get("StartY").getAsInt();
@@ -34,10 +34,16 @@ public class Item {
         //
         this.effect = a.get("Effect").getAsInt();
 
-        this.position = new Vecc2f(pos.x, pos.y);
+        this.position = new Vecc2f(((213 + pos.x) * scaleX), ((180 + pos.y) * scaleY));
 
         String file = "file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png";
         this.item = imageGetter(file, scaleX, scaleY, sheetScale, startX, startY, width, height);
+        //
+        //rooms are made up of 103 x 103 'grids' the rocks obey this rule and now items are centered in that grid to match the format.
+        int x = (int) ((103*scaleX)-(this.item.getBoundsInParent().getWidth()))/2;
+        int y = (int) ((103*scaleY)-(this.item.getBoundsInParent().getHeight()))/2;
+        this.position.add(x,y);
+
 
         this.hitbox = new Hitbox(a.getAsJsonObject("Hitbox"), sheetScale, scaleX, scaleY);
 
