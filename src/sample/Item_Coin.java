@@ -55,7 +55,7 @@ public class Item_Coin extends Item implements Item_Animation{
     }
 
     private void pickupTimelineSetup() {
-        pickupTimeline = new Timeline(new KeyFrame(Duration.millis(150), event -> {
+        pickupTimeline = new Timeline(new KeyFrame(Duration.millis(80), event -> {
             this.item.setImage(pickup[pickupPointer]);
             pickupPointer = (pickupPointer >= pickup.length - 1) ? (0) : ++pickupPointer;
         }));
@@ -64,8 +64,8 @@ public class Item_Coin extends Item implements Item_Animation{
 
     private void idleTimelineSetup() {
         idleTimeline = new Timeline(new KeyFrame(Duration.millis(150), event -> {
-            this.item.setImage(idle[idlePointer]);
-            idlePointer = (idlePointer >= idle.length - 1) ? (0) : ++idlePointer;
+            this.item.setImage((idlePointer<idle.length ? (idle[idlePointer]) : (idle[0])));
+            idlePointer = (idlePointer >= 9) ? (0) : ++idlePointer;
         }));
         idleTimeline.setCycleCount(Timeline.INDEFINITE);
     }
@@ -76,7 +76,7 @@ public class Item_Coin extends Item implements Item_Animation{
 
             player.updateCoins(this.effect);
             this.idleTimeline.stop();
-
+            //the pickup animations are larger so an offset is applied to re-center it.
             this.position.sub(16 * scaleX * sheetScale, 23 * scaleY * sheetScale);
             this.item.relocate(this.position.x, this.position.y);
 

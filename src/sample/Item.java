@@ -22,7 +22,6 @@ public class Item {
 
     }
 
-
     public Item(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
@@ -44,10 +43,7 @@ public class Item {
         int y = (int) ((103*scaleY)-(this.item.getBoundsInParent().getHeight()))/2;
         this.position.add(x,y);
 
-
         this.hitbox = new Hitbox(a.getAsJsonObject("Hitbox"), sheetScale, scaleX, scaleY);
-
-        //this.item = new ImageView("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png");
     }
 
 
