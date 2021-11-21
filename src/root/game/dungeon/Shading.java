@@ -44,7 +44,7 @@ public class Shading {
         this.avgScale = (((scaleX + scaleY)) / 2);
 
         this.overlay = new Canvas(shading.getWidth(), shading.getHeight());
-        overlay.relocate(-20, -28);//offset cords
+        overlay.relocate(Math.round(-20*scaleX), Math.round(-28*scaleY));//offset cords
         //
         //
 
@@ -66,44 +66,25 @@ public class Shading {
         overlay.getGraphicsContext2D().drawImage(shading, 0, 0);
         //
         for (Points source : activeSources) {
-            int posX= (int) source.position.x, posY= (int) source.position.y;
+            int posX = (int) source.position.x, posY = (int) source.position.y;
             for (int i = 0; i < ((source.shader.length)); i++) {
-                for (int j = 0; j < ((source.shader.length)); j++) {
+               for (int j = 0; j < ((source.shader.length)); j++) {
 
+                    if (posX+i < 0 || posX+i > (screenBounds.getWidth()-1) || posY+j < 0 || posY+j > (screenBounds.getHeight()-1)) {
+                        break;
+                    }
                     if (screen[posX + i][posY + j] == null) {
                         screen[posX + i][posY + j] = (float) (pixelReader.getColor(posX + i, posY + j).getOpacity());
                     }
                     overlay.getGraphicsContext2D().getPixelWriter().setColor(posX + i, posY + j, Color.rgb(0, 0, 0, (screen[posX + i][posY + j] * source.shader[i][j])));
                     screen[posX + i][posY + j] = screen[posX + i][posY + j] * source.shader[i][j];
 
-                    //posY++;
                 }
-                //posX++;
             }
         }
         //
         screen = new Float[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
     }
-    /*
-    for (Points source : activeSources) {
-            float localRadius = (int) (source.getRadius() * ((scaleX) + (scaleY)) / 2);
-            for (int i = (int) Math.max((source.getPosition().x - localRadius), 0); i < Math.min((source.getPosition().x + localRadius), screenBounds.getWidth()); i++) {
-                for (int j = Math.max((int) (source.getPosition().y - localRadius), 0); j < Math.min((source.getPosition().y + localRadius), screenBounds.getHeight()); j++) {
-                    float d = Vecc2f.distance(i, j, source.getPosition().x, source.getPosition().y);
-                    if (d < localRadius) {
-                        //i = width
-                        //j = height
-                        //
-                        if (screen[i][j] == null) {
-                            screen[i][j] = (float) (pixelReader.getColor(i, j).getOpacity());
-                        }
-                        overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, screen[i][j] * (d / (localRadius))));
-                        screen[i][j] = screen[i][j] * (d / (localRadius));
-                    }
-                }
-            }
-        }
-     */
 
     public void removeActiveSource(int name) {
         for (int i = 0; i < activeSources.size(); i++) {

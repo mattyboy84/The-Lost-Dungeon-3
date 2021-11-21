@@ -152,7 +152,6 @@ public class Dungeon {
         finRooms++;
     }
 
-
     public static void displayMap(int[][] map) {
         System.out.println("I down, J across");
         StringBuilder a = new StringBuilder();

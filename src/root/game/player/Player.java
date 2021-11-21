@@ -24,7 +24,7 @@ public class Player implements Runnable, Entity_Shader {
 
     public static boolean loaded = false;
     //
-    int XAnimateCounter, YAnimateCounter, animateCounter;
+    int animateCounter;
     //
     int shootCooldown = 45;
     //

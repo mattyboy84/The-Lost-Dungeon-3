@@ -55,6 +55,9 @@ public class Item_Coin extends Item implements Item_Animation{
             pickup[i] = Item.imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png", scaleX, scaleY, a.get("SheetScale").getAsInt(), startX, startY, width, height).getImage();
         }
         pickupTimelineSetup();
+
+
+        //2, 3,
     }
 
     private void pickupTimelineSetup() {

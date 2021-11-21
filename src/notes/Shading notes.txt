@@ -1,5 +1,5 @@
 file:shading.png  422 x x286
-scaling to fit screen leaves it looing slightly off...
+scaling to fit screen leaves it looking slightly off...
 ideal fit for a 1920x1080 screen is 1943 x 1122 with top left corner at -11 , -24
 
 ideal fit for: 1366x768

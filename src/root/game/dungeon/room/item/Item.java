@@ -53,7 +53,7 @@ public class Item {
     public static ImageView imageGetter(String file, float scaleX, float scaleY, int sheetScale, int startX, int startY, int width, int height) {
         return (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)),
                 ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
-                (int) ((startX * sheetScale * scaleX)), (int) ((startY * sheetScale * scaleY)), (int) (width * scaleX * sheetScale), (int) (height * scaleY * sheetScale))));
+                (int) ((startX * sheetScale * scaleX)), (int) (Math.round(startY * sheetScale * scaleY)), (int) (width * scaleX * sheetScale), (int) (height * scaleY * sheetScale))));
     }
 
     public void load(Group group) {
