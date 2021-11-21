@@ -12,6 +12,7 @@ import javafx.stage.Screen;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+
 import root.game.util.Vecc2f;
 
 public class Shading {
@@ -35,7 +36,7 @@ public class Shading {
 
     //        this.topLeft = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
     public Shading(float scaleX, float scaleY, Rectangle2D screenBounds) {
-        this.shading = new Image(file, (int) (screenBounds.getWidth() * xMult), (int) (screenBounds.getHeight() * yMult), false, false);
+        this.shading = new Image(file, (int) (screenBounds.getWidth() * (xMult)), (int) (screenBounds.getHeight() * (yMult)), false, false);
         this.pixelReader = shading.getPixelReader();
         //
         this.scaleX = scaleX;
@@ -65,16 +66,36 @@ public class Shading {
         overlay.getGraphicsContext2D().drawImage(shading, 0, 0);
         //
         for (Points source : activeSources) {
+            int posX= (int) source.position.x, posY= (int) source.position.y;
+            for (int i = 0; i < ((source.shader.length)); i++) {
+                for (int j = 0; j < ((source.shader.length)); j++) {
+
+                    if (screen[posX + i][posY + j] == null) {
+                        screen[posX + i][posY + j] = (float) (pixelReader.getColor(posX + i, posY + j).getOpacity());
+                    }
+                    overlay.getGraphicsContext2D().getPixelWriter().setColor(posX + i, posY + j, Color.rgb(0, 0, 0, (screen[posX + i][posY + j] * source.shader[i][j])));
+                    screen[posX + i][posY + j] = screen[posX + i][posY + j] * source.shader[i][j];
+
+                    //posY++;
+                }
+                //posX++;
+            }
+        }
+        //
+        screen = new Float[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
+    }
+    /*
+    for (Points source : activeSources) {
             float localRadius = (int) (source.getRadius() * ((scaleX) + (scaleY)) / 2);
             for (int i = (int) Math.max((source.getPosition().x - localRadius), 0); i < Math.min((source.getPosition().x + localRadius), screenBounds.getWidth()); i++) {
                 for (int j = Math.max((int) (source.getPosition().y - localRadius), 0); j < Math.min((source.getPosition().y + localRadius), screenBounds.getHeight()); j++) {
-                    float d=Vecc2f.distance(i, j, source.getPosition().x, source.getPosition().y);
+                    float d = Vecc2f.distance(i, j, source.getPosition().x, source.getPosition().y);
                     if (d < localRadius) {
                         //i = width
                         //j = height
                         //
                         if (screen[i][j] == null) {
-                            screen[i][j] = (float)(pixelReader.getColor(i, j).getOpacity());
+                            screen[i][j] = (float) (pixelReader.getColor(i, j).getOpacity());
                         }
                         overlay.getGraphicsContext2D().getPixelWriter().setColor(i, j, Color.rgb(0, 0, 0, screen[i][j] * (d / (localRadius))));
                         screen[i][j] = screen[i][j] * (d / (localRadius));
@@ -82,8 +103,7 @@ public class Shading {
                 }
             }
         }
-        screen = new Float[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
-    }
+     */
 
     public void removeActiveSource(int name) {
         for (int i = 0; i < activeSources.size(); i++) {
@@ -93,8 +113,8 @@ public class Shading {
         }
     }
 
-    public void addActiveSource(float x, float y, int radius, int name) {
-        activeSources.add(new Points(x, y, (int) (radius * this.avgScale), name));
+    public void addActiveSource(float x, float y, float[][] shader, int name) {
+        activeSources.add(new Points(x, y, shader, name));
     }
 
     public void load(Group group) {
@@ -114,10 +134,11 @@ public class Shading {
         Vecc2f position;
         int radius;
         int name;
+        float[][] shader;
 
-        public Points(float x, float y, int i, int name) {
+        public Points(float x, float y, float[][] shader, int name) {
             this.position = new Vecc2f(x, y);
-            this.radius = i;
+            this.shader = shader;
             this.name = name;
         }
 

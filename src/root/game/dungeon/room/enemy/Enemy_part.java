@@ -7,12 +7,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import root.game.dungeon.Shading;
+import root.game.util.Entity_Shader;
 import root.game.util.Hitbox;
 import root.game.util.Vecc2f;
 
 import java.util.ArrayList;
 
-public class Enemy_part {
+public class Enemy_part implements Entity_Shader {
     String part;
     int startX, startY;
     int width, height;
@@ -28,6 +29,7 @@ public class Enemy_part {
     //
     boolean light;
     int lightRadius;
+    float[][] shader;
     Shading shading;
 
     public Enemy_part(JsonObject enemyPart, String type, String filePath, int sheetScale, float scaleX, float scaleY, Shading shading, Vecc2f pos) {
@@ -67,9 +69,10 @@ public class Enemy_part {
 
         this.light = enemyPart.get("Light").getAsBoolean();
         if (this.light) {
-            this.lightRadius = enemyPart.get("Radius").getAsInt();
+            this.lightRadius = (int) (enemyPart.get("Radius").getAsInt()*((scaleX+scaleY)/2));
             //shading.addActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())), this.lightRadius);
             this.shading = shading;
+            shader=setupShader(this.lightRadius);
             //shading.addActiveSource(this.position.x,this.position.y,this.lightRadius);
             //System.out.println(hitboxes.get(0).xDelta);
 
@@ -105,8 +108,8 @@ public class Enemy_part {
         this.enemy.relocate(this.position.x, this.position.y);
         this.enemy.setViewOrder(-5);
         //
-        shading.addActiveSource((int) (this.position.x + (this.width / 2) + (hitboxes.get(0).getxDelta())), (int) (this.position.y + (this.height / 2) + (hitboxes.get(0).getyDelta())), this.lightRadius,hashCode());
-        shading.shade();
+        shading.addActiveSource(this.position.x,this.position.y, this.shader,hashCode());
+        //shading.shade();
     }
 
     public void unload(Group group) {

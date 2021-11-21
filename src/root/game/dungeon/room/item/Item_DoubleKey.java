@@ -46,7 +46,6 @@ public class Item_DoubleKey extends Item {
 
     private void idleTimelineSetup() {
         idleTimeline = new Timeline(new KeyFrame(Duration.millis(180), event -> {
-            System.out.println("key");
             this.sparkle.setImage(spark[idlePointer]);
             idlePointer = (idlePointer >= spark.length - 1) ? (0) : ++idlePointer;
         }));

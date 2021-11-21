@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.Door;
@@ -19,7 +20,7 @@ import root.game.util.*;
 import root.game.player.*;
 import root.game.dungeon.Shading;
 
-public class Player implements Runnable {
+public class Player implements Runnable, Entity_Shader {
 
     public static boolean loaded = false;
     //
@@ -78,6 +79,7 @@ public class Player implements Runnable {
     Player_Overlay overlay;
     //
     int lightRadius = 110;
+    float[][] shader;
     //
     float veloLimit;//default is 7 multiplied by screen scale
     //
@@ -111,6 +113,8 @@ public class Player implements Runnable {
         this.dungeon = dungeon;
         this.avgScale = ((scaleX + scaleY) / 2);
         this.threadName = threadName;
+        this.lightRadius= (int) (this.lightRadius*avgScale);
+        shader = setupShader(this.lightRadius);
     }
 
     public void run() {
@@ -279,7 +283,7 @@ public class Player implements Runnable {
             //
             c.relocate(this.position.x, this.position.y);
             //
-            currentRoom.shading.addActiveSource((float) (this.headHitbox.getShape().getLayoutX() + (this.headHitbox.radius * (1 / Math.sqrt(2)))), (float) (this.headHitbox.getShape().getLayoutY() + (this.headHitbox.radius * (1 / Math.sqrt(2)))), this.lightRadius, hashCode());
+            currentRoom.shading.addActiveSource((float) ((this.headHitbox.getShape().getBoundsInParent().getCenterX())-this.lightRadius*avgScale), (float) ((this.headHitbox.getShape().getBoundsInParent().getCenterY())-this.lightRadius*avgScale),shader, hashCode());
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
@@ -290,7 +294,6 @@ public class Player implements Runnable {
             currentRoom.items.get(i).checkCollision(this, currentRoom.items, group);
         }
     }
-
 
     private void roomFinder(Dungeon dungeon) {
         for (int i = 0; i < dungeon.rooms.size(); i++) {
