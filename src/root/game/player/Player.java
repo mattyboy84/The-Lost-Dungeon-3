@@ -113,7 +113,7 @@ public class Player implements Runnable, Entity_Shader {
         this.dungeon = dungeon;
         this.avgScale = ((scaleX + scaleY) / 2);
         this.threadName = threadName;
-        this.lightRadius= (int) (this.lightRadius*avgScale);
+        this.lightRadius = (int) (this.lightRadius * avgScale);
         shader = setupShader(this.lightRadius);
     }
 
@@ -283,7 +283,8 @@ public class Player implements Runnable, Entity_Shader {
             //
             c.relocate(this.position.x, this.position.y);
             //
-            currentRoom.shading.addActiveSource((float) ((this.headHitbox.getShape().getBoundsInParent().getCenterX())-this.lightRadius*avgScale), (float) ((this.headHitbox.getShape().getBoundsInParent().getCenterY())-this.lightRadius*avgScale),shader, hashCode());
+            currentRoom.shading.addActiveSource((float) (headHitbox.getShape().getBoundsInParent().getMinX()-(headHitbox.getRadius()*1.42)),
+                    (float)(headHitbox.getShape().getBoundsInParent().getMinY()-(headHitbox.getRadius()*1.42)), shader, hashCode());
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
