@@ -56,7 +56,7 @@ public class Door implements Sprite_Splitter {
         //
         this.direction = direction;
 
-        int chance = (type == 1 && (!a.equals("door_01_normaldoor"))) ? 30 : 0;
+        int chance = (type == 1 && (((!a.equals("door_01_normaldoor")) && (!a.equals("door_10_bossroomdoor")))) ? 30 : 0);
         //30 percent chance that a door in a normal room that leads to a special room is locked
         this.state = ((random.nextInt(100)) < chance) ? (State.locked) : (State.closed);
         //
@@ -131,7 +131,7 @@ public class Door implements Sprite_Splitter {
     }
 
     private ImageView imageGetter(String file, int i, int i1, float scaleX, float scaleY) {
-        return new ImageView(imageGetter(file,i*width,i1*height,width,height,scaleX*spriteScaleX,scaleY*spriteScaleY,1));
+        return new ImageView(imageGetter(file, i * width, i1 * height, width, height, scaleX * spriteScaleX, scaleY * spriteScaleY, 1));
     }
 
     public void load(Group group) {

@@ -2,7 +2,7 @@ package root.game.util;
 
 public interface Entity_Shader {
 
-    public default float[][] setupShader(int lightRadius) {
+    default float[][] setupShader(int lightRadius) {
         float[][] shader = new float[lightRadius*2][lightRadius*2];
         for (int i = 0; i < shader.length; i++) {
             for (int j = 0; j < shader[0].length; j++) {

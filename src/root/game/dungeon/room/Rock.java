@@ -31,7 +31,6 @@ public class Rock implements Sprite_Splitter {
         //System.out.println((new Image(file).getWidth() * scaleX * sheetScale) +" " + (new Image(file).getHeight() * scaleY * sheetScale));
 
         this.rock=new ImageView((imageGetter(file,width*imageX,height*imageY, width,height,scaleX,scaleY,sheetScale)));
-
         this.position = new Vecc2f(this.borderX + (positionX * scaleX), this.borderY + (positionY * scaleY));
     }
 
