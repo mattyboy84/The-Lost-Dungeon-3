@@ -7,11 +7,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Rectangle;
+import root.game.util.Sprite_Splitter;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Background {
+public class Background implements Sprite_Splitter {
 
     JsonObject backgroundTemplate = null;
     //
@@ -63,20 +64,18 @@ public class Background {
         float a = (float) (screenBounds.getWidth() / 2) / this.width;
         float b = (float) (screenBounds.getHeight() / 2) / this.height;
 
-        this.topLeftIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b),
-                false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
+        this.topLeftIMG=new ImageView(imageGetter(file,this.width*randRow,this.height*randCol,this.width,this.height,a,b,1));
         this.topLeftIMG.relocate(0, 0);
-        this.topRightIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b),
-                false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
+        //
+        this.topRightIMG =new ImageView(imageGetter(file,this.width*randRow,this.height*randCol,this.width,this.height,a,b,1));
         this.topRightIMG.relocate(screenBounds.getWidth() / 2, 0);
         this.topRightIMG.setScaleX(-1);
-        this.bottomLeftIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b),
-                false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
+        //
+        this.bottomLeftIMG=new ImageView(imageGetter(file,this.width*randRow,this.height*randCol,this.width,this.height,a,b,1));
         this.bottomLeftIMG.relocate(0, screenBounds.getHeight() / 2);
         this.bottomLeftIMG.setScaleY(-1);
-        this.bottomRightIMG = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b),
-                false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
-
+        //
+        this.bottomRightIMG=new ImageView(imageGetter(file,this.width*randRow,this.height*randCol,this.width,this.height,a,b,1));
         this.bottomRightIMG.relocate(screenBounds.getWidth() / 2, screenBounds.getHeight() / 2);
         this.bottomRightIMG.setScaleX(-1);
         this.bottomRightIMG.setScaleY(-1);

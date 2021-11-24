@@ -7,11 +7,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
 import java.util.Random;
 
-public class Door {
+public class Door implements Sprite_Splitter {
 
     String[] types = {" ", "door_01_normaldoor", "door_02_treasureroomdoor", "door_10_bossroomdoor"};
     //
@@ -130,7 +131,7 @@ public class Door {
     }
 
     private ImageView imageGetter(String file, int i, int i1, float scaleX, float scaleY) {
-        return (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * spriteScaleX), (new Image(file).getHeight() * scaleY * spriteScaleY), false, false).getPixelReader(), (int) (i * ((width * scaleX * spriteScaleX))), (int) (i1 * ((height * scaleY * spriteScaleY))), (int) (width * scaleX * spriteScaleX), (int) (height * scaleY * spriteScaleY))));
+        return new ImageView(imageGetter(file,i*width,i1*height,width,height,scaleX*spriteScaleX,scaleY*spriteScaleY,1));
     }
 
     public void load(Group group) {

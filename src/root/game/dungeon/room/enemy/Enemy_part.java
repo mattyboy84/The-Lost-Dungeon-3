@@ -9,11 +9,12 @@ import javafx.scene.image.WritableImage;
 import root.game.dungeon.Shading;
 import root.game.util.Entity_Shader;
 import root.game.util.Hitbox;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
 import java.util.ArrayList;
 
-public class Enemy_part implements Entity_Shader {
+public class Enemy_part implements Entity_Shader, Sprite_Splitter {
     String part;
     int startX, startY;
     int width, height;
@@ -34,10 +35,10 @@ public class Enemy_part implements Entity_Shader {
 
     public Enemy_part(JsonObject enemyPart, String type, String filePath, int sheetScale, float scaleX, float scaleY, Shading shading, Vecc2f pos) {
         this.part = enemyPart.get("part").getAsString();
-        this.startX = (int) (enemyPart.get("StartX").getAsInt() * scaleX * sheetScale);
-        this.startY = (int) (enemyPart.get("StartY").getAsInt() * scaleY * sheetScale);
-        this.width = (int) (enemyPart.get("Width").getAsInt() * scaleX * sheetScale);
-        this.height = (int) (enemyPart.get("Height").getAsInt() * scaleY * sheetScale);
+        this.startX = (int) (enemyPart.get("StartX").getAsInt());
+        this.startY = (int) (enemyPart.get("StartY").getAsInt());
+        this.width = (int) (enemyPart.get("Width").getAsInt());
+        this.height = (int) (enemyPart.get("Height").getAsInt());
         this.rows = enemyPart.get("Rows").getAsInt();
         this.columns = enemyPart.get("Columns").getAsInt();
         //
@@ -52,7 +53,8 @@ public class Enemy_part implements Entity_Shader {
         //
         //System.out.println(this.width * scaleX * sheetScale);
         for (int i = 0; i < images.length; i++) {
-            images[i] = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(), (int) topLeftX, (int) topLeftY, (int) (this.width), (int) (this.height))).getImage());
+            images[i]=imageGetter(file,topLeftX,topLeftY,this.width,this.height,scaleX,scaleY,sheetScale);
+
             topLeftX = (int) (topLeftX + this.width);
             if (topLeftX >= (new Image(file).getWidth() * scaleX * sheetScale)) {
                 topLeftX = 0;

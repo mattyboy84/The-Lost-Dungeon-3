@@ -34,7 +34,6 @@ public class Shading {
     //
     float scaleX, scaleY, avgScale;
 
-    //        this.topLeft = new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * a), (new Image(file).getHeight() * b), false, false).getPixelReader(), (int) (this.width * a * randRow), (int) (this.height * b * randCol), (int) (this.width * a), (int) (this.height * b)));
     public Shading(float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.shading = new Image(file, (int) (screenBounds.getWidth() * (xMult)), (int) (screenBounds.getHeight() * (yMult)), false, false);
         this.pixelReader = shading.getPixelReader();

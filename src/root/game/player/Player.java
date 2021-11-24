@@ -20,7 +20,7 @@ import root.game.util.*;
 import root.game.player.*;
 import root.game.dungeon.Shading;
 
-public class Player implements Runnable, Entity_Shader {
+public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public static boolean loaded = false;
     //
@@ -139,18 +139,20 @@ public class Player implements Runnable, Entity_Shader {
         bodyDelta.mult(sheetScale);
         headDelta.mult(sheetScale);
         //
-        this.width = (int) (32 * scaleX * sheetScale);
-        this.height = (int) (32 * scaleY * sheetScale);
+        this.width = (int) (32*scaleX*sheetScale);
+        this.height = (int) (32*scaleY*sheetScale);
         //
         String file = "file:src\\resources\\gfx\\characters\\costumes\\" + this.costume + ".png";
         for (int i = 0; i < this.heads.length; i++) {//head images
-            this.heads[i] = (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)), ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
-                    (this.width * i), 0, (int) this.width, (int) this.height))).getImage();
+            this.heads[i] = imageGetter(file,32*i,0,32,32,scaleX,scaleY,sheetScale);
         }
+
+
+
         //
-        readImageINTOArray(file, sheetScale, scaleX, scaleY, UD_body, (int) Math.round(192 * scaleX * sheetScale), 0);
+        readImageINTOArray(file, sheetScale, scaleX, scaleY, UD_body, (int) Math.round(192), 0);
         //
-        readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) Math.round(64 * sheetScale * scaleY));
+        readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) Math.round(64));
         //
         roomFinder(dungeon);
         //
@@ -494,12 +496,12 @@ public class Player implements Runnable, Entity_Shader {
 
     private void readImageINTOArray(String file, int sheetScale, float scaleX, float scaleY, Image[] ARRAY, int startX, int startY) {
         for (int i = 0; i < ARRAY.length; i++) {
-            ARRAY[i] = (new ImageView(new WritableImage(new Image(file, ((int) (new Image(file).getWidth() * scaleX * sheetScale)), ((int) (new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
-                    startX, startY, (int) this.width, (int) this.height))).getImage();
-            startX = startX + this.width;
-            if (startX >= (int) this.width * 8) {
+            ARRAY[i]=imageGetter(file,startX,startY,32,32,scaleX,scaleY,sheetScale);
+
+            startX = startX + 32;
+            if (startX >= (int) (32 * 8)) {
                 startX = 0;
-                startY = startY + this.height;
+                startY = startY + 32;
             }
         }
     }

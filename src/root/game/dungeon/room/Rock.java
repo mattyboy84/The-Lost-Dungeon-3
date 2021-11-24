@@ -5,9 +5,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import root.game.util.Hitbox;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
-public class Rock {
+public class Rock implements Sprite_Splitter {
 
     ImageView rock;
     Vecc2f position;
@@ -29,8 +30,7 @@ public class Rock {
 
         //System.out.println((new Image(file).getWidth() * scaleX * sheetScale) +" " + (new Image(file).getHeight() * scaleY * sheetScale));
 
-        this.rock = (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)), ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(), (int) ((this.width * imageX)), (int) ((this.height * imageY)), (int) this.width, (int) this.height)));
-
+        this.rock=new ImageView((imageGetter(file,width*imageX,height*imageY, width,height,scaleX,scaleY,sheetScale)));
 
         this.position = new Vecc2f(this.borderX + (positionX * scaleX), this.borderY + (positionY * scaleY));
     }

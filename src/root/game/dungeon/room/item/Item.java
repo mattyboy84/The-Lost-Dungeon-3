@@ -8,15 +8,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import root.game.player.Player;
 import root.game.util.Hitbox;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
-
 import java.util.ArrayList;
 
-public class Item {
+public class Item implements Sprite_Splitter {
 
     Hitbox hitbox;
     Vecc2f position;
-    ImageView item;
+    ImageView item=new ImageView();
     int effect;
     float scaleX, scaleY;
     int sheetScale;
@@ -39,7 +39,7 @@ public class Item {
         this.position = new Vecc2f(((213 + pos.x) * scaleX), ((180 + pos.y) * scaleY));
 
         String file = "file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png";
-        this.item = imageGetter(file, scaleX, scaleY, sheetScale, startX, startY, width, height);
+        this.item.setImage(imageGetter(file, startX, startY, width, height,scaleX,scaleY,sheetScale));
         //
         //rooms are made up of 103 x 103 'grids' the rocks obey this rule and now items are centered in that grid to match the format.
         int x = (int) ((103*scaleX)-(this.item.getBoundsInParent().getWidth()))/2;
@@ -47,13 +47,6 @@ public class Item {
         this.position.add(x,y);
 
         this.hitbox = new Hitbox(a.getAsJsonObject("Hitbox"), sheetScale, scaleX, scaleY);
-    }
-
-
-    public static ImageView imageGetter(String file, float scaleX, float scaleY, int sheetScale, int startX, int startY, int width, int height) {
-        return (new ImageView(new WritableImage(new Image(file, ((new Image(file).getWidth() * scaleX * sheetScale)),
-                ((new Image(file).getHeight() * scaleY * sheetScale)), false, false).getPixelReader(),
-                (int) ((startX * sheetScale * scaleX)), (int) (Math.round(startY * sheetScale * scaleY)), (int) (width * scaleX * sheetScale), (int) (height * scaleY * sheetScale))));
     }
 
     public void load(Group group) {

@@ -7,16 +7,18 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 import root.game.player.Player;
 import root.game.player.Player_Overlay;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Item_Coin extends Item implements Item_Animation{
+public class Item_Coin extends Item implements Item_Animation, Sprite_Splitter {
 
     Image[] idle = new Image[6];
     Image[] pickup = new Image[5];
@@ -40,7 +42,8 @@ public class Item_Coin extends Item implements Item_Animation{
             int width = array.get(i).getAsJsonObject().get("Width").getAsInt();
             int height = array.get(i).getAsJsonObject().get("Height").getAsInt();
 
-            idle[i] = Item.imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png", scaleX, scaleY, a.get("SheetScale").getAsInt(), startX, startY, width, height).getImage();
+            idle[i] = imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString()
+                    + ".png", startX, startY, width, height, scaleX, scaleY,a.get("SheetScale").getAsInt());
         }
         idleTimelineSetup();
         //
@@ -52,8 +55,8 @@ public class Item_Coin extends Item implements Item_Animation{
             int width = arrayB.get(i).getAsJsonObject().get("Width").getAsInt();
             int height = arrayB.get(i).getAsJsonObject().get("Height").getAsInt();
 
-            pickup[i] = Item.imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png", scaleX, scaleY, a.get("SheetScale").getAsInt(), startX, startY, width, height).getImage();
-        }
+            pickup[i] = imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString()
+                    + ".png", startX, startY, width, height, scaleX, scaleY,a.get("SheetScale").getAsInt());        }
         pickupTimelineSetup();
 
 

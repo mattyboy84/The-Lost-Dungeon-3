@@ -8,12 +8,13 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 import root.Main;
 
 import java.util.ArrayList;
 
-public class Player_Overlay{
+public class Player_Overlay implements Sprite_Splitter {
 
     public static final int MAX_ITEM_NUMBER = 99;
 
@@ -37,9 +38,12 @@ public class Player_Overlay{
     public Player_Overlay(float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int score, int[][] map) {
         float g = ((scaleX + scaleY) / 2);
 
-        this.icon_coin = imageGetter(scaleX, scaleY, sheetScale, 0, 0);
-        this.icon_bomb = imageGetter(scaleX, scaleY, sheetScale, 0, 16);
-        this.icon_key = imageGetter(scaleX, scaleY, sheetScale, 16, 0);
+        this.icon_coin = new ImageView(imageGetter(file,0,0,16,16,scaleX,scaleY,sheetScale));
+
+        this.icon_bomb = new ImageView(imageGetter(file,0,16,16,16,scaleX,scaleY,sheetScale));
+
+        this.icon_key = new ImageView(imageGetter(file,16,0,16,16,scaleX,scaleY,sheetScale));
+
         //
         this.posCoin = new Vecc2f(75 * scaleX, 150 * scaleY);
         this.posBomb = new Vecc2f(this.posCoin.x, this.posCoin.y + this.icon_coin.getBoundsInParent().getWidth());
@@ -88,12 +92,6 @@ public class Player_Overlay{
         largeMap=new DungeonMap("file:src\\resources\\gfx\\ui\\minimap2.png",18,16,108,48,108,112,108,176,map,scaleX,scaleY,screenBounds,3);
         //largeMap.center(screenBounds);
 
-    }
-
-    private ImageView imageGetter(float scaleX, float scaleY, int sheetScale, int startX, int startY) {
-        return (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale), (new Image(file).getHeight() * scaleY * sheetScale),
-                false, false).getPixelReader(), (int) (startX * scaleX * sheetScale),
-                (int) (startY * scaleY * sheetScale), (int) (16 * scaleX * sheetScale), (int) (16 * scaleY * sheetScale))));
     }
 
     public void load(Group group) {
@@ -240,17 +238,11 @@ public class Player_Overlay{
         int sheetScale = Main.p ? 2 : 3;
         int width_heart = (int) ((16 * sheetScale) * 0.8);
         //
-        ImageView heart_FULL = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * sheetScale), (new Image(file).getHeight() * sheetScale),
-                false, true).getPixelReader(), (int) (0 * sheetScale),
-                (int) (0 * sheetScale), (int) (16 * sheetScale), (int) (16 * sheetScale))));
+        ImageView heart_FULL = new ImageView(imageGetter(file, 0, 0, 16, 16,1,1,sheetScale));
         //
-        ImageView heart_HALF = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * sheetScale), (new Image(file).getHeight() * sheetScale),
-                false, true).getPixelReader(), (int) (16 * sheetScale),
-                (int) (0 * sheetScale), (int) (16 * sheetScale), (int) (16 * sheetScale))));
+        ImageView heart_HALF= new ImageView(imageGetter(file, 16, 0, 16, 16,1,1,sheetScale));
         //
-        ImageView heart_EMPTY = (new ImageView(new WritableImage(new Image(file, Math.round(new Image(file).getWidth() * sheetScale), (new Image(file).getHeight() * sheetScale),
-                false, true).getPixelReader(), (int) (32 * sheetScale),
-                (int) (0 * sheetScale), (int) (16 * sheetScale), (int) (16 * sheetScale))));
+        ImageView heart_EMPTY = new ImageView(imageGetter(file, 32, 0, 16, 16,1,1,sheetScale));
 
         public Heart(int size, int a, int MAX) {
             switch (a) {

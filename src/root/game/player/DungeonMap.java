@@ -7,18 +7,19 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Rectangle;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
-public class DungeonMap {
+public class DungeonMap implements Sprite_Splitter {
 
     mapPiece[][] mapPieces;
-    ImageView border = null;
+    ImageView border;
     Vecc2f borderPos, borderPosCenter;
     float scaleX, scaleY;
-    double sheetScale;
+    int sheetScale;
     Rectangle[] edges = new Rectangle[4];
 
-    public DungeonMap(String file, int width, int height, int visitedX, int visitedY, int unvisitedX, int unvisitedY, int currentX, int currentY, int[][] map, float scaleX, float scaleY, Rectangle2D screenBounds, double sheetScale) {
+    public DungeonMap(String file, int width, int height, int visitedX, int visitedY, int unvisitedX, int unvisitedY, int currentX, int currentY, int[][] map, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale) {
         mapPieces = new mapPiece[map.length][map[0].length];
         for (int i = 0; i < mapPieces.length; i++) {
             for (int j = 0; j < mapPieces[0].length; j++) {
@@ -28,9 +29,9 @@ public class DungeonMap {
             }
         }
         if (file.contains("minimap1")) {
-            this.border = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale),
-                    (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(),
-                    (int) 0, (int) 0, (int) (53 * scaleX * sheetScale), (int) (47 * scaleY * sheetScale))));
+            this.border=new ImageView((imageGetter(file, 0, 0, 53, 47, scaleX, scaleY, sheetScale)));
+
+
             this.borderPos = new Vecc2f(screenBounds.getWidth() - this.border.getBoundsInParent().getWidth(), 0);
             this.border.relocate(this.borderPos.x, this.borderPos.y);
             this.borderPosCenter = new Vecc2f(this.borderPos.x + (this.border.getBoundsInParent().getWidth() / 2), this.borderPos.y + (this.border.getBoundsInParent().getHeight() / 2));
@@ -95,7 +96,7 @@ public class DungeonMap {
         for (DungeonMap.mapPiece[] mapPiece : mapPieces) {
             for (int j = 0; j < mapPieces[0].length; j++) {
                 if (mapPiece[j] != null) {
-                    mapPiece[j].updatePos(mapPiece[j].position.x+((screenBounds.getWidth()) - maxX),mapPiece[j].position.y + -minY);
+                    mapPiece[j].updatePos(mapPiece[j].position.x + ((screenBounds.getWidth()) - maxX), mapPiece[j].position.y + -minY);
                 }
             }
         }
@@ -210,7 +211,7 @@ public class DungeonMap {
     }
 
 
-    private class mapPiece {
+    private class mapPiece implements Sprite_Splitter {
 
         ImageView piece = new ImageView();
         ImageView icon = new ImageView();
@@ -223,27 +224,24 @@ public class DungeonMap {
 
         boolean seen = false, visited = false, current = false;
 
-        public mapPiece(int j, int i, String file, int width, int height, int visitedX, int visitedY, int unvisitedX, int unvisitedY, int currentX, int currentY, float scaleX, float scaleY, Rectangle2D screenBounds, double sheetScale, int type) {
+        public mapPiece(int j, int i, String file, int width, int height, int visitedX, int visitedY, int unvisitedX, int unvisitedY, int currentX, int currentY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int type) {
             //
             this.width = (int) (width * scaleX * sheetScale);
             this.height = (int) (height * scaleY * sheetScale);
 
-            visited_piece = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale),
-                    (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(),
-                    (int) (visitedX * scaleX * sheetScale), (int) (visitedY * scaleY * sheetScale), (int) (width * scaleX * sheetScale), (int) (height * scaleY * sheetScale))).getImage());
-            unvisited_piece = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale),
-                    (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(),
-                    (int) (unvisitedX * scaleX * sheetScale), (int) (unvisitedY * scaleY * sheetScale), (int) (width * scaleX * sheetScale), (int) (height * scaleY * sheetScale))).getImage());
-            current_piece = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX * sheetScale),
-                    (new Image(file).getHeight() * scaleY * sheetScale), false, false).getPixelReader(),
-                    (int) (currentX * scaleX * sheetScale), (int) (currentY * scaleY * sheetScale), (int) (width * scaleX * sheetScale), (int) (height * scaleY * sheetScale))).getImage());
+            visited_piece = imageGetter(file, visitedX, visitedY, width, height, scaleX, scaleY, sheetScale);
+            unvisited_piece = imageGetter(file, unvisitedX, unvisitedY, width, height, scaleX, scaleY, sheetScale);
+            current_piece = imageGetter(file, currentX, currentY, width, height, scaleX, scaleY, sheetScale);
             //
             this.piece.setImage(unvisited_piece);
+            //System.out.println(piece.getBoundsInParent());
 
             position = new Vecc2f(i * (width * scaleX * sheetScale), j * (height * scaleY * sheetScale));
 
             scaleX = (float) (scaleX * (this.piece.getBoundsInParent().getWidth() / 16));
             scaleY = (float) (scaleY * (this.piece.getBoundsInParent().getHeight() / 16));//scales the icon sheet so that the icons are same width & height as their room
+
+            //System.out.println(scaleX + " " + scaleY);
 
             if (type > 1) {
                 switch (type) {
@@ -256,9 +254,11 @@ public class DungeonMap {
         }
 
         private void iconGetter(float scaleX, float scaleY, int startX, int startY) {
-            this.icon = (new ImageView(new WritableImage(new Image("file:src\\resources\\gfx\\ui\\minimap_icons.png", (new Image("file:src\\resources\\gfx\\ui\\minimap_icons.png").getWidth() * scaleX),
-                    (new Image("file:src\\resources\\gfx\\ui\\minimap_icons.png").getHeight() * scaleY), false, false).getPixelReader(),
-                    (int) (startX * scaleX), (int) (startY * scaleY), (int) ((16 * scaleX)), (int) (16 * scaleY))));
+            //System.out.println(startX + " " + startY + " " + scaleX + " " + scaleY);
+            if (sheetScale==0){
+                sheetScale=1;
+            }
+            this.icon.setImage(imageGetter("file:src\\resources\\gfx\\ui\\minimap_icons.png", startX, startY, 16, 16, scaleX, scaleY, sheetScale));
         }
 
         public void load(Group group) {
@@ -294,6 +294,8 @@ public class DungeonMap {
 
             this.piece.setImage((new ImageView(new WritableImage(this.piece.getImage().getPixelReader(),
                     (int) (0), (int) (0), (int) (this.piece.getBoundsInParent().getWidth()), (int) (this.piece.getBoundsInParent().getHeight() - as))).getImage()));
+
+//TODO bring cut off left & bottom into the Sprite_Splitter
         }
 
         public void cutOffLeft(Bounds edge) {

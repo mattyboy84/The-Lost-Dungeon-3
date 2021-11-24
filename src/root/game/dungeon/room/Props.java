@@ -6,11 +6,12 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
 import java.util.Random;
 
-public class Props {
+public class Props implements Sprite_Splitter {
 
     Vecc2f position;
     ImageView prop;
@@ -41,7 +42,9 @@ public class Props {
         //
         String file = "file:src\\resources\\gfx\\grid\\" + this.name + ".png";
         //
-        this.prop = (new ImageView(new WritableImage(new Image(file, (new Image(file).getWidth() * scaleX), (new Image(file).getHeight() * scaleY), false, false).getPixelReader(), (int) (this.width * randX * scaleX), (int) (this.height * randY * scaleY), (int) (this.height * scaleX), (int) (this.width * scaleY))));
+
+        this.prop=new ImageView(imageGetter(file, this.width*randX, this.height*randY, width, height, scaleX, scaleY,1));
+
         this.position = new Vecc2f((float) (this.borderX + random.nextInt((int) (screenBounds.getWidth() - (2 * this.borderX) - this.prop.getBoundsInParent().getWidth()))), (float) (this.borderY + random.nextInt((int) (screenBounds.getHeight() - (2 * this.borderY) - this.prop.getBoundsInParent().getHeight()))));
         //this.prop.setRotate(90 * (random.nextInt(4)));
     }

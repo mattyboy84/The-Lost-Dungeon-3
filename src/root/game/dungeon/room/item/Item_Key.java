@@ -11,11 +11,12 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import root.game.player.Player;
 import root.game.player.Player_Overlay;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
 import java.util.ArrayList;
 
-public class Item_Key extends Item implements Item_Animation{
+public class Item_Key extends Item implements Item_Animation, Sprite_Splitter {
 
     ImageView sparkle = new ImageView();
     Image[] spark = new Image[4];
@@ -35,7 +36,7 @@ public class Item_Key extends Item implements Item_Animation{
             int width = array.get(i).getAsJsonObject().get("Width").getAsInt();
             int height = array.get(i).getAsJsonObject().get("Height").getAsInt();
 
-            spark[i] = Item.imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png", scaleX, scaleY, a.get("SheetScale").getAsInt(), startX, startY, width, height).getImage();
+            spark[i] = imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png", startX, startY, width,height,scaleX,scaleY,sheetScale);
         }
         sparkleOffsetX= (int) (a.get("SparkleOffsetX").getAsInt()*scaleX);
         sparkleOffsetY= (int) (a.get("SparkleOffsetY").getAsInt()*scaleY);
