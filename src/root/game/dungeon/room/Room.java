@@ -6,15 +6,10 @@ import com.google.gson.JsonParser;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
-import root.*;
-import root.game.dungeon.room.Background;
-import root.game.dungeon.room.Background_items;
-import root.game.dungeon.room.Door;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
 import root.game.util.Vecc2f;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -30,7 +25,7 @@ public class Room implements Runnable {
     //
 
     Random random = new Random();
-    Background background;
+    public Background background;
     public Shading shading;
     String room;
 
