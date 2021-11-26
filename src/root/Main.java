@@ -10,6 +10,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import root.game.dungeon.Dungeon;
 import root.game.player.Player;
+import root.game.util.Effects;
 
 public class Main extends Application {
 
@@ -53,6 +54,8 @@ public class Main extends Application {
         menuGroup.getChildren().addAll(newGame, loadGame);
         int floor = 0;
         //
+        Effects effects=new Effects();//TODO Will initialise used effects on separate thread
+        effects.start();
         //
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
         Dungeon.displayMap(dungeon.map);
@@ -89,6 +92,7 @@ public class Main extends Application {
                 case LEFT -> player.setWestLOOKING(true);
                 case DOWN -> player.setSouthLOOKING(true);
                 case RIGHT -> player.setEastLOOKING(true);
+                case E-> player.placeBomb(group,"bomb",player.centerPos);
                 case F -> stage.setFullScreen(!stage.isFullScreen());
                 case J -> player.currentRoom.forceOpenDoors(group);
                 case M -> player.getOverlay().revealMap();

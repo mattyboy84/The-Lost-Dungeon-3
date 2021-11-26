@@ -44,6 +44,8 @@ public class Room implements Runnable {
     public ArrayList<Item> items = new ArrayList<>();
     public ArrayList<Rock> rocks = new ArrayList<>();
     //
+    ArrayList<Active_Bomb> bombs = new ArrayList<>();
+    //
     Door trapDoor;
     //
     String parentThreadName;
@@ -270,6 +272,11 @@ public class Room implements Runnable {
         }
     }
 
+    public void addBomb(Group group, String bombTemplate, Vecc2f centerPos) {
+        bombs.add(new Active_Bomb(bombTemplate,centerPos,scaleX,scaleY));
+        bombs.get(bombs.size()-1).load(group,this);
+    }
+
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
         ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
         for (Door door : doors) {
@@ -352,6 +359,7 @@ public class Room implements Runnable {
     public String toString() {
         return "Room";
     }
+
 
 
 }

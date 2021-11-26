@@ -20,6 +20,8 @@ import root.game.util.*;
 import root.game.player.*;
 import root.game.dungeon.Shading;
 
+import java.util.ArrayList;
+
 public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public static boolean loaded = false;
@@ -60,6 +62,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Vecc2f position = new Vecc2f();
     Vecc2f velocity = new Vecc2f();
     Vecc2f acceleration = new Vecc2f();
+    public Vecc2f centerPos = new Vecc2f();
     //
     Vecc2f xSpeed = new Vecc2f((float) 0.1, 0);
     Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.1);
@@ -74,6 +77,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     int attackingTimer;
     int shotTimer;
     int scoreTimer;
+    int bombTimer;
     //
     public Room currentRoom;
     Player_Overlay overlay;
@@ -139,14 +143,13 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         bodyDelta.mult(sheetScale);
         headDelta.mult(sheetScale);
         //
-        this.width = (int) (32*scaleX*sheetScale);
-        this.height = (int) (32*scaleY*sheetScale);
+        this.width = (32);
+        this.height = (32);
         //
         String file = "file:src\\resources\\gfx\\characters\\costumes\\" + this.costume + ".png";
         for (int i = 0; i < this.heads.length; i++) {//head images
-            this.heads[i] = imageGetter(file,32*i,0,32,32,scaleX,scaleY,sheetScale);
+            this.heads[i] = imageGetter(file, 32 * i, 0, 32, 32, scaleX, scaleY, sheetScale);
         }
-
 
 
         //
@@ -209,6 +212,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             doorTriggerTimer++;
             attackingTimer++;
             scoreTimer++;
+            bombTimer++;
             //
             this.direction.set(velocity.x, velocity.y);
             this.direction.limit(1);
@@ -240,6 +244,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             //
             this.position.add(this.velocity);
             relocate();
+            this.centerPos.set(this.bodyHitbox.getShape().getBoundsInParent().getCenterX(), this.bodyHitbox.getShape().getBoundsInParent().getCenterY());
             //
             boundaryChecker(group);
             //
@@ -285,11 +290,22 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             //
             c.relocate(this.position.x, this.position.y);
             //
-            currentRoom.shading.addActiveSource((float) (headHitbox.getShape().getBoundsInParent().getMinX()-(headHitbox.getRadius()*1.42)),
-                    (float)(headHitbox.getShape().getBoundsInParent().getMinY()-(headHitbox.getRadius()*1.42)), shader, hashCode());
+            currentRoom.shading.addActiveSource((float) (headHitbox.getShape().getBoundsInParent().getMinX() - (headHitbox.getRadius() * 1.42)),
+                    (float) (headHitbox.getShape().getBoundsInParent().getMinY() - (headHitbox.getRadius() * 1.42)), shader, hashCode());
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
+    }
+
+    public void placeBomb(Group group, String bombTemplate, Vecc2f centerPos) {
+        if (bombTimer >= 60 && this.bombNumber > 0) {
+            updateBombs(-1);
+            bombTimer = 0;
+            System.out.println("bomb placed");
+
+            currentRoom.addBomb(group, bombTemplate, centerPos);
+
+        }
     }
 
     private void itemCollisionChecker() {
@@ -496,7 +512,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     private void readImageINTOArray(String file, int sheetScale, float scaleX, float scaleY, Image[] ARRAY, int startX, int startY) {
         for (int i = 0; i < ARRAY.length; i++) {
-            ARRAY[i]=imageGetter(file,startX,startY,32,32,scaleX,scaleY,sheetScale);
+            ARRAY[i] = imageGetter(file, startX, startY, 32, 32, scaleX, scaleY, sheetScale);
 
             startX = startX + 32;
             if (startX >= (int) (32 * 8)) {
