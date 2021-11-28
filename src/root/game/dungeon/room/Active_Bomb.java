@@ -58,9 +58,9 @@ public class Active_Bomb implements Sprite_Splitter {
         this.position.set(centerPos.x - (this.bomb.getBoundsInParent().getWidth() / 2), centerPos.y - (this.bomb.getBoundsInParent().getHeight() / 2));
         activeAnimationSetup(file, scaleX, scaleY, sheetScale, this.template.get("ActiveAnimation").getAsJsonArray());
         //
-        activeAnimationTimeline();
-
         pulseAnimationTimeline();
+
+        activeAnimationTimeline();
 
         explosionAnimationTimeline();
     }
@@ -106,12 +106,6 @@ public class Active_Bomb implements Sprite_Splitter {
     private void activeAnimationSetup(String file, float scaleX, float scaleY, float sheetScale, JsonArray activeAnimationARR) {
         this.activeAnimation = new Image[activeAnimationARR.size()];
         //EXAMPLE
-        /*{
-      "StartX": 32,
-      "StartY": 32,
-      "Width": 32,
-      "Height": 16}
-         */
         for (int i = 0; i < activeAnimationARR.size(); i++) {
             int x = activeAnimationARR.get(i).getAsJsonObject().get("StartX").getAsInt();
             int y = activeAnimationARR.get(i).getAsJsonObject().get("StartY").getAsInt();

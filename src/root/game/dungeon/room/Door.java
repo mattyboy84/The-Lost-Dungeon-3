@@ -17,6 +17,7 @@ public class Door implements Sprite_Splitter {
     String[] types = {" ", "door_01_normaldoor", "door_02_treasureroomdoor", "door_10_bossroomdoor"};
     //
     ImageView doorFrame, doorShadow, doorPartLeft, doorPartRight, doorPartRightLocked, trapDoor;
+    Image brokenDoorFrame;
     //
     int spriteScaleX = 4;
     int spriteScaleY = 4;
@@ -24,7 +25,7 @@ public class Door implements Sprite_Splitter {
     int height;
     int width;
     //
-    Vecc2f position;
+    Vecc2f position, centerPos;
     public Vecc2f relocatePos;
     //
     int doorBoundary = 12;
@@ -72,6 +73,8 @@ public class Door implements Sprite_Splitter {
         this.doorPartLeft = imageGetter(file, 0, 1, scaleX, scaleY);
         this.doorPartRight = imageGetter(file, 1, 1, scaleX, scaleY);
         this.doorPartRightLocked = imageGetter(file, 1, 2, scaleX, scaleY);
+        this.brokenDoorFrame = imageGetter(file, 0, 2, scaleX, scaleY).getImage();
+
         //x, y, width, height
         switch (direction) {
             case "up" -> {
@@ -111,6 +114,7 @@ public class Door implements Sprite_Splitter {
                 this.relocatePos = new Vecc2f(220, 495);
             }
         }
+        this.centerPos = new Vecc2f();
         this.relocatePos.set(this.relocatePos.x * scaleX, this.relocatePos.y * scaleY);
         //
         this.doorFrame.setRotate(rotation);
@@ -128,6 +132,12 @@ public class Door implements Sprite_Splitter {
         this.trapDoor = imageGetter("file:src\\resources\\gfx\\grid\\door_11_trapdoor.png", 0, 0, scaleX, scaleY);
         this.position = new Vecc2f(screenBounds.getWidth() / 2 - ((this.width * spriteScaleX * scaleX) / 2), screenBounds.getHeight() / 2 - ((this.height * spriteScaleY * scaleY) / 2));
         this.doorTrigger = new Rectangle(this.position.x + (16 * spriteScaleX * scaleX), this.position.y + (16 * spriteScaleY * scaleY), (32 * spriteScaleX * scaleX), (32 * spriteScaleY * scaleY));
+    }
+
+    public void blowUp(Group group) {
+        this.doorFrame.setImage(brokenDoorFrame);
+        open(group);
+
     }
 
     private ImageView imageGetter(String file, int i, int i1, float scaleX, float scaleY) {
@@ -159,6 +169,8 @@ public class Door implements Sprite_Splitter {
         this.doorBlock.toFront();
         this.doorBlock.setFill(Color.GREEN);
         this.doorBlock.setViewOrder(-12);
+        //
+        this.centerPos.set(this.doorFrame.getBoundsInParent().getCenterX(), this.doorFrame.getBoundsInParent().getCenterY());
     }
 
     public void unload(Group group) {
@@ -215,6 +227,10 @@ public class Door implements Sprite_Splitter {
                 this.state = State.open;
             }
         }
+    }
+
+    public Vecc2f getCenterPos() {
+        return centerPos;
     }
 
     public int getHeight() {

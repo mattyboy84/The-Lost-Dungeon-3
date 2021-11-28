@@ -304,11 +304,16 @@ public class Room implements Runnable {
             }
             rocks.removeIf(rock -> !rock.intact);
         }//rock checker
-        for (int k = 0; k <enemies.size() ; k++) {//enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
+        for (int k = 0; k < enemies.size(); k++) {//enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
 
         }
         for (int k = 0; k < items.size(); k++) {//item checker - items in range will be pushed away from bomb
 
+        }
+        for (Door door : doors) {
+            if (Vecc2f.distance(x, y, door.centerPos.x, door.centerPos.y) < (int) (radius * 0.8)) {
+door.blowUp(group);
+            }
         }
     }
 
