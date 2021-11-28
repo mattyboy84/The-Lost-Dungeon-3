@@ -221,44 +221,46 @@ public class DungeonMap implements Sprite_Splitter {
         int height;
         boolean alt = false;
         Vecc2f altPos;
+        float scaleX,scaleY;
 
         boolean seen = false, visited = false, current = false;
 
         public mapPiece(int j, int i, String file, int width, int height, int visitedX, int visitedY, int unvisitedX, int unvisitedY, int currentX, int currentY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int type) {
             //
-            this.width = (int) (width * scaleX * sheetScale);
-            this.height = (int) (height * scaleY * sheetScale);
+            this.width = width;
+            this.height = height;
+            //
+            this.scaleX=scaleX;
+            this.scaleY=scaleY;
 
             visited_piece = imageGetter(file, visitedX, visitedY, width, height, scaleX, scaleY, sheetScale);
             unvisited_piece = imageGetter(file, unvisitedX, unvisitedY, width, height, scaleX, scaleY, sheetScale);
             current_piece = imageGetter(file, currentX, currentY, width, height, scaleX, scaleY, sheetScale);
             //
             this.piece.setImage(unvisited_piece);
-            //System.out.println(piece.getBoundsInParent());
 
             position = new Vecc2f(i * (width * scaleX * sheetScale), j * (height * scaleY * sheetScale));
 
-            scaleX = (float) (scaleX * (this.piece.getBoundsInParent().getWidth() / 16));
-            scaleY = (float) (scaleY * (this.piece.getBoundsInParent().getHeight() / 16));//scales the icon sheet so that the icons are same width & height as their room
+            scaleX = (float) ((this.piece.getBoundsInParent().getWidth() / 16));
+            scaleY = (float) ((this.piece.getBoundsInParent().getHeight() / 16));//scales the icon sheet so that the icons are same width & height as their room
 
-            //System.out.println(scaleX + " " + scaleY);
+            if (file.contains("minimap1")){
+                this.width*=2;
+                this.height*=2;
+            }
 
             if (type > 1) {
                 switch (type) {
                     case 2 ->//shop
-                            iconGetter(scaleX, scaleY, 64, 0);
+                            iconGetter(type,scaleX, scaleY, 64, 0);
                     case 3 ->//boss
-                            iconGetter(scaleX, scaleY, 0, 16);
+                            iconGetter(type,scaleX, scaleY, 0, 16);
                 }
             }
         }
 
-        private void iconGetter(float scaleX, float scaleY, int startX, int startY) {
-            //System.out.println(startX + " " + startY + " " + scaleX + " " + scaleY);
-            if (sheetScale==0){
-                sheetScale=1;
-            }
-            this.icon.setImage(imageGetter("file:src\\resources\\gfx\\ui\\minimap_icons.png", startX, startY, 16, 16, scaleX, scaleY, sheetScale));
+        private void iconGetter(int type,float scaleX, float scaleY, int startX, int startY) {
+            this.icon.setImage(imageGetter("file:src\\resources\\gfx\\ui\\minimap_icons.png", startX, startY, this.width, this.height, scaleX, scaleY, 1));
         }
 
         public void load(Group group) {
@@ -267,6 +269,10 @@ public class DungeonMap implements Sprite_Splitter {
             this.piece.setViewOrder(-11);
 
             if (this.icon != null) {
+                //
+                //System.out.println(mapPieces[9][9].piece.getBoundsInParent());
+                //System.out.println(this.icon.getBoundsInParent());
+                //
                 group.getChildren().add(this.icon);
                 this.icon.relocate(this.position.x, this.position.y);
                 this.icon.setViewOrder(-11);
@@ -295,7 +301,7 @@ public class DungeonMap implements Sprite_Splitter {
             this.piece.setImage((new ImageView(new WritableImage(this.piece.getImage().getPixelReader(),
                     (int) (0), (int) (0), (int) (this.piece.getBoundsInParent().getWidth()), (int) (this.piece.getBoundsInParent().getHeight() - as))).getImage()));
 
-//TODO bring cut off left & bottom into the Sprite_Splitter
+                    //TODO bring cut off left & bottom into the Sprite_Splitter
         }
 
         public void cutOffLeft(Bounds edge) {

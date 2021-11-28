@@ -60,13 +60,13 @@
         "PositionX": 0,
         "PositionY": 0,
         "ImageX": 0,
-        "ImageY": 3
+        "ImageY": 0
       },
       {
         "PositionX": 103,
         "PositionY": 0,
-        "ImageX": 1,
-        "ImageY": 3
+        "ImageX": 0,
+        "ImageY": 0
       },
       {
         "PositionX": 206,
@@ -77,14 +77,14 @@
       {
         "PositionX": 0,
         "PositionY": 103,
-        "ImageX": 0,
-        "ImageY": 4
+        "ImageX": 1,
+        "ImageY": 0
       },
       {
         "PositionX": 103,
         "PositionY": 103,
-        "ImageX": 1,
-        "ImageY": 4
+        "ImageX": 2,
+        "ImageY": 0
       },
       {
         "PositionX": 0,

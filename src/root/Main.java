@@ -54,7 +54,7 @@ public class Main extends Application {
         menuGroup.getChildren().addAll(newGame, loadGame);
         int floor = 0;
         //
-        Effects effects=new Effects();//TODO Will initialise used effects on separate thread
+        Effects effects=new Effects();//initialise used effects on separate thread
         effects.start();
         //
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);

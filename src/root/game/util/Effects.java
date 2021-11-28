@@ -18,7 +18,7 @@ public class Effects implements Runnable, Sprite_Splitter {
     public void run() {
 
 
-        explodeAnimationSetup("file:src\\resources\\gfx\\effects\\effect_029_explosion.png", scaleX, scaleY, 1);
+        explodeAnimationSetup("file:src\\resources\\gfx\\effects\\effect_029_explosion.png", scaleX, scaleY, 2);
 
 
 
@@ -29,7 +29,7 @@ public class Effects implements Runnable, Sprite_Splitter {
         int x = 0, y = 0;
         int width = 96, height = 96;
         explodeAnimation = new Image[12];
-        for (int i = 0; i < explodeAnimation.length; i++) {
+        for (int i = 0; i < explodeAnimation.length-1; i++) {
             explodeAnimation[i] = imageGetter(file, x, y, width, height, scaleX, scaleY, sheetScale);
             x+=width;
             if (x>=4*width){

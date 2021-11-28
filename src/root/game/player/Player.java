@@ -62,7 +62,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Vecc2f position = new Vecc2f();
     Vecc2f velocity = new Vecc2f();
     Vecc2f acceleration = new Vecc2f();
-    public Vecc2f centerPos = new Vecc2f();
+    public static Vecc2f centerPos = new Vecc2f();
     //
     Vecc2f xSpeed = new Vecc2f((float) 0.1, 0);
     Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.1);
@@ -303,7 +303,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             bombTimer = 0;
             System.out.println("bomb placed");
 
-            currentRoom.addBomb(group, bombTemplate, centerPos);
+            currentRoom.addBomb(this.group, bombTemplate, this.centerPos);
 
         }
     }
@@ -343,6 +343,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 currentRoom.unload(group);
                 roomFinder(dungeon);
                 currentRoom.load(group);
+                System.out.println(currentRoom.room);
                 //
                 if (currentRoom.enemies.size() == 0) {
                     currentRoom.openDoors(group);

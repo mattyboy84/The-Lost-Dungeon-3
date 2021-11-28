@@ -9,7 +9,9 @@ import javafx.scene.shape.Rectangle;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
+import root.game.player.Player;
 import root.game.util.Vecc2f;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -27,7 +29,7 @@ public class Room implements Runnable {
     Random random = new Random();
     public Background background;
     public Shading shading;
-    String room;
+    public String room;
 
     int i;
     int j;
@@ -247,7 +249,9 @@ public class Room implements Runnable {
         for (Rock rock : rocks) {
             rock.load(group);
         }
-
+        for (int k = 0; k < bombs.size(); k++) {
+            bombs.get(k).load(group, this, bombs);
+        }
     }
 
     public void unload(Group group) {
@@ -270,11 +274,46 @@ public class Room implements Runnable {
         for (Rock rock : rocks) {
             rock.unload(group);
         }
+        for (int k = 0; k < bombs.size(); k++) {
+            bombs.get(k).unload(group, bombs);
+        }
+    }
+
+    public void addBombSub(Group group, String bombTemplate, Vecc2f centerPos, int fuse) {
+        bombs.add(new Active_Bomb(bombTemplate, centerPos, scaleX, scaleY, fuse));
+        bombs.get(bombs.size() - 1).load(group, this, bombs);
     }
 
     public void addBomb(Group group, String bombTemplate, Vecc2f centerPos) {
-        bombs.add(new Active_Bomb(bombTemplate,centerPos,scaleX,scaleY));
-        bombs.get(bombs.size()-1).load(group,this);
+        addBombSub(group, bombTemplate, centerPos, 3);
+    }
+
+    public void damageAroundPoint(float x, float y, int radius, Group group) {
+        radius *= ((scaleX + scaleY) / 2);
+
+
+        if (Vecc2f.distance(x, y, Player.centerPos.x, Player.centerPos.y) < radius) {//player check - player will be pushed away from bomb & damaged
+            System.out.println("player hit");
+        }
+        {
+            for (Rock rock : rocks) {
+                if (Vecc2f.distance(x, y, rock.centerPos.x, rock.centerPos.y) < radius) {
+                    rock.unload(group);
+                    rock.setIntact(false);
+                }
+            }
+            rocks.removeIf(rock -> !rock.intact);
+        }//rock checker
+        for (int k = 0; k <enemies.size() ; k++) {//enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
+
+        }
+        for (int k = 0; k < items.size(); k++) {//item checker - items in range will be pushed away from bomb
+
+        }
+    }
+
+    public void damageAroundPoint(Vecc2f point, int radius, Group group) {
+        damageAroundPoint(point.x, point.y, radius, group);
     }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
@@ -359,7 +398,4 @@ public class Room implements Runnable {
     public String toString() {
         return "Room";
     }
-
-
-
 }

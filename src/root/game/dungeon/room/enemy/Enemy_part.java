@@ -24,7 +24,7 @@ public class Enemy_part implements Entity_Shader, Sprite_Splitter {
     Image[] images;
     ImageView enemy;
     //
-    Vecc2f position;
+    Vecc2f position, centerPos;
     //
     ArrayList<Hitbox> hitboxes = new ArrayList<>();
     //
