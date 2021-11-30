@@ -8,7 +8,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
@@ -151,7 +150,7 @@ public class Active_Bomb implements Sprite_Splitter {
         this.activeTimeline.play();
         this.activeTimeline.setOnFinished(actionEvent -> {//starts the explosion
             group.getChildren().remove(this.hitbox.getShape());
-            room.damageAroundPoint((float) (this.position.x+(this.bomb.getBoundsInParent().getWidth()/2)), (float) (this.position.y+(this.bomb.getBoundsInParent().getHeight()/2)),200,group);
+            room.explosionDamageAroundPoint((float) (this.position.x+(this.bomb.getBoundsInParent().getWidth()/2)), (float) (this.position.y+(this.bomb.getBoundsInParent().getHeight()/2)),200,group);
             this.position.sub((int) ((Effects.explodeAnimation[0].getWidth() / 2) - (this.bomb.getBoundsInParent().getWidth() / 2)), (int) ((Effects.explodeAnimation[0].getHeight() / 2) - (this.bomb.getBoundsInParent().getHeight() / 2)));
             subExplosion();
             this.bomb.relocate(this.position.x, this.position.y);

@@ -28,19 +28,18 @@ public class Main extends Application {
     public static float scaleX = (float) screenWidth / madeWithWidth;
     public static float scaleY = (float) screenHeight / madeWithHeight;
 
-    Group group = new Group();
+    public static Group group = new Group();
     Group menuGroup = new Group();
     Scene scene = new Scene(group, screenWidth, screenHeight);
     Scene menuScene = new Scene(menuGroup, screenWidth, screenHeight);
     //
     Dungeon dungeon = new Dungeon();
-    Player player = new Player();
-    public static boolean p;
+    public static Player player = new Player();
 
 
     @Override
     public void start(Stage stage) throws Exception {
-        p = scaleX != 1;
+
         System.out.println(screenBounds);
         //1920 x 1080
         //2560 × 1440
@@ -54,7 +53,7 @@ public class Main extends Application {
         menuGroup.getChildren().addAll(newGame, loadGame);
         int floor = 0;
         //
-        Effects effects=new Effects();//initialise used effects on separate thread
+        Effects effects = new Effects();//initialise used effects on separate thread
         effects.start();
         //
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
@@ -62,20 +61,20 @@ public class Main extends Application {
         //
         player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3, dungeon, "playerCon", group);
         player.start();
-        while (!Player.loaded){
+        while (!Player.loaded) {
             Thread.sleep(100);
         }
         //
         //
         //newGame.setOnMouseClicked(mouseEvent -> {
         //    if (mouseEvent.getButton() == MouseButton.PRIMARY && Player.loaded) {
-                dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
-                player.currentRoom.openDoors(group);
-                player.load(group);
-                //
-                stage.setScene(scene);
-       //     }
-       // });
+        dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
+        player.currentRoom.openDoors(group);
+        player.load(group);
+        //
+        stage.setScene(scene);
+        //     }
+        // });
         //
         loadGame.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
@@ -92,7 +91,7 @@ public class Main extends Application {
                 case LEFT -> player.setWestLOOKING(true);
                 case DOWN -> player.setSouthLOOKING(true);
                 case RIGHT -> player.setEastLOOKING(true);
-                case E-> player.placeBomb(group,"bomb",player.centerPos);
+                case E -> player.placeBomb(group, "bomb", player.centerPos);
                 case F -> stage.setFullScreen(!stage.isFullScreen());
                 case J -> player.currentRoom.forceOpenDoors(group);
                 case M -> player.getOverlay().revealMap();
@@ -123,6 +122,5 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-
     }
 }

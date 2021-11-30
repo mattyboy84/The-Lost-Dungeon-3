@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
+import root.Main;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
@@ -288,12 +289,13 @@ public class Room implements Runnable {
         addBombSub(group, bombTemplate, centerPos, 3);
     }
 
-    public void damageAroundPoint(float x, float y, int radius, Group group) {
+    public void explosionDamageAroundPoint(float x, float y, int radius, Group group) {
         radius *= ((scaleX + scaleY) / 2);
 
 
         if (Vecc2f.distance(x, y, Player.centerPos.x, Player.centerPos.y) < radius) {//player check - player will be pushed away from bomb & damaged
             System.out.println("player hit");
+            Main.player.decreaseHealth(-1,group);
         }
         {
             for (Rock rock : rocks) {
@@ -312,13 +314,13 @@ public class Room implements Runnable {
         }
         for (Door door : doors) {
             if (Vecc2f.distance(x, y, door.centerPos.x, door.centerPos.y) < (int) (radius * 0.8)) {
-door.blowUp(group);
+                door.blowUp(group);
             }
         }
     }
 
-    public void damageAroundPoint(Vecc2f point, int radius, Group group) {
-        damageAroundPoint(point.x, point.y, radius, group);
+    public void explosionDamageAroundPoint(Vecc2f point, int radius, Group group) {
+        explosionDamageAroundPoint(point.x, point.y, radius, group);
     }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
