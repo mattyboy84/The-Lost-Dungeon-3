@@ -62,7 +62,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Vecc2f position = new Vecc2f();
     Vecc2f velocity = new Vecc2f();
     Vecc2f acceleration = new Vecc2f();
-    Vecc2f force = new Vecc2f(0,0);
+    Vecc2f force = new Vecc2f(0, 0);
     public static Vecc2f centerPos = new Vecc2f();
     //
     Vecc2f xSpeed = new Vecc2f((float) 0.2, 0);
@@ -242,7 +242,11 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 relocate();
             }
             relocate();
-            this.velocity.limit(veloLimit);
+
+
+            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude()) : (veloLimit));
+
+
             //
             this.position.add(this.velocity);
             this.centerPos.set(this.bodyHitbox.getShape().getBoundsInParent().getCenterX(), this.bodyHitbox.getShape().getBoundsInParent().getCenterY());
@@ -584,9 +588,10 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 break;
         }
     }
+
     public void applyForce(Vecc2f direction, int magnitude) {
         direction.mult(magnitude);
-        this.acceleration.set(0,0);
+        this.acceleration.set(0, 0);
         this.velocity.add(direction);
     }
 

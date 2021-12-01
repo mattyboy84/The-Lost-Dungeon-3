@@ -299,7 +299,7 @@ public class Room implements Runnable {
             System.out.println(dir);
             System.out.println("player hit");
             Main.player.decreaseHealth(1,group);
-            Main.player.applyForce(dir,15);
+            Main.player.applyForce(dir,40);
         }
         {
             for (Rock rock : rocks) {
