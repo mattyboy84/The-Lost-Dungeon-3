@@ -294,8 +294,12 @@ public class Room implements Runnable {
 
 
         if (Vecc2f.distance(x, y, Player.centerPos.x, Player.centerPos.y) < radius) {//player check - player will be pushed away from bomb & damaged
+            Vecc2f dir = new Vecc2f(Player.centerPos).sub(new Vecc2f(x,y));
+            dir.limit(1);
+            System.out.println(dir);
             System.out.println("player hit");
-            Main.player.decreaseHealth(-1,group);
+            Main.player.decreaseHealth(1,group);
+            Main.player.applyForce(dir,15);
         }
         {
             for (Rock rock : rocks) {

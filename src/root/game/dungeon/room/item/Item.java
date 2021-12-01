@@ -16,6 +16,7 @@ public class Item implements Sprite_Splitter {
 
     Hitbox hitbox;
     Vecc2f position;
+    Vecc2f velocity;
     ImageView item=new ImageView();
     int effect;
     float scaleX, scaleY;

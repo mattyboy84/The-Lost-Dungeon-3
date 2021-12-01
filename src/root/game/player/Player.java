@@ -62,10 +62,11 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Vecc2f position = new Vecc2f();
     Vecc2f velocity = new Vecc2f();
     Vecc2f acceleration = new Vecc2f();
+    Vecc2f force = new Vecc2f(0,0);
     public static Vecc2f centerPos = new Vecc2f();
     //
-    Vecc2f xSpeed = new Vecc2f((float) 0.1, 0);
-    Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.1);
+    Vecc2f xSpeed = new Vecc2f((float) 0.2, 0);
+    Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.2);
     boolean moving;
     boolean attacking;
     boolean collide = false;
@@ -220,7 +221,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             this.acceleration.limit(2 * avgScale);
             this.velocity.add(this.acceleration);
             //
-            this.velocity.mult((float) 0.95);
+            this.velocity.mult((float) 0.9);
             //
             //
             this.attacking = this.northLOOKING || this.eastLOOKING || this.westLOOKING || this.southLOOKING;
@@ -240,10 +241,10 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 this.movingDirection = "south";
                 relocate();
             }
+            relocate();
             this.velocity.limit(veloLimit);
             //
             this.position.add(this.velocity);
-            relocate();
             this.centerPos.set(this.bodyHitbox.getShape().getBoundsInParent().getCenterX(), this.bodyHitbox.getShape().getBoundsInParent().getCenterY());
             //
             boundaryChecker(group);
@@ -583,6 +584,11 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 break;
         }
     }
+    public void applyForce(Vecc2f direction, int magnitude) {
+        direction.mult(magnitude);
+        this.acceleration.set(0,0);
+        this.velocity.add(direction);
+    }
 
 
     private void relocate() {
@@ -722,9 +728,5 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public Player_Overlay getOverlay() {
         return overlay;
-    }
-
-    public void setOverlay(Player_Overlay overlay) {
-        this.overlay = overlay;
     }
 }
