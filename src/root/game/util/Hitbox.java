@@ -53,17 +53,19 @@ public class Hitbox {
     public int getCenterX() {
         if (this.type.equals("Circle")) {
             return (int) ((Circle) shape).getCenterX();
-        } else {
-            throw new IllegalArgumentException();
+        } else if (this.type.equals("Rectangle")){
+            return (int) (((Rectangle) shape).getBoundsInParent().getMinX()+(((Rectangle) shape).getBoundsInParent().getWidth()/2));
         }
+        throw new IllegalArgumentException();
     }
 
     public int getCenterY() {
         if (this.type.equals("Circle")) {
             return (int) ((Circle) shape).getCenterY();
-        } else {
-            throw new IllegalArgumentException();
+        } else if (this.type.equals("Rectangle")){
+            return (int) (((Rectangle) shape).getBoundsInParent().getMinY()+(((Rectangle) shape).getBoundsInParent().getHeight()/2));
         }
+        throw new IllegalArgumentException();
     }
 
 

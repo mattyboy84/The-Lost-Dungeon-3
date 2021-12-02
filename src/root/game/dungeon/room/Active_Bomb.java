@@ -12,6 +12,7 @@ import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
+import root.Main;
 import root.game.util.Effects;
 import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
@@ -27,6 +28,8 @@ public class Active_Bomb implements Sprite_Splitter {
     ImageView bomb;
     Image[] activeAnimation;
     Vecc2f position = new Vecc2f();
+    Vecc2f velocity = new Vecc2f();
+    public Vecc2f centerPos = new Vecc2f();
     Hitbox hitbox;
     JsonObject template = null;
     int fuse;
@@ -39,6 +42,8 @@ public class Active_Bomb implements Sprite_Splitter {
 
     Timeline explosionTimeline;
     int explosionPointer;
+
+    Timeline forceListener;
 
     //ColorAdjust blackout = new ColorAdjust();
 
@@ -55,6 +60,7 @@ public class Active_Bomb implements Sprite_Splitter {
         float sheetScale = this.template.get("SheetScale").getAsFloat();
         this.hitbox = new Hitbox(this.template.getAsJsonObject("Hitbox"), (int) sheetScale, scaleX, scaleY);
         this.bomb = new ImageView(imageGetter(file, startX, startY, width, height, scaleX, scaleY, sheetScale));
+        this.centerPos.set(this.hitbox.getCenterX(), this.hitbox.getCenterY());
         this.position.set(centerPos.x - (this.bomb.getBoundsInParent().getWidth() / 2), centerPos.y - (this.bomb.getBoundsInParent().getHeight() / 2));
         activeAnimationSetup(file, scaleX, scaleY, sheetScale, this.template.get("ActiveAnimation").getAsJsonArray());
         //
@@ -63,6 +69,28 @@ public class Active_Bomb implements Sprite_Splitter {
         activeAnimationTimeline();
 
         explosionAnimationTimeline();
+
+        forceListenerTimeline();
+    }
+
+    private void forceListenerTimeline() {
+        forceListener = new Timeline(new KeyFrame(Duration.seconds((float) 1 / 60), event -> {
+            this.position.add(this.velocity);
+            this.velocity.mult(0.95);
+            if (this.velocity.magnitude() < 0.2) {
+                this.velocity.set(0, 0);
+            }
+            relocate();
+            //
+            for (int i = 0; i < Main.player.currentRoom.getBoundaries().size(); i++) {
+                if (Main.player.currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
+                    this.position.sub(this.velocity);
+                    this.velocity.mult((float) 0.8);
+                }
+            }
+        }));
+        forceListener.setCycleCount(Timeline.INDEFINITE);
+
     }
 
     private void explosionAnimationTimeline() {
@@ -100,6 +128,12 @@ public class Active_Bomb implements Sprite_Splitter {
             activePointer = activePointer + 1;
             activePointer = (activePointer == activeAnimation.length - 1) ? (0) : (activePointer);
         }
+    }
+
+    private void relocate() {
+        this.bomb.relocate(this.position.x, this.position.y);
+        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
+        this.centerPos.set(this.hitbox.getCenterX(), this.hitbox.getCenterY());
     }
 
 
@@ -141,6 +175,7 @@ public class Active_Bomb implements Sprite_Splitter {
         this.hitbox.getShape().setViewOrder(-4);
         this.hitbox.getShape().setVisible(false);
         //START TIMELINES
+        forceListener.play();
 
         //starts the bomb pulsing
         new RubberBand(this.bomb).play();
@@ -151,10 +186,11 @@ public class Active_Bomb implements Sprite_Splitter {
         this.activeTimeline.play();
         this.activeTimeline.setOnFinished(actionEvent -> {//starts the explosion
             group.getChildren().remove(this.hitbox.getShape());
-            room.explosionDamageAroundPoint((float) (this.position.x+(this.bomb.getBoundsInParent().getWidth()/2)), (float) (this.position.y+(this.bomb.getBoundsInParent().getHeight()/2)),200,group);
-            this.position.sub((int) ((Effects.explodeAnimation[0].getWidth() / 2) - (this.bomb.getBoundsInParent().getWidth() / 2)), (int) ((Effects.explodeAnimation[0].getHeight() / 2) - (this.bomb.getBoundsInParent().getHeight() / 2)));
+            room.explosionDamageAroundPoint(this, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight() / 2)), 200, group);
+            this.position.sub((int) ((Effects.explodeAnimation[0].getWidth() / 2) - (this.bomb.getBoundsInParent().getWidth() / 2)), (int) ((Effects.explodeAnimation[0].getHeight() * 0.8)));
             subExplosion();
             this.bomb.relocate(this.position.x, this.position.y);
+            this.forceListener.stop();
             this.explosionTimeline.play();
             //
 
@@ -166,6 +202,13 @@ public class Active_Bomb implements Sprite_Splitter {
 
 
         //at end of timelines when bomb detonates call back to damage to damage/ destroy stuff
+    }
+
+    public void applyForce(Vecc2f dir, int magnitude) {
+
+        dir.mult(magnitude);
+
+        this.velocity.add(dir);
     }
 
     private void deleteObject(Group group, ArrayList<Active_Bomb> bombs) {
@@ -185,6 +228,7 @@ public class Active_Bomb implements Sprite_Splitter {
         } catch (Exception e) {
         }
         //STOP TIMELINES
+        forceListener.stop();
         pulseTimeline.stop();
         activeTimeline.stop();
         activePointer = 0;
@@ -192,6 +236,4 @@ public class Active_Bomb implements Sprite_Splitter {
             deleteObject(group, bombs);
         }
     }
-
-
 }

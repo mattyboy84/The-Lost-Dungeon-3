@@ -289,7 +289,7 @@ public class Room implements Runnable {
         addBombSub(group, bombTemplate, centerPos, 3);
     }
 
-    public void explosionDamageAroundPoint(float x, float y, int radius, Group group) {
+    public void explosionDamageAroundPoint(Active_Bomb currentBomb,float x, float y, int radius, Group group) {
         radius *= ((scaleX + scaleY) / 2);
 
 
@@ -301,6 +301,15 @@ public class Room implements Runnable {
             Main.player.decreaseHealth(1,group);
             Main.player.applyForce(dir,40);
         }
+
+        for (Active_Bomb bomb : bombs) {
+            if ((Vecc2f.distance(x, y, bomb.centerPos.x, bomb.centerPos.y) < radius) && (currentBomb!=bomb)) {
+                Vecc2f dir = new Vecc2f(bomb.centerPos).sub(new Vecc2f(x,y));
+                dir.limit(1);
+                bomb.applyForce(dir,10);
+            }
+        }
+        
         {
             for (Rock rock : rocks) {
                 if (Vecc2f.distance(x, y, rock.centerPos.x, rock.centerPos.y) < radius) {
@@ -323,8 +332,8 @@ public class Room implements Runnable {
         }
     }
 
-    public void explosionDamageAroundPoint(Vecc2f point, int radius, Group group) {
-        explosionDamageAroundPoint(point.x, point.y, radius, group);
+    public void explosionDamageAroundPoint(Active_Bomb bomb,Vecc2f point, int radius, Group group) {
+        explosionDamageAroundPoint(bomb,point.x, point.y, radius, group);
     }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
