@@ -289,51 +289,59 @@ public class Room implements Runnable {
         addBombSub(group, bombTemplate, centerPos, 3);
     }
 
-    public void explosionDamageAroundPoint(Active_Bomb currentBomb,float x, float y, int radius, Group group) {
+    public void explosionDamageAroundPoint(Active_Bomb currentBomb, float x, float y, int radius, Group group) {
         radius *= ((scaleX + scaleY) / 2);
 
 
         if (Vecc2f.distance(x, y, Player.centerPos.x, Player.centerPos.y) < radius) {//player check - player will be pushed away from bomb & damaged
-            Vecc2f dir = new Vecc2f(Player.centerPos).sub(new Vecc2f(x,y));
+            Vecc2f dir = new Vecc2f(Player.centerPos).sub(new Vecc2f(x, y));
             dir.limit(1);
             System.out.println(dir);
             System.out.println("player hit");
-            Main.player.decreaseHealth(1,group);
-            Main.player.applyForce(dir,40);
+            Main.player.decreaseHealth(1, group);
+            Main.player.applyForce(dir, 40);
         }
 
-        for (Active_Bomb bomb : bombs) {
-            if ((Vecc2f.distance(x, y, bomb.centerPos.x, bomb.centerPos.y) < radius) && (currentBomb!=bomb)) {
-                Vecc2f dir = new Vecc2f(bomb.centerPos).sub(new Vecc2f(x,y));
+        for (Active_Bomb bomb : bombs) {//force applied to other active bombs in room
+            if ((Vecc2f.distance(x, y, bomb.centerPos.x, bomb.centerPos.y) < radius) && (currentBomb != bomb)) {
+                Vecc2f dir = new Vecc2f(bomb.centerPos).sub(new Vecc2f(x, y));
                 dir.limit(1);
-                bomb.applyForce(dir,10);
+                bomb.applyForce(dir, 10);
             }
         }
-        
-        {
+
+        {//rock checker
             for (Rock rock : rocks) {
-                if (Vecc2f.distance(x, y, rock.centerPos.x, rock.centerPos.y) < radius) {
+                if (rock.state== Rock.State.Intact && (Vecc2f.distance(x, y, rock.centerPos.x, rock.centerPos.y) < radius)) {
                     rock.unload(group);
-                    rock.setIntact(false);
+                    rock.setState(Rock.State.Destroyed);
                 }
             }
-            rocks.removeIf(rock -> !rock.intact);
-        }//rock checker
+            for (int k = 0; k < rocks.size(); k++) {
+                if (rocks.get(k).state== Rock.State.Destroyed){
+                    rocks.remove(k);
+                }
+            }
+        }
         for (int k = 0; k < enemies.size(); k++) {//enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
 
         }
-        for (int k = 0; k < items.size(); k++) {//item checker - items in range will be pushed away from bomb
-
+        for (Item item : items) {//item checker - items in range will be pushed away from bomb
+            if ((Vecc2f.distance(x, y, item.centerPos.x, item.centerPos.y) < (radius * 0.8))) {
+                Vecc2f dir = new Vecc2f(item.centerPos).sub(new Vecc2f(x, y));
+                dir.limit(1);
+                item.applyForce(dir, 10);
+            }
         }
-        for (Door door : doors) {
+        for (Door door : doors) {//doors in range will be have their frame damaged and be opened if closed (not locked)
             if (Vecc2f.distance(x, y, door.centerPos.x, door.centerPos.y) < (int) (radius * 0.8)) {
                 door.blowUp(group);
             }
         }
     }
 
-    public void explosionDamageAroundPoint(Active_Bomb bomb,Vecc2f point, int radius, Group group) {
-        explosionDamageAroundPoint(bomb,point.x, point.y, radius, group);
+    public void explosionDamageAroundPoint(Active_Bomb bomb, Vecc2f point, int radius, Group group) {
+        explosionDamageAroundPoint(bomb, point.x, point.y, radius, group);
     }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.

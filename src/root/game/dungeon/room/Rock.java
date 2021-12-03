@@ -11,15 +11,23 @@ import root.game.util.Vecc2f;
 public class Rock implements Sprite_Splitter {
 
     ImageView rock;
+    Image debris;
     Vecc2f position;
     Vecc2f centerPos;
     int sheetScale, width, height, rows, columns, borderX, borderY;
     Hitbox hitbox;
-    boolean intact;
+    //boolean intact;
+
+    enum State {
+        Intact,
+        Destroyed
+    }
+
+    State state;
 
     public Rock(int positionX, int positionY, int imageX, int imageY, String name, float sheetScale, int width, int height, int rows, int columns, int borderX, int borderY, float scaleX, float scaleY) {
         String file = "file:src\\resources\\gfx\\grid\\" + name + ".png";
-        this.intact = true;
+        this.state = State.Intact;
 
         this.width = (int) ((width * sheetScale * scaleX));
         this.height = (int) ((height * sheetScale * scaleY));
@@ -33,6 +41,8 @@ public class Rock implements Sprite_Splitter {
         //System.out.println((new Image(file).getWidth() * scaleX * sheetScale) +" " + (new Image(file).getHeight() * scaleY * sheetScale));
 
         this.rock = new ImageView((imageGetter(file, width * imageX, height * imageY, width, height, scaleX, scaleY, sheetScale)));
+        this.debris = ((imageGetter(file, width * 3, 0, width, height, scaleX, scaleY, sheetScale)));
+
         this.position = new Vecc2f(this.borderX + (positionX * scaleX), this.borderY + (positionY * scaleY));
         //
         this.centerPos = new Vecc2f(this.position.x + this.rock.getBoundsInParent().getWidth() / 2, this.position.y + this.rock.getBoundsInParent().getHeight() / 2);
@@ -55,12 +65,15 @@ public class Rock implements Sprite_Splitter {
         group.getChildren().removeAll(this.hitbox.getShape(), this.rock);
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 
     public Vecc2f getCenterPos() {
         return centerPos;
-    }
-
-    public void setIntact(boolean intact) {
-        this.intact = intact;
     }
 }

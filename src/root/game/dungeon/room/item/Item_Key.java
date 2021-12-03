@@ -20,10 +20,10 @@ public class Item_Key extends Item implements Item_Animation, Sprite_Splitter {
 
     ImageView sparkle = new ImageView();
     Image[] spark = new Image[4];
-    int sparkleOffsetX,sparkleOffsetY;
+    int sparkleOffsetX, sparkleOffsetY;
     //
     Timeline idleTimeline;
-    int idlePointer=0;
+    int idlePointer = 0;
 
     public Item_Key(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
         super(a, pos, scaleX, scaleY, screenBounds);
@@ -36,10 +36,10 @@ public class Item_Key extends Item implements Item_Animation, Sprite_Splitter {
             int width = array.get(i).getAsJsonObject().get("Width").getAsInt();
             int height = array.get(i).getAsJsonObject().get("Height").getAsInt();
 
-            spark[i] = imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png", startX, startY, width,height,scaleX,scaleY,sheetScale);
+            spark[i] = imageGetter("file:src\\resources\\gfx\\items\\pick ups\\" + a.get("Sprite").getAsString() + ".png", startX, startY, width, height, scaleX, scaleY, sheetScale);
         }
-        sparkleOffsetX= (int) (a.get("SparkleOffsetX").getAsInt()*scaleX);
-        sparkleOffsetY= (int) (a.get("SparkleOffsetY").getAsInt()*scaleY);
+        sparkleOffsetX = (int) (a.get("SparkleOffsetX").getAsInt() * scaleX);
+        sparkleOffsetY = (int) (a.get("SparkleOffsetY").getAsInt() * scaleY);
 
         sparkle.setImage(spark[0]);
         idleTimelineSetup();
@@ -56,7 +56,7 @@ public class Item_Key extends Item implements Item_Animation, Sprite_Splitter {
 
     @Override
     public void checkCollision(Player player, ArrayList<Item> items, Group group) {
-        if (player.getBodyHitbox().getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())&& (player.keyNumber< Player_Overlay.MAX_ITEM_NUMBER)) {
+        if (player.getBodyHitbox().getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent()) && (player.keyNumber < Player_Overlay.MAX_ITEM_NUMBER)) {
             player.updateKeys(this.effect);
             group.getChildren().remove(this.sparkle);
             unload(group);
@@ -65,10 +65,18 @@ public class Item_Key extends Item implements Item_Animation, Sprite_Splitter {
     }
 
     @Override
+    public void relocate() {
+        this.item.relocate(this.position.x, this.position.y);
+        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
+        this.sparkle.relocate(this.position.x + sparkleOffsetX, this.position.y + sparkleOffsetY);
+        this.centerPos.set(this.hitbox.getCenterX(),this.hitbox.getCenterY());
+    }
+
+    @Override
     public void postLoader(Group group) {
         try {
             group.getChildren().add(this.sparkle);
-            this.sparkle.relocate(this.position.x+sparkleOffsetX,this.position.y+sparkleOffsetY);
+            this.sparkle.relocate(this.position.x + sparkleOffsetX, this.position.y + sparkleOffsetY);
             this.sparkle.setViewOrder(-4);
             this.idleTimeline.play();
         } catch (Exception ignored) {
@@ -83,7 +91,6 @@ public class Item_Key extends Item implements Item_Animation, Sprite_Splitter {
         } catch (Exception ignored) {
         }
     }
-
 
 
 }

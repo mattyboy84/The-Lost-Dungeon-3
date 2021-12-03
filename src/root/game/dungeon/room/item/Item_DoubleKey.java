@@ -66,6 +66,14 @@ public class Item_DoubleKey extends Item implements Sprite_Splitter {
     }
 
     @Override
+    public void relocate() {
+        this.item.relocate(this.position.x, this.position.y);
+        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
+        this.sparkle.relocate(this.position.x + sparkleOffsetX, this.position.y + sparkleOffsetY);
+        this.centerPos.set(this.hitbox.getCenterX(),this.hitbox.getCenterY());
+    }
+
+    @Override
     public void postLoader(Group group) {
         try {
             group.getChildren().add(this.sparkle);

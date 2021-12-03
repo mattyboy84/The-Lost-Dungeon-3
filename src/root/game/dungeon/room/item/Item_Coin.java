@@ -85,6 +85,15 @@ public class Item_Coin extends Item implements Item_Animation, Sprite_Splitter {
 
             player.updateCoins(this.effect);
             this.idleTimeline.stop();
+            group.getChildren().remove(this.hitbox.getShape());
+            //
+            try{
+                this.forceListener.stop();
+                this.velocity.set(0,0);
+                relocate();
+            }catch (Exception e){
+
+            }
             //the pickup animations are larger so an offset is applied to re-center it.
             this.position.sub(16 * scaleX * sheetScale, 23 * scaleY * sheetScale);
             this.item.relocate(this.position.x, this.position.y);
