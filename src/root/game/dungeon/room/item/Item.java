@@ -104,7 +104,7 @@ public abstract class Item implements Sprite_Splitter {
         //
         this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
         this.hitbox.getShape().setViewOrder(-4);
-        this.hitbox.getShape().setVisible(true);
+        this.hitbox.getShape().setVisible(false);
         //
         this.forceListener.play();
         postLoader(group);

@@ -186,7 +186,7 @@ public class Active_Bomb implements Sprite_Splitter {
         this.activeTimeline.play();
         this.activeTimeline.setOnFinished(actionEvent -> {//starts the explosion
             group.getChildren().remove(this.hitbox.getShape());
-            room.explosionDamageAroundPoint(this, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight() / 2)), 200, group);
+            room.explosionDamageAroundPoint(this, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight() / 2)), 175, group);
             this.position.sub((int) ((Effects.explodeAnimation[0].getWidth() / 2) - (this.bomb.getBoundsInParent().getWidth() / 2)), (int) ((Effects.explodeAnimation[0].getHeight() * 0.8)));
             subExplosion();
             this.bomb.relocate(this.position.x, this.position.y);

@@ -165,10 +165,12 @@ public class Door implements Sprite_Splitter {
         this.doorTrigger.toFront();
         this.doorTrigger.setFill(Color.RED);
         this.doorTrigger.setViewOrder(-12);
+        this.doorTrigger.setVisible(false);
         //
         this.doorBlock.toFront();
         this.doorBlock.setFill(Color.GREEN);
         this.doorBlock.setViewOrder(-12);
+        this.doorBlock.setVisible(false);
         //
         this.centerPos.set(this.doorFrame.getBoundsInParent().getCenterX(), this.doorFrame.getBoundsInParent().getCenterY());
     }

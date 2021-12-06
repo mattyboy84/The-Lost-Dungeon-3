@@ -8,6 +8,8 @@ import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
+import java.util.Random;
+
 public class Rock implements Sprite_Splitter {
 
     ImageView rock;
@@ -16,6 +18,9 @@ public class Rock implements Sprite_Splitter {
     Vecc2f centerPos;
     int sheetScale, width, height, rows, columns, borderX, borderY;
     Hitbox hitbox;
+    Random random = new Random();
+
+
     //boolean intact;
 
     enum State {
@@ -49,20 +54,43 @@ public class Rock implements Sprite_Splitter {
     }
 
     public void load(Group group) {
-        group.getChildren().addAll(this.hitbox.getShape(), this.rock);
-        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
+        switch (state) {
+            case Intact:
+                group.getChildren().addAll(this.hitbox.getShape(), this.rock);
+                this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
+                this.hitbox.getShape().setViewOrder(-1);
+                this.hitbox.getShape().setVisible(true);
+                break;
+            case Destroyed:
+                group.getChildren().addAll(this.rock);
+                break;
+        }
         this.rock.relocate(this.position.x, this.position.y);
-        this.hitbox.getShape().setViewOrder(-1);
         this.rock.setViewOrder(-1);
         //
-        this.hitbox.getShape().setVisible(true);
         //
-        this.centerPos.set(this.position.x, this.position.y);
+        this.centerPos.set((this.hitbox.getCenterX()), (this.hitbox.getCenterY()));
 
     }
 
     public void unload(Group group) {
-        group.getChildren().removeAll(this.hitbox.getShape(), this.rock);
+        try {
+            group.getChildren().remove(this.hitbox.getShape());
+        } catch (Exception e) {
+        }
+        group.getChildren().removeAll(this.rock);
+    }
+
+    public void blowUp(Group group) {
+        setState(Rock.State.Destroyed);
+        this.rock.setRotate(90 * random.nextInt(4));
+        try {
+            group.getChildren().remove(this.hitbox.getShape());
+        } catch (Exception e) {
+        }
+        this.rock.setImage(this.debris);
+
+
     }
 
     public State getState() {

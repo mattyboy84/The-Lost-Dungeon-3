@@ -312,16 +312,16 @@ public class Room implements Runnable {
 
         {//rock checker
             for (Rock rock : rocks) {
-                if (rock.state== Rock.State.Intact && (Vecc2f.distance(x, y, rock.centerPos.x, rock.centerPos.y) < radius)) {
-                    rock.unload(group);
-                    rock.setState(Rock.State.Destroyed);
+                if (rock.state == Rock.State.Intact && (Vecc2f.distance(x, y, rock.centerPos.x, rock.centerPos.y) < radius)) {
+                    rock.blowUp(group);
                 }
             }
-            for (int k = 0; k < rocks.size(); k++) {
-                if (rocks.get(k).state== Rock.State.Destroyed){
-                    rocks.remove(k);
-                }
-            }
+            //for (int k = 0; k < rocks.size(); k++) {
+            //    if (rocks.get(k).state== Rock.State.Destroyed){
+            //        //rocks.get(k).blowUp(group);
+            //        System.out.println("g");
+            //    }
+            //}
         }
         for (int k = 0; k < enemies.size(); k++) {//enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
 
@@ -352,7 +352,9 @@ public class Room implements Runnable {
             }
         }
         for (Rock rock : rocks) {
-            a.add((Rectangle) rock.hitbox.getShape());
+            if (rock.state == Rock.State.Intact) {
+                a.add((Rectangle) rock.hitbox.getShape());
+            }
         }
         return a;
     }
