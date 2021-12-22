@@ -5,12 +5,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import root.Main;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
 import root.game.player.Player;
+import root.game.util.Effects;
 import root.game.util.Vecc2f;
 
 import java.io.BufferedReader;
@@ -344,6 +346,11 @@ public class Room implements Runnable {
         explosionDamageAroundPoint(bomb, point.x, point.y, radius, group);
     }
 
+    public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp) {
+        this.backgroundItems.newRealTimeProp(group,centerX,centerY,RealTimeProp);
+
+    }
+
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
         ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
         for (Door door : doors) {
@@ -428,4 +435,6 @@ public class Room implements Runnable {
     public String toString() {
         return "Room";
     }
+
+
 }

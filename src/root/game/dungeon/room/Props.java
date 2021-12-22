@@ -49,6 +49,14 @@ public class Props implements Sprite_Splitter {
         //this.prop.setRotate(90 * (random.nextInt(4)));
     }
 
+    public Props(Image image, float centerX, float centerY, Group group) {//real Time props
+        this.prop=new ImageView(image);
+        this.position=new Vecc2f(centerX-(this.prop.getBoundsInParent().getWidth()/2),centerY-(this.prop.getBoundsInParent().getHeight()/2));
+        load(group);
+
+
+    }
+
     public void load(Group group) {
         group.getChildren().add(this.prop);
         this.prop.setViewOrder(-1);

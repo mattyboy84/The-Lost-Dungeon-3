@@ -3,6 +3,7 @@ package root.game.dungeon.room;
 import com.google.gson.JsonObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import root.game.dungeon.room.Props;
 
 import java.util.ArrayList;
@@ -35,5 +36,10 @@ public class Background_items {
         for (Props prop : props) {
             prop.unload(group);
         }
+    }
+
+    public void newRealTimeProp(Group group, float centerX, float centerY, Image image) {
+        this.props.add(new Props(image,centerX,centerY,group));
+
     }
 }

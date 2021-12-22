@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Active_Bomb implements Sprite_Splitter {
 
@@ -44,6 +45,7 @@ public class Active_Bomb implements Sprite_Splitter {
     int explosionPointer;
 
     Timeline forceListener;
+    Random random = new Random();
 
     //ColorAdjust blackout = new ColorAdjust();
 
@@ -187,6 +189,7 @@ public class Active_Bomb implements Sprite_Splitter {
         this.activeTimeline.setOnFinished(actionEvent -> {//starts the explosion
             group.getChildren().remove(this.hitbox.getShape());
             room.explosionDamageAroundPoint(this, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight() / 2)), 175, group);
+            room.newRealTimeProp(group, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight())), Effects.explosionMarkAnimation[random.nextInt(Effects.explosionMarkAnimation.length-1)]);
             this.position.sub((int) ((Effects.explodeAnimation[0].getWidth() / 2) - (this.bomb.getBoundsInParent().getWidth() / 2)), (int) ((Effects.explodeAnimation[0].getHeight() * 0.8)));
             subExplosion();
             this.bomb.relocate(this.position.x, this.position.y);
