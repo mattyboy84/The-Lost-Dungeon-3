@@ -26,7 +26,7 @@ public class Enemy_part implements Entity_Shader, Sprite_Splitter {
     //
     Vecc2f position, centerPos;
     //
-    ArrayList<Hitbox> hitboxes = new ArrayList<>();
+    public ArrayList<Hitbox> hitboxes = new ArrayList<>();
     //
     boolean light;
     int lightRadius;

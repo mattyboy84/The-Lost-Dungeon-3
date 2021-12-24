@@ -43,7 +43,7 @@ public class Hitbox {
                 this.shape = new Rectangle(this.width, this.height);
                 break;
             case "Circle":
-                this.radius = (int) Math.ceil(width * sheetScale * (scaleX + scaleY) / 2);
+                this.radius = (int) Math.ceil(width * sheetScale * ((scaleX + scaleY) / 2));
                 this.shape = new Circle(this.radius);
         }
         this.xDelta = (int) Math.ceil(xDelta * sheetScale * scaleX);

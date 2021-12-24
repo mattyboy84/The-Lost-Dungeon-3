@@ -115,6 +115,11 @@ public class Main extends Application {
                 case RIGHT -> player.setEastLOOKING(false);
             }
         });
+        scene.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
+            }
+        });
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);
         stage.show();

@@ -12,6 +12,7 @@ import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
 import root.game.player.Player;
+import root.game.player.Tear;
 import root.game.util.Effects;
 import root.game.util.Vecc2f;
 
@@ -50,6 +51,8 @@ public class Room implements Runnable {
     public ArrayList<Rock> rocks = new ArrayList<>();
     //
     ArrayList<Active_Bomb> bombs = new ArrayList<>();
+    ArrayList<Tear> tears = new ArrayList<Tear>();
+
     //
     Door trapDoor;
     //
@@ -235,7 +238,7 @@ public class Room implements Runnable {
             door.load(group);
         }
         /*
-        //groundwork for when a boss is defeated.
+        //base work for when a boss is defeated.
         if (type==3){
             trapDoor.loadTrapDoor(group);
         }
@@ -280,6 +283,9 @@ public class Room implements Runnable {
         for (int k = 0; k < bombs.size(); k++) {
             bombs.get(k).unload(group, bombs);
         }
+        for (int k = 0; k <tears.size() ; k++) {
+            tears.get(k).destroy(group,tears);
+        }
     }
 
     public void addBombSub(Group group, String bombTemplate, Vecc2f centerPos, int fuse) {
@@ -289,6 +295,10 @@ public class Room implements Runnable {
 
     public void addBomb(Group group, String bombTemplate, Vecc2f centerPos) {
         addBombSub(group, bombTemplate, centerPos, 3);
+    }
+
+    public void addNewTear(String direction,int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY,float veloLimit) {
+        tears.add(new Tear(direction,damage,group,pos,velocity,scaleX,scaleY,veloLimit,tears,enemies,getAllBoundaries()));
     }
 
     public void explosionDamageAroundPoint(Active_Bomb currentBomb, float x, float y, int radius, Group group) {
@@ -366,6 +376,15 @@ public class Room implements Runnable {
         return a;
     }
 
+    public ArrayList<Rectangle> getAllBoundaries() {//provides an arraylist of obstacles.
+        ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
+        a.addAll(getBoundaries());
+        for (Door door : doors) {
+            a.add(door.getDoorTrigger());
+        }
+        return a;
+    }
+
     public void openDoors(Group group) {//opens doors that are closed because of enemies - wont open locked doors
         for (Door door : doors) {
             door.open(group);
@@ -435,6 +454,4 @@ public class Room implements Runnable {
     public String toString() {
         return "Room";
     }
-
-
 }

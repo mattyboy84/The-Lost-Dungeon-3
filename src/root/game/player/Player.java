@@ -20,6 +20,7 @@ import root.game.util.*;
 import root.game.player.*;
 import root.game.dungeon.Shading;
 
+import javax.security.auth.callback.LanguageCallback;
 import java.util.ArrayList;
 
 public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
@@ -85,6 +86,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     //
     int lightRadius = 110;
     float[][] shader;
+    int damage =5;
     //
     float veloLimit;//default is 7 multiplied by screen scale
     //
@@ -273,6 +275,10 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             if (attacking && attackingTimer >= shootCooldown) {
                 SHOOTINGheadChanger();
                 //shoot tear
+                Vecc2f pos=new Vecc2f(this.headHitbox.getShape().getLayoutX(),this.headHitbox.getShape().getLayoutY());
+                currentRoom.addNewTear(this.lookingDirection,damage,group,pos,this.velocity,scaleX,scaleY,this.veloLimit);
+                //System.out.println(new Vecc2f(this.headHitbox.getShape().getLayoutX(),this.headHitbox.getShape().getLayoutY()));
+                //
                 justShot = true;
                 shotTimer = 0;
                 attackingTimer = 0;
@@ -348,7 +354,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 currentRoom.unload(group);
                 roomFinder(dungeon);
                 currentRoom.load(group);
-                System.out.println(currentRoom.room);
+                //System.out.println(currentRoom.room);
                 //
                 if (currentRoom.enemies.size() == 0) {
                     currentRoom.openDoors(group);
@@ -529,8 +535,8 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     }
 
     private void playerAnimator() {
-        float angle = this.direction.toAngle();
-        if (angle > 45 && angle < 135) {//right
+        float angle = this.direction.toAngle()+90;
+                if (angle > 45 && angle < 135) {//right
             this.movingDirection = "east";
             body.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
             subPlayerAnimator(LR_body);

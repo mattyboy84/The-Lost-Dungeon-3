@@ -25,7 +25,7 @@ public class Enemy {
     int numImages;
     ///////////////////////
     ArrayList<Hitbox> hitboxes = new ArrayList<>();
-    ArrayList<Enemy_part> parts = new ArrayList<>();
+    public ArrayList<Enemy_part> parts = new ArrayList<>();
     ///////////////////////
     boolean hasDeathImages;
     String deathFilePath;

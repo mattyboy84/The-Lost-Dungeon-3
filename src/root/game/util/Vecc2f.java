@@ -337,25 +337,26 @@ public class Vecc2f {
     }
 
     public void fromAngle(double v) {
-        this.x = (float) Math.cos(v);
-        this.y = (float) Math.sin(v);
+        float a =magnitude();
+        this.x = (float) Math.cos(Math.toRadians(v))*a;
+        this.y = (float) Math.sin(Math.toRadians(v))*a;
     }
 
     public float toAngle() {
-
-        if (this.x > 0) {
-            return (float) (90 + Math.toDegrees(Math.atan(this.y / this.x)));
-        } else if (this.x < 0) {
-            return (float) (270 + Math.toDegrees(Math.atan(this.y / this.x)));
-        } else if (this.x == 0 && this.y < 0) {
-            return 0;
-        } else if (this.x == 0 && this.y > 0) {
-            return 180;
-        } else if (this.x < 0 && this.y == 0) {
-            return 270;
-        } else if (this.x > 0 && this.y == 0) {
-            return 45;
-        }
-        return 0;
+        if (x == 0) // special cases
+            return (y > 0)? 90
+                    : (y == 0)? 0
+                    : 270;
+        else if (y == 0) // special cases
+            return (x >= 0)? 0
+                    : 180;
+        float ret = (float) Math.toDegrees((Math.atan((float)y/x)));
+        if (x < 0 && y < 0) // quadrant Ⅲ
+            ret = 180 + ret;
+        else if (x < 0) // quadrant Ⅱ
+            ret = 180 + ret; // it actually substracts
+        else if (y < 0) // quadrant Ⅳ
+            ret = 270 + (90 + ret); // it actually substracts
+        return ret;
     }
 }
