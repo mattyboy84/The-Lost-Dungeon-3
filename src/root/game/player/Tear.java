@@ -9,10 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.game.dungeon.room.enemy.Enemy;
-import root.game.util.Effects;
-import root.game.util.Hitbox;
-import root.game.util.Sprite_Splitter;
-import root.game.util.Vecc2f;
+import root.game.util.*;
 
 import java.util.ArrayList;
 
@@ -71,10 +68,10 @@ public class Tear implements Sprite_Splitter {
         float a = (float) (((this.tearHitbox.radius)) / new Image("file:src\\resources\\gfx\\shadow.png").getWidth()) * 2;//scale shadow to tear size
         //
         this.shadowImage.setImage(imageGetter("file:src\\resources\\gfx\\shadow.png", 0, 0, (int) (120), (int) (49), a, a, 1));
-        this.shadowImage.setViewOrder(-8);
+        this.shadowImage.setViewOrder(ViewOrder.player_attacks_layer.getViewOrder());
         //
         group.getChildren().addAll(this.tearImage, this.tearHitbox.getShape(), this.shadowImage);
-        this.tearImage.setViewOrder(-8);
+        this.tearImage.setViewOrder(ViewOrder.player_attacks_layer.getViewOrder());
         this.tearImage.relocate(this.position.x - this.tearImage.getBoundsInParent().getWidth() / 2, this.position.y - this.tearImage.getBoundsInParent().getHeight() / 2);
         //
         timeline(tears, enemies, boundaries, group);

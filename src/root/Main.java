@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import root.game.dungeon.Dungeon;
 import root.game.player.Player;
 import root.game.util.Effects;
+import root.game.util.ViewOrder;
 
 public class Main extends Application {
 

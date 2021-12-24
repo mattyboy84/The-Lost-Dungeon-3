@@ -13,6 +13,7 @@ import root.game.player.Player;
 import root.game.player.Player_Overlay;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
+import root.game.util.ViewOrder;
 
 import java.util.ArrayList;
 
@@ -77,7 +78,7 @@ public class Item_Key extends Item implements Item_Animation, Sprite_Splitter {
         try {
             group.getChildren().add(this.sparkle);
             this.sparkle.relocate(this.position.x + sparkleOffsetX, this.position.y + sparkleOffsetY);
-            this.sparkle.setViewOrder(-4);
+            this.sparkle.setViewOrder(ViewOrder.items_layer.getViewOrder());
             this.idleTimeline.play();
         } catch (Exception ignored) {
         }

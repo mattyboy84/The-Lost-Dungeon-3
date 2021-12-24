@@ -7,10 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import root.game.dungeon.Shading;
-import root.game.util.Entity_Shader;
-import root.game.util.Hitbox;
-import root.game.util.Sprite_Splitter;
-import root.game.util.Vecc2f;
+import root.game.util.*;
 
 import java.util.ArrayList;
 
@@ -101,14 +98,14 @@ public class Enemy_part implements Entity_Shader, Sprite_Splitter {
         //Hitbox
         for (Hitbox hitbox : hitboxes) {
             group.getChildren().add(hitbox.getShape());
-            hitbox.getShape().setViewOrder(-5);
+            hitbox.getShape().setViewOrder(ViewOrder.enemy_boss_layer.getViewOrder());
             hitbox.getShape().setVisible(true);
             hitbox.getShape().relocate(this.position.x + hitbox.getxDelta(), this.position.y + hitbox.getyDelta());
         }
         //Enemy
         group.getChildren().add(this.enemy);
         this.enemy.relocate(this.position.x, this.position.y);
-        this.enemy.setViewOrder(-5);
+        this.enemy.setViewOrder(ViewOrder.enemy_boss_layer.getViewOrder());
         //
         shading.addActiveSource(this.position.x,this.position.y, this.shader,hashCode());
         //shading.shade();

@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
+import root.game.util.ViewOrder;
 
 import java.util.Random;
 
@@ -59,7 +60,7 @@ public class Props implements Sprite_Splitter {
 
     public void load(Group group) {
         group.getChildren().add(this.prop);
-        this.prop.setViewOrder(-1);
+        this.prop.setViewOrder(ViewOrder.props_layer.getViewOrder());
         this.prop.relocate(position.x, position.y);
         //System.out.println(this.position);
     }

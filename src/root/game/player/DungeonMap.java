@@ -9,6 +9,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Rectangle;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
+import root.game.util.ViewOrder;
 
 public class DungeonMap implements Sprite_Splitter {
 
@@ -174,7 +175,7 @@ public class DungeonMap implements Sprite_Splitter {
         if (this.border != null) {
             group.getChildren().add(this.border);
             this.border.relocate(this.borderPos.x, this.borderPos.y);
-            this.border.setViewOrder(-12);
+            this.border.setViewOrder(ViewOrder.UI_layer.getViewOrder());
         }
         for (int i = 0; i < mapPieces.length; i++) {
             for (int j = 0; j < mapPieces[0].length; j++) {
@@ -266,7 +267,7 @@ public class DungeonMap implements Sprite_Splitter {
         public void load(Group group) {
             group.getChildren().addAll(this.piece);
             this.piece.relocate(this.position.x, this.position.y);
-            this.piece.setViewOrder(-11);
+            this.piece.setViewOrder(ViewOrder.UI_layer.getViewOrder());
 
             if (this.icon != null) {
                 //
@@ -275,7 +276,7 @@ public class DungeonMap implements Sprite_Splitter {
                 //
                 group.getChildren().add(this.icon);
                 this.icon.relocate(this.position.x, this.position.y);
-                this.icon.setViewOrder(-11);
+                this.icon.setViewOrder(ViewOrder.UI_layer.getViewOrder());
             }
         }
 

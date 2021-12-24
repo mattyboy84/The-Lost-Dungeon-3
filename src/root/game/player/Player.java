@@ -614,16 +614,16 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     public void load(Group group) {
         group.getChildren().addAll(this.headHitbox.getShape(), this.nextXFrameBodyHitbox.getShape(), this.nextYFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head, this.c);
         //
-        this.headHitbox.getShape().setViewOrder(-7);
-        this.bodyHitbox.getShape().setViewOrder(-7);
-        this.nextXFrameBodyHitbox.getShape().setViewOrder(-7);
-        this.nextYFrameBodyHitbox.getShape().setViewOrder(-7);
+        this.headHitbox.getShape().setViewOrder(ViewOrder.player_layer.getViewOrder());
+        this.bodyHitbox.getShape().setViewOrder(ViewOrder.player_layer.getViewOrder());
+        this.nextXFrameBodyHitbox.getShape().setViewOrder(ViewOrder.player_layer.getViewOrder());
+        this.nextYFrameBodyHitbox.getShape().setViewOrder(ViewOrder.player_layer.getViewOrder());
         //
-        this.body.setViewOrder(-7);
-        this.head.setViewOrder(-7);
+        this.body.setViewOrder(ViewOrder.player_layer.getViewOrder());
+        this.head.setViewOrder(ViewOrder.player_layer.getViewOrder());
         //
-        group.getChildren().add(center);
-        center.setViewOrder(-12);
+        group.getChildren().add(center);//TODO remember this
+        center.setViewOrder(ViewOrder.player_layer.getViewOrder());
         //
         this.body.setVisible(true);
         this.head.setVisible(true);

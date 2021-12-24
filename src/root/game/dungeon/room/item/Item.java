@@ -14,6 +14,7 @@ import root.game.player.Player;
 import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
+import root.game.util.ViewOrder;
 
 import java.util.ArrayList;
 
@@ -100,10 +101,10 @@ public abstract class Item implements Sprite_Splitter {
     public void load(Group group) {
         group.getChildren().addAll(this.item, this.hitbox.getShape());
         this.item.relocate(this.position.x, this.position.y);
-        this.item.setViewOrder(-4);
+        this.item.setViewOrder(ViewOrder.items_layer.getViewOrder());
         //
         this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
-        this.hitbox.getShape().setViewOrder(-4);
+        this.hitbox.getShape().setViewOrder(ViewOrder.items_layer.getViewOrder());
         this.hitbox.getShape().setVisible(false);
         //
         this.forceListener.play();

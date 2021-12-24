@@ -14,6 +14,7 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 
 import root.game.util.Vecc2f;
+import root.game.util.ViewOrder;
 
 public class Shading {
 
@@ -99,7 +100,7 @@ public class Shading {
 
     public void load(Group group) {
         group.getChildren().addAll(this.overlay);
-        this.overlay.setViewOrder(-10);
+        this.overlay.setViewOrder(ViewOrder.shading_layer.getViewOrder());
         this.timeline.play();
         shade();
     }

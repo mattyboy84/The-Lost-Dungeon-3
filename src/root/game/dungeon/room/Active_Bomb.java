@@ -12,10 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import root.Main;
-import root.game.util.Effects;
-import root.game.util.Hitbox;
-import root.game.util.Sprite_Splitter;
-import root.game.util.Vecc2f;
+import root.game.util.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -170,10 +167,10 @@ public class Active_Bomb implements Sprite_Splitter {
     public void load(Group group, Room room, ArrayList<Active_Bomb> bombs) {
         group.getChildren().addAll(this.bomb, this.hitbox.getShape());
         this.bomb.relocate(this.position.x, this.position.y);
-        this.bomb.setViewOrder(-4);
+        this.bomb.setViewOrder(ViewOrder.items_layer.getViewOrder());
         //
         this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
-        this.hitbox.getShape().setViewOrder(-4);
+        this.hitbox.getShape().setViewOrder(ViewOrder.items_layer.getViewOrder());
         this.hitbox.getShape().setVisible(false);
         //START TIMELINES
         forceListener.play();

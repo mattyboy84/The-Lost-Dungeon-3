@@ -11,6 +11,7 @@ import javafx.scene.text.Text;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 import root.Main;
+import root.game.util.ViewOrder;
 
 import java.util.ArrayList;
 
@@ -101,9 +102,9 @@ public class Player_Overlay implements Sprite_Splitter {
         this.icon_bomb.relocate(posBomb.x, posBomb.y);
         this.icon_key.relocate(posKey.x, posKey.y);
         //
-        this.icon_coin.setViewOrder(-11);
-        this.icon_bomb.setViewOrder(-11);
-        this.icon_key.setViewOrder(-11);
+        this.icon_coin.setViewOrder(ViewOrder.UI_layer.getViewOrder());
+        this.icon_bomb.setViewOrder(ViewOrder.UI_layer.getViewOrder());
+        this.icon_key.setViewOrder(ViewOrder.UI_layer.getViewOrder());
         //
         this.txtCoin.relocate(this.posCoin.x + (this.icon_coin.getBoundsInParent().getWidth()), this.posCoin.y);
         this.txtBomb.relocate(this.posBomb.x + (this.icon_bomb.getBoundsInParent().getWidth()), this.posBomb.y);
@@ -111,11 +112,11 @@ public class Player_Overlay implements Sprite_Splitter {
         this.txtScore.relocate(this.posScore.x, this.posScore.y);
         this.txtTime.relocate(this.posTime.x, this.posTime.y);
         //
-        this.txtCoin.setViewOrder(-11);
-        this.txtBomb.setViewOrder(-11);
-        this.txtKey.setViewOrder(-11);
-        this.txtScore.setViewOrder(-11);
-        this.txtTime.setViewOrder(-11);
+        this.txtCoin.setViewOrder(ViewOrder.UI_layer.getViewOrder());
+        this.txtBomb.setViewOrder(ViewOrder.UI_layer.getViewOrder());
+        this.txtKey.setViewOrder(ViewOrder.UI_layer.getViewOrder());
+        this.txtScore.setViewOrder(ViewOrder.UI_layer.getViewOrder());
+        this.txtTime.setViewOrder(ViewOrder.UI_layer.getViewOrder());
         //
         this.txtTime.setVisible(false);
         this.txtScore.setVisible(false);
@@ -266,7 +267,7 @@ public class Player_Overlay implements Sprite_Splitter {
         public void load(Group group) {
             group.getChildren().add(this.heart);
             this.heart.relocate(this.position.x, this.position.y);
-            this.heart.setViewOrder(-11);
+            this.heart.setViewOrder(ViewOrder.UI_layer.getViewOrder());
         }
     }
 }

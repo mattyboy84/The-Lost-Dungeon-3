@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
+import root.game.util.ViewOrder;
 
 import java.util.Random;
 
@@ -156,20 +157,20 @@ public class Door implements Sprite_Splitter {
         this.doorPartRightLocked.relocate(position.x, position.y);
         this.doorPartLeft.relocate(position.x, position.y);
         //
-        this.doorFrame.setViewOrder(-3);
-        this.doorShadow.setViewOrder(-3);
-        this.doorPartRight.setViewOrder(-3);
-        this.doorPartRightLocked.setViewOrder(-3);
-        this.doorPartLeft.setViewOrder(-3);
+        this.doorFrame.setViewOrder(ViewOrder.door_layer.getViewOrder());
+        this.doorShadow.setViewOrder(ViewOrder.door_layer.getViewOrder());
+        this.doorPartRight.setViewOrder(ViewOrder.door_layer.getViewOrder());
+        this.doorPartRightLocked.setViewOrder(ViewOrder.door_layer.getViewOrder());
+        this.doorPartLeft.setViewOrder(ViewOrder.door_layer.getViewOrder());
         //
         this.doorTrigger.toFront();
         this.doorTrigger.setFill(Color.RED);
-        this.doorTrigger.setViewOrder(-12);
+        this.doorTrigger.setViewOrder(ViewOrder.door_layer.getViewOrder());
         this.doorTrigger.setVisible(false);
         //
         this.doorBlock.toFront();
         this.doorBlock.setFill(Color.GREEN);
-        this.doorBlock.setViewOrder(-12);
+        this.doorBlock.setViewOrder(ViewOrder.door_layer.getViewOrder());
         this.doorBlock.setVisible(false);
         //
         this.centerPos.set(this.doorFrame.getBoundsInParent().getCenterX(), this.doorFrame.getBoundsInParent().getCenterY());

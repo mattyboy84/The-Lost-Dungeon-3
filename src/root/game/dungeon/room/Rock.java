@@ -7,6 +7,7 @@ import javafx.scene.image.WritableImage;
 import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
+import root.game.util.ViewOrder;
 
 import java.util.Random;
 
@@ -58,7 +59,7 @@ public class Rock implements Sprite_Splitter {
             case Intact:
                 group.getChildren().addAll(this.hitbox.getShape(), this.rock);
                 this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
-                this.hitbox.getShape().setViewOrder(-1);
+                this.hitbox.getShape().setViewOrder(ViewOrder.props_layer.getViewOrder());
                 this.hitbox.getShape().setVisible(true);
                 break;
             case Destroyed:
@@ -66,7 +67,7 @@ public class Rock implements Sprite_Splitter {
                 break;
         }
         this.rock.relocate(this.position.x, this.position.y);
-        this.rock.setViewOrder(-1);
+        this.rock.setViewOrder(ViewOrder.props_layer.getViewOrder());
         //
         //
         this.centerPos.set((this.hitbox.getCenterX()), (this.hitbox.getCenterY()));

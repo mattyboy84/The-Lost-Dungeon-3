@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Rectangle;
 import root.game.util.Sprite_Splitter;
+import root.game.util.ViewOrder;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -83,20 +84,12 @@ public class Background implements Sprite_Splitter {
 
     public void load(Group group) {
         group.getChildren().addAll(topLeft, topRight, bottomLeft, bottomRight, leftUp, leftDown, rightUp, rightDown);
-        //topLeft.setViewOrder(1);
-        //topRight.setViewOrder(1);
-        //leftUp.setViewOrder(1);
-        //leftDown.setViewOrder(1);
-        //bottomRight.setViewOrder(1);
-        //bottomLeft.setViewOrder(1);
-        //rightDown.setViewOrder(1);
-        //rightUp.setViewOrder(1);
         //
         group.getChildren().addAll(topLeftIMG, topRightIMG, bottomLeftIMG, bottomRightIMG);
-        topLeftIMG.setViewOrder(0);
-        topRightIMG.setViewOrder(0);
-        bottomLeftIMG.setViewOrder(0);
-        bottomRightIMG.setViewOrder(0);
+        topLeftIMG.setViewOrder(ViewOrder.background_layer.getViewOrder());
+        topRightIMG.setViewOrder(ViewOrder.background_layer.getViewOrder());
+        bottomLeftIMG.setViewOrder(ViewOrder.background_layer.getViewOrder());
+        bottomRightIMG.setViewOrder(ViewOrder.background_layer.getViewOrder());
         //
         topLeft.setVisible(false);
         topRight.setVisible(false);
