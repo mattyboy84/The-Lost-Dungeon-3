@@ -35,7 +35,7 @@ public class Hitbox {
     }
 
     public Hitbox(String shape, int width, int height, float sheetScale, float scaleX, float scaleY, int xDelta, int yDelta) {
-        this.type=shape;
+        this.type = shape;
         switch (this.type) {
             case "Rectangle":
                 this.width = (int) Math.ceil(width * sheetScale * scaleX);
@@ -51,23 +51,12 @@ public class Hitbox {
     }
 
     public int getCenterX() {
-        if (this.type.equals("Circle")) {
-            return (int) ((Circle) shape).getCenterX();
-        } else if (this.type.equals("Rectangle")){
-            return (int) (((Rectangle) shape).getBoundsInParent().getMinX()+(((Rectangle) shape).getBoundsInParent().getWidth()/2));
-        }
-        throw new IllegalArgumentException();
+        return (int) shape.getBoundsInParent().getCenterX();
     }
 
     public int getCenterY() {
-        if (this.type.equals("Circle")) {
-            return (int) ((Circle) shape).getCenterY();
-        } else if (this.type.equals("Rectangle")){
-            return (int) (((Rectangle) shape).getBoundsInParent().getMinY()+(((Rectangle) shape).getBoundsInParent().getHeight()/2));
-        }
-        throw new IllegalArgumentException();
+        return (int) (shape.getBoundsInParent().getCenterY());
     }
-
 
     public String getType() {
         return type;

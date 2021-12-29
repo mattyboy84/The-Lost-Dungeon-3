@@ -118,7 +118,7 @@ public class Main extends Application {
         });
         scene.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
+                System.out.println("Mouse: " + mouseEvent.getX() + " " + mouseEvent.getY());
             }
         });
         stage.setScene(scene);//bypassed the menu scene for now

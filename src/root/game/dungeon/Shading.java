@@ -35,16 +35,21 @@ public class Shading {
     //
     float scaleX, scaleY, avgScale;
 
+    float offsetX,offsetY;
+
     public Shading(float scaleX, float scaleY, Rectangle2D screenBounds) {
         this.shading = new Image(file, (int) (screenBounds.getWidth() * (xMult)), (int) (screenBounds.getHeight() * (yMult)), false, false);
         this.pixelReader = shading.getPixelReader();
         //
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        offsetX=(int)(-20*this.scaleX);
+        offsetY=(int)(-28*this.scaleY);
+
         this.avgScale = (((scaleX + scaleY)) / 2);
 
         this.overlay = new Canvas(shading.getWidth(), shading.getHeight());
-        overlay.relocate(Math.round(-20*scaleX), Math.round(-28*scaleY));//offset cords
+        overlay.relocate((offsetX), (offsetY));//offset cords
         //
         //
 
@@ -66,7 +71,7 @@ public class Shading {
         overlay.getGraphicsContext2D().drawImage(shading, 0, 0);
         //
         for (Points source : activeSources) {
-            int posX = (int) source.position.x, posY = (int) source.position.y;
+            int posX = (int) (source.position.x+Math.abs(offsetX)-(source.shader.length/2)), posY = (int) (source.position.y+Math.abs(offsetY)-(source.shader.length/2));
             for (int i = 0; i < ((source.shader.length)); i++) {
                for (int j = 0; j < ((source.shader.length)); j++) {
 
@@ -78,7 +83,6 @@ public class Shading {
                     }
                     overlay.getGraphicsContext2D().getPixelWriter().setColor(posX + i, posY + j, Color.rgb(0, 0, 0, (screen[posX + i][posY + j] * source.shader[i][j])));
                     screen[posX + i][posY + j] = screen[posX + i][posY + j] * source.shader[i][j];
-
                 }
             }
         }
@@ -90,6 +94,7 @@ public class Shading {
         for (int i = 0; i < activeSources.size(); i++) {
             if (activeSources.get(i).getName() == name) {
                 activeSources.remove(activeSources.get(i));
+                break;
             }
         }
     }
@@ -110,7 +115,7 @@ public class Shading {
         this.timeline.pause();
     }
 
-    private class Points {
+    private static class Points {
 
         Vecc2f position;
         int radius;

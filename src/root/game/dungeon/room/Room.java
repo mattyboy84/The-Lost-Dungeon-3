@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import root.Main;
+import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
@@ -170,7 +171,7 @@ public class Room implements Runnable {
             Vecc2f pos = new Vecc2f(itemsArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), itemsArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
             switch (itemsArray.get(k).getAsJsonObject().get("item").getAsString()) {
-                //might be able to combine unique items (heart & half-heart etc) into one class -
+                //TODO might be able to combine unique items (heart & half-heart etc) into one class -
                 //depends on how different they become
                 case "coin" -> items.add(new Item_Coin(a, pos, scaleX, scaleY, screenBounds));
 
@@ -194,8 +195,8 @@ public class Room implements Runnable {
             Vecc2f pos = new Vecc2f(enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
-                case "fly" -> enemies.add(new Enemy_Fly(a, pos, scaleX, scaleY, screenBounds, shading));
-                case "attack fly" -> enemies.add(new Enemy_attackFly(a, pos, scaleX, scaleY, screenBounds, shading));
+                case "fly" -> enemies.add(new Enemy_Fly(a, pos, scaleX, scaleY, screenBounds, shading,getAllBoundaries()));
+                case "attack fly" -> enemies.add(new Enemy_attackFly(a, pos, scaleX, scaleY, screenBounds, shading,getAllBoundaries()));
             }
         }
     }
@@ -328,14 +329,8 @@ public class Room implements Runnable {
                     rock.blowUp(group);
                 }
             }
-            //for (int k = 0; k < rocks.size(); k++) {
-            //    if (rocks.get(k).state== Rock.State.Destroyed){
-            //        //rocks.get(k).blowUp(group);
-            //        System.out.println("g");
-            //    }
-            //}
         }
-        for (int k = 0; k < enemies.size(); k++) {//enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
+        for (int k = 0; k < enemies.size(); k++) {//TODO enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
 
         }
         for (Item item : items) {//item checker - items in range will be pushed away from bomb
@@ -358,7 +353,6 @@ public class Room implements Runnable {
 
     public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp) {
         this.backgroundItems.newRealTimeProp(group,centerX,centerY,RealTimeProp);
-
     }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
@@ -396,7 +390,6 @@ public class Room implements Runnable {
             door.forceOpen(group);
         }
     }
-
 
     public Random getRandom() {
         return random;

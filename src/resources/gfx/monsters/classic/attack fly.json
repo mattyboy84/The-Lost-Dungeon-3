@@ -1,39 +1,82 @@
 {
-      "enemy": "attack fly",
-      "type": "classic",
-      "filePath": "monster_010_fly",
-      "Health": 9,
-      "SheetScale": 3,
-      "enemyParts": [
-        {
-          "part": "Body",
-          "StartX": 32,
-          "StartY": 32,
-          "Width": 32,
-          "Height": 32,
-          "Rows": 2,
-          "Columns": 1,
-          "Images": 2,
-          "Hitboxes": [
-            {
-              "Type": "Rectangle",
-              "Width": 19,
-              "Height": 15,
-              "xDelta": 7,
-              "yDelta": 5
-            }
-          ],
-          "Light": true,
-          "Radius": 75
-        }
-      ],
-      "hasDeathImages": "True",
-      "DeathFilePath": "src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
-      "DeathStartX": 0,
-      "DeathStartY": 64,
-      "DeathWidth": 64,
-      "DeathHeight": 64,
-      "DeathRows": 4,
-      "DeathColumns": 3,
-      "DeathImages": 11
-    }
+  "enemy": "attack fly",
+  "type": "classic",
+  "filePath": "monster_010_fly",
+  "Health": 12,
+  "SheetScale": 3,
+  "EnemyImages": {
+    "Width": 32,
+    "Height": 32,
+    "Images": [
+      {
+        "x": 32,
+        "y": 32
+      },
+      {
+        "x": 64,
+        "y": 32
+      }
+    ]
+  },
+  "Hitbox": {
+    "Type": "Rectangle",
+    "Width": 19,
+    "Height": 15,
+    "xDelta": 7,
+    "yDelta": 5
+  },
+  "Light": true,
+  "Radius": 50,
+  "hasDeathImages": true,
+  "DeathImages": {
+    "DeathFilePath": "src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
+    "DeathWidth": 64,
+    "DeathHeight": 64,
+    "Images": [
+      {
+        "x": 0,
+        "y": 64
+      },
+      {
+        "x": 64,
+        "y": 64
+      },
+      {
+        "x": 128,
+        "y": 64
+      },
+      {
+        "x": 192,
+        "y": 64
+      },
+      {
+        "x": 0,
+        "y": 128
+      },
+      {
+        "x": 64,
+        "y": 128
+      },
+      {
+        "x": 128,
+        "y": 128
+      },
+      {
+        "x": 192,
+        "y": 128
+      },
+      {
+        "x": 0,
+        "y": 192
+      },
+      {
+        "x": 64,
+        "y": 192
+      },
+      {
+        "x": 128,
+        "y": 192
+      }
+    ]
+  }
+}

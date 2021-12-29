@@ -103,9 +103,9 @@ public class Dungeon {
 
                     down = roomChecker(i, j, +1, 0);
 
-                    right = roomChecker(i, j, 0, +1);
-
                     left = roomChecker(i, j, 0, -1);
+
+                    right = roomChecker(i, j, 0, +1);
 
                     rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading));
                     rooms.get(rooms.size() - 1).start();
@@ -123,7 +123,7 @@ public class Dungeon {
                 e.printStackTrace();
             }
         }
-        System.out.println("Prolonged time: " + a);
+        System.out.println("Prolonged dungeon generation time: " + a);
     }
 
     private int roomChecker(int i, int j, int II, int JJ) {

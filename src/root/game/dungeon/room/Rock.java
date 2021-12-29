@@ -60,7 +60,7 @@ public class Rock implements Sprite_Splitter {
                 group.getChildren().addAll(this.hitbox.getShape(), this.rock);
                 this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
                 this.hitbox.getShape().setViewOrder(ViewOrder.props_layer.getViewOrder());
-                this.hitbox.getShape().setVisible(true);
+                this.hitbox.getShape().setVisible(false);
                 break;
             case Destroyed:
                 group.getChildren().addAll(this.rock);

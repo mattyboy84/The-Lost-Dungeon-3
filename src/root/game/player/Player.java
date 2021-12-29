@@ -86,7 +86,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     //
     int lightRadius = 110;
     float[][] shader;
-    int damage =5;
+    int damage = 5;
     //
     float veloLimit;//default is 7 multiplied by screen scale
     //
@@ -245,9 +245,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             }
             relocate();
 
-
             this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude()) : (veloLimit));
-
 
             //
             this.position.add(this.velocity);
@@ -275,8 +273,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             if (attacking && attackingTimer >= shootCooldown) {
                 SHOOTINGheadChanger();
                 //shoot tear
-                Vecc2f pos=new Vecc2f(this.headHitbox.getShape().getLayoutX(),this.headHitbox.getShape().getLayoutY());
-                currentRoom.addNewTear(this.lookingDirection,damage,group,pos,this.velocity,scaleX,scaleY,this.veloLimit);
+                currentRoom.addNewTear(this.lookingDirection, damage, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY()), this.velocity, scaleX, scaleY, this.veloLimit);
                 //System.out.println(new Vecc2f(this.headHitbox.getShape().getLayoutX(),this.headHitbox.getShape().getLayoutY()));
                 //
                 justShot = true;
@@ -301,8 +298,10 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             //
             c.relocate(this.position.x, this.position.y);
             //
-            currentRoom.shading.addActiveSource((float) (headHitbox.getShape().getBoundsInParent().getMinX() - (headHitbox.getRadius() * 1.42)),
-                    (float) (headHitbox.getShape().getBoundsInParent().getMinY() - (headHitbox.getRadius() * 1.42)), shader, hashCode());
+            //System.out.println("Center: " + this.headHitbox.getShape().getBoundsInParent().getCenterX()+" "+ this.headHitbox.getShape().getBoundsInParent().getCenterY());
+
+            currentRoom.shading.addActiveSource((float) (headHitbox.getCenterX()),
+                    (float) (headHitbox.getCenterY()), shader, hashCode());
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
@@ -535,8 +534,8 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     }
 
     private void playerAnimator() {
-        float angle = this.direction.toAngle()+90;
-                if (angle > 45 && angle < 135) {//right
+        float angle = this.direction.toAngle() + 90;
+        if (angle > 45 && angle < 135) {//right
             this.movingDirection = "east";
             body.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
             subPlayerAnimator(LR_body);
