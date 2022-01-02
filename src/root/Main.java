@@ -5,6 +5,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -121,6 +122,13 @@ public class Main extends Application {
                 System.out.println("Mouse: " + mouseEvent.getX() + " " + mouseEvent.getY());
             }
         });
+
+
+        //ImageView a = new ImageView(Effects.tiny_enemyGuts[11]);
+        //a.relocate(800,800);
+        //group.getChildren().add(a);
+
+
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);
         stage.show();

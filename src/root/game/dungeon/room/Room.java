@@ -8,13 +8,11 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import root.Main;
-import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
 import root.game.player.Player;
 import root.game.player.Tear;
-import root.game.util.Effects;
 import root.game.util.Vecc2f;
 
 import java.io.BufferedReader;
@@ -171,8 +169,7 @@ public class Room implements Runnable {
             Vecc2f pos = new Vecc2f(itemsArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), itemsArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
             switch (itemsArray.get(k).getAsJsonObject().get("item").getAsString()) {
-                //TODO might be able to combine unique items (heart & half-heart etc) into one class -
-                //depends on how different they become
+                //TODO might be able to combine unique items (heart & half-heart etc) into one class - depends on how different they become
                 case "coin" -> items.add(new Item_Coin(a, pos, scaleX, scaleY, screenBounds));
 
                 case "key" -> items.add(new Item_Key(a, pos, scaleX, scaleY, screenBounds));
@@ -191,12 +188,12 @@ public class Room implements Runnable {
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
         for (int k = 0; k < enemyArray.size(); k++) {
 
-            JsonObject a = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\classic\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
+            JsonObject enemytemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\classic\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
-                case "fly" -> enemies.add(new Enemy_Fly(a, pos, scaleX, scaleY, screenBounds, shading,getAllBoundaries()));
-                case "attack fly" -> enemies.add(new Enemy_attackFly(a, pos, scaleX, scaleY, screenBounds, shading,getAllBoundaries()));
+                case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading,getAllBoundaries()));
+                case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading,getAllBoundaries()));
             }
         }
     }

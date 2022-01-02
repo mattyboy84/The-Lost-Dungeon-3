@@ -64,9 +64,6 @@ public class Shading {
     }
 
     public void shade() {
-        //PixelReader pixelReader = shading.getPixelReader();
-
-        //
         overlay.getGraphicsContext2D().clearRect(0, 0, overlay.getWidth(), overlay.getHeight());
         overlay.getGraphicsContext2D().drawImage(shading, 0, 0);
         //

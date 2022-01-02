@@ -35,7 +35,7 @@ public class Tear implements Sprite_Splitter {
         this.damage = damage;
         this.shadowPosition = new Vecc2f(position);
         this.shadowPosition.add(0, 30 * (scaleY));//scaled 30 pixels under the tear to start
-        this.velocity = new Vecc2f(velocity);
+        this.velocity = new Vecc2f(velocity.x/2,velocity.y/2);
         this.flyDistance *= scaleY;
         //
         switch (direction) {
@@ -52,8 +52,6 @@ public class Tear implements Sprite_Splitter {
                 this.velocity.add((float) (baseVELO * 1.5), 0);
                 break;
         }
-        //
-        //this.velocity.fromAngle(this.velocity.toAngle()*0.8);
         //
         float scale = 2.5f;
 
@@ -80,7 +78,7 @@ public class Tear implements Sprite_Splitter {
 
     private void explodeTimelineSetup() {
         explodeTimeline = new Timeline(new KeyFrame(Duration.millis(70), event -> {
-            this.tearImage.setImage(Effects.BLUEtearCollideAnimation[explodeCounter]);
+            this.tearImage.setImage(Effects.BLUEtearCollideAnimation[explodeCounter]);//runs through the collision animation
             explodeCounter++;
         }));
         explodeTimeline.setCycleCount(Effects.BLUEtearCollideAnimation.length - 1);
@@ -100,7 +98,7 @@ public class Tear implements Sprite_Splitter {
             this.tearHitbox.getShape().relocate(this.position.x - this.tearHitbox.getxDelta(), this.position.y - this.tearHitbox.getyDelta());
             //
             boundaryCheck(boundaries, group, tears);
-            shadowCheck(group, tears);//when the hitbox hits the center of the shadow it will hit the floor
+            shadowCheck(group, tears);//when the hitbox hits the center of the shadow it will hit the floor and explode
             //
             enemyCheck(enemies, group, tears);
         }));
@@ -144,9 +142,9 @@ public class Tear implements Sprite_Splitter {
     }
 
     public void destroy(Group group, ArrayList<Tear> tears) {
-        group.getChildren().remove(this.tearImage);
+        group.getChildren().remove(this.tearImage);//this component is always on screen
         try {
-            group.getChildren().remove(this.tearHitbox.getShape());
+            group.getChildren().remove(this.tearHitbox.getShape());//hitbox is removed when colliding but also needs to be removed when leaving a room - error would occur otherwise.
         } catch (Exception e) {
         }
         try {

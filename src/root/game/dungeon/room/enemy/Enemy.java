@@ -1,24 +1,30 @@
 package root.game.dungeon.room.enemy;
 
 import com.google.gson.JsonObject;
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import root.game.dungeon.Shading;
 import root.game.util.Entity_Shader;
 import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
+import root.game.player.Player;
 
 import java.util.ArrayList;
 
-public class Enemy implements Sprite_Splitter, Entity_Shader {
+public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     Vecc2f position;
-    Vecc2f velocity=new Vecc2f();
+    Vecc2f centerPos = new Vecc2f();
+    Vecc2f velocity = new Vecc2f();
+    float veloLimit;
+    float avgScale;
     float[][] shader;
     String name;
     String type;
@@ -33,12 +39,14 @@ public class Enemy implements Sprite_Splitter, Entity_Shader {
     ArrayList<Rectangle> boundaries;
     Shading roomShading;
 
-    Timeline timeline, deathTimeline;
+    Timeline timeline=new Timeline();
+    Timeline deathTimeline;
 
     public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, ArrayList<Rectangle> roomBoundaries) {
+        this.avgScale = ((scaleX + scaleY) / 2);
         this.position = new Vecc2f(pos);
         this.boundaries = roomBoundaries;
-        this.roomShading=shading;
+        this.roomShading = shading;
 
         this.name = enemyTemplate.get("enemy").getAsString();
         this.type = enemyTemplate.get("type").getAsString();
@@ -79,6 +87,7 @@ public class Enemy implements Sprite_Splitter, Entity_Shader {
                 deathImages[i] = imageGetter("file:" + object1.get("DeathFilePath").getAsString(), x, y, Dwidth, Dheight, scaleX, scaleY, sheetScale);
             }
         }
+
     }
 
     public void checkBoundaries() {
@@ -87,11 +96,49 @@ public class Enemy implements Sprite_Splitter, Entity_Shader {
                 this.position.sub(this.velocity);
                 this.position.set((int) this.position.x, (int) this.position.y);
                 this.velocity.set(0, 0);
-                this.enemy.relocate(this.position.x,this.position.y);
-                this.hitbox.getShape().relocate(this.position.x+this.hitbox.getxDelta(),this.position.y+this.hitbox.getyDelta());
+                this.enemy.relocate(this.position.x, this.position.y);
+                this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
             }
         }
     }
+
+    public void timelineSetup() {
+        timeline = new Timeline(new KeyFrame(Duration.millis(16), event -> {
+            //every enemy will have the base of shader checking,boundary checking & updating of center pos
+            removeShader();
+            updateCenterPos();
+            //
+            enemySpecificMovement();//will be overridden for each enemy
+            //
+            checkBoundaries();
+            //
+            addShader();
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+    }
+
+    public abstract void enemySpecificMovement();
+
+    public void addShader() {
+        if (this.lightRadius > 0) {
+            roomShading.addActiveSource((float) (this.hitbox.getCenterX()), (float) (this.hitbox.getCenterY()), shader, this.hashCode());
+        }
+    }
+
+    public void removeShader() {
+        if (this.lightRadius > 0) {
+            this.roomShading.removeActiveSource(hashCode());
+        }
+    }
+
+    public void setVeloLimit(float i) {
+        this.veloLimit = i * avgScale;
+    }
+
+    public void updateCenterPos() {
+        this.centerPos.set(this.hitbox.getCenterX(), this.hitbox.getCenterY());
+    }
+
 
     public void load(Group group) {
 

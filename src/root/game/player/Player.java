@@ -249,7 +249,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
             //
             this.position.add(this.velocity);
-            this.centerPos.set(this.bodyHitbox.getShape().getBoundsInParent().getCenterX(), this.bodyHitbox.getShape().getBoundsInParent().getCenterY());
+            this.centerPos.set(this.bodyHitbox.getCenterX(), ((this.bodyHitbox.getCenterY()+this.headHitbox.getCenterY())/2));
             //
             boundaryChecker(group);
             //
