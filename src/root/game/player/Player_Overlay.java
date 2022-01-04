@@ -15,6 +15,8 @@ import root.game.util.ViewOrder;
 
 import java.util.ArrayList;
 
+//            this.position = new Vecc2f((200 * Main.scaleX) + ((size >= (MAX / 4)) ? (size - (MAX / 4)) * width_heart : size * width_heart), (50 * Main.scaleY) + ((size >= (MAX / 4)) ? width_heart : 0));
+
 public class Player_Overlay implements Sprite_Splitter {
 
     public static final int MAX_ITEM_NUMBER = 99;
@@ -31,7 +33,7 @@ public class Player_Overlay implements Sprite_Splitter {
     public DungeonMap miniMap;
     public DungeonMap largeMap;
 
-    String map="minimap";
+    String map = "minimap";
 
     //
     boolean halfHeart = false;
@@ -39,11 +41,11 @@ public class Player_Overlay implements Sprite_Splitter {
     public Player_Overlay(float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int score, int[][] map) {
         float g = ((scaleX + scaleY) / 2);
 
-        this.icon_coin = new ImageView(imageGetter(file,0,0,16,16,scaleX,scaleY,sheetScale));
+        this.icon_coin = new ImageView(imageGetter(file, 0, 0, 16, 16, scaleX, scaleY, sheetScale));
 
-        this.icon_bomb = new ImageView(imageGetter(file,0,16,16,16,scaleX,scaleY,sheetScale));
+        this.icon_bomb = new ImageView(imageGetter(file, 0, 16, 16, 16, scaleX, scaleY, sheetScale));
 
-        this.icon_key = new ImageView(imageGetter(file,16,0,16,16,scaleX,scaleY,sheetScale));
+        this.icon_key = new ImageView(imageGetter(file, 16, 0, 16, 16, scaleX, scaleY, sheetScale));
 
         //
         this.posCoin = new Vecc2f(75 * scaleX, 150 * scaleY);
@@ -89,8 +91,8 @@ public class Player_Overlay implements Sprite_Splitter {
         this.posTime = new Vecc2f(((screenBounds.getWidth() / 2)) - ((this.txtTime.getBoundsInParent().getWidth() / 2)), (this.txtScore.getBoundsInParent().getMaxY()));
         this.txtTime.setOpacity(0.4);
         //
-        miniMap=new DungeonMap("file:src\\resources\\gfx\\ui\\minimap1.png",9,8,27,160,27,192,27,224,map,scaleX,scaleY,screenBounds,4);
-        largeMap=new DungeonMap("file:src\\resources\\gfx\\ui\\minimap2.png",18,16,108,48,108,112,108,176,map,scaleX,scaleY,screenBounds,3);
+        miniMap = new DungeonMap("file:src\\resources\\gfx\\ui\\minimap1.png", 9, 8, 27, 160, 27, 192, 27, 224, map, scaleX, scaleY, screenBounds, 4);
+        largeMap = new DungeonMap("file:src\\resources\\gfx\\ui\\minimap2.png", 18, 16, 108, 48, 108, 112, 108, 176, map, scaleX, scaleY, screenBounds, 3);
         //largeMap.center(screenBounds);
 
     }
@@ -180,49 +182,14 @@ public class Player_Overlay implements Sprite_Splitter {
     public void over(Group group) {
         this.txtScore.setVisible(!this.txtScore.isVisible());
         this.txtTime.setVisible(!this.txtTime.isVisible());
-        if (map.equals("minimap")){
+        if (map.equals("minimap")) {
             miniMap.unload(group);
-            map="largemap";
+            map = "largemap";
             largeMap.load(group);
-        }else {
+        } else {
             largeMap.unload(group);
-            map="minimap";
+            map = "minimap";
             miniMap.load(group);
-        }
-    }
-
-    public void updateHealth(int health, int total_health, int maximum_health, Group group) {
-        halfHeart = false;
-        int a = total_health;
-        int b = health;
-        int diff = a - b;
-        for (Heart heart : hearts) {
-            try {
-                heart.remove(group);
-            } catch (Exception e) {
-
-            }
-        }
-        hearts.clear();
-
-        if (b % 2 == 1) {
-            b -= 1;
-            halfHeart = true;
-        }
-        if ((diff % 2) == 1) {
-            diff = diff - 1;
-        }
-        for (int i = 0; i < b / 2; i++) {
-            hearts.add(new Heart(hearts.size(), 2, maximum_health));
-        }
-        if (halfHeart) {
-            hearts.add(new Heart(hearts.size(), 1, maximum_health));
-        }
-        for (int i = 0; i < diff / 2; i++) {
-            hearts.add(new Heart(hearts.size(), 0, maximum_health));
-        }
-        for (Heart heart : hearts) {
-            heart.load(group);
         }
     }
 
@@ -231,43 +198,101 @@ public class Player_Overlay implements Sprite_Splitter {
         largeMap.reveal();
     }
 
+    public void setupHealth(int numberOfHearts, int total_health, int maximum_health, Group group) {
+        for (int i = 0; i < numberOfHearts; i++) {
+            hearts.add(new Heart(hearts, 2));
+        }
+        for (int i = 0; i < hearts.size(); i++) {
+            hearts.get(i).load(group);
+        }
+    }
+
+    public void updateHearts(int health) {
+        int a = health;
+        switch (health%2){
+            case 0://even
+                a=health/2;
+                for (int i = 0; i <a ; i++) {
+                    hearts.get(i).setHealth(2);
+                }
+                if (a<hearts.size()){
+                hearts.get(a).setHealth(0);}
+                break;
+            case 1://odd
+                a=a-1;
+                a=a/2;
+                for (int i = 0; i <a ; i++) {
+                    hearts.get(i).setHealth(2);
+                }
+                hearts.get(a).setHealth(1);
+                try{
+                    hearts.get(a+1).setHealth(0);
+                }catch (Exception ignored){}
+                break;
+        }
+    }
+
+    public void updateMaxHealth(int health, int maxHealth, Group group, int b) {
+        switch (b){
+            case 2://increase by 1 heart
+                if (hearts.size()<maxHealth/2){
+                hearts.add(new Heart(hearts, 0));
+                hearts.get(hearts.size()-1).load(group);}
+                break;
+            case -2://decrease by 1 heart
+                hearts.get(hearts.size()-1).unload(group);
+                hearts.remove(hearts.size()-1);
+                break;
+        }
+        updateHearts(health);
+    }
+
     private class Heart {
         Vecc2f position;
         ImageView heart;
         String file = "file:src\\resources\\gfx\\ui\\ui_hearts.png";
-        //int sheetScale = Main.p ? 2 : 3;
-        int sheetScale=3;
-        int width_heart = (int) ((16*Main.scaleX * sheetScale) * 0.8);
+        int sheetScale = 3;
+        int width_heart = (int) ((16 * Main.scaleX * sheetScale) * 0.7);
         //
-        ImageView heart_FULL = new ImageView(imageGetter(file, 0, 0, 16, 16,Main.scaleX,Main.scaleY,sheetScale));
-        //
-        ImageView heart_HALF= new ImageView(imageGetter(file, 16, 0, 16, 16,Main.scaleX,Main.scaleY,sheetScale));
-        //
-        ImageView heart_EMPTY = new ImageView(imageGetter(file, 32, 0, 16, 16,Main.scaleX,Main.scaleY,sheetScale));
+        Image heart_FULL = (imageGetter(file, 0, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
+        Image heart_HALF = (imageGetter(file, 16, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
+        Image heart_EMPTY = (imageGetter(file, 32, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
 
-        public Heart(int size, int a, int MAX) {
-            switch (a) {
-                case 2://full heart
-                    this.heart = heart_FULL;
-                    break;
-                case 1://half heart
-                    this.heart = heart_HALF;
+        public Heart(ArrayList<Heart> hearts, int health) {
+            switch (health){
+                case 2:
+                    this.heart = new ImageView(heart_FULL);
                     break;
                 case 0:
-                    this.heart = heart_EMPTY;
+                    this.heart = new ImageView(heart_EMPTY);
                     break;
             }
-            this.position = new Vecc2f((200 * Main.scaleX) + ((size >= (MAX / 4)) ? (size - (MAX / 4)) * width_heart : size * width_heart), (50 * Main.scaleY) + ((size >= (MAX / 4)) ? width_heart : 0));
-        }
-
-        public void remove(Group group) {
-            group.getChildren().remove(this.heart);
+            this.position = new Vecc2f((200 + ((((hearts.size()>7)?(hearts.size()-7):(hearts.size()+1)) * width_heart))) * Main.scaleX,
+                    ((80)+(((hearts.size()>7)?(1):(0))*width_heart)) * Main.scaleY);
         }
 
         public void load(Group group) {
             group.getChildren().add(this.heart);
-            this.heart.relocate(this.position.x, this.position.y);
             this.heart.setViewOrder(ViewOrder.UI_layer.getViewOrder());
+            this.heart.relocate(this.position.x, this.position.y);
+        }
+
+        public void unload(Group group) {
+            group.getChildren().remove(this.heart);
+        }
+
+        public void setHealth(int b) {
+            switch (b) {
+                case 0:
+                    this.heart.setImage(heart_EMPTY);
+                    break;
+                case 1:
+                    this.heart.setImage(heart_HALF);
+                    break;
+                case 2:
+                    this.heart.setImage(heart_FULL);
+                    break;
+            }
         }
     }
 }

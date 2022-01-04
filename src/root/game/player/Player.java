@@ -126,7 +126,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public void run() {
         overlay = new Player_Overlay(scaleX, scaleY, screenBounds, sheetScale, score, dungeon.map);
-        overlay.updateHealth(health, TOTAL_Health, MAXIMUM_HEALTH, group);
+        overlay.setupHealth(3, TOTAL_Health, MAXIMUM_HEALTH, group);
         overlay.miniMap.load(group);
 
         overlay.miniMap.updateMinimap(this.roomX, this.roomY);
@@ -362,37 +362,20 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         }
     }
 
-    public void increaseHealth(int change, Group group) {
+    public void changeHealthBy(int change) {
         this.health += change;
-        this.health = Math.min(this.health, TOTAL_Health);
-        overlay.updateHealth(this.health, this.TOTAL_Health, this.MAXIMUM_HEALTH, group);
+        this.health=Math.min(Math.max(this.health, MIN_Health), TOTAL_Health);//keep health between min & max
+        overlay.updateHearts(this.health);
     }
 
-    public void decreaseHealth(int change, Group group) {
-        this.health -= change;
-        this.health = Math.max(this.health, MIN_Health);
-        overlay.updateHealth(this.health, this.TOTAL_Health, this.MAXIMUM_HEALTH, group);
-    }
-
-    public void increaseMaxHealth(int change, Group group) {
+    public void changeMaxHealthBy(int change, Group group) {
         this.TOTAL_Health += change;
-        if (TOTAL_Health > MAXIMUM_HEALTH) {
-            TOTAL_Health = MAXIMUM_HEALTH;
-            //this.health=MAXIMUM_HEALTH;
-        } else {
-            this.health += 2;
-        }
-        overlay.updateHealth(this.health, this.TOTAL_Health, this.MAXIMUM_HEALTH, group);
-    }
-
-    public void decreaseMaxHealth(int change, Group group) {
-        this.TOTAL_Health -= change;
-        if (TOTAL_Health < MIN_Health) {
-            TOTAL_Health = MIN_Health;
-        } else {
-            this.health -= 2;
-        }
-        overlay.updateHealth(this.health, this.TOTAL_Health, this.MAXIMUM_HEALTH, group);
+        this.TOTAL_Health=Math.min(Math.max(this.TOTAL_Health, MIN_Health), MAXIMUM_HEALTH);//keep total health between min & max
+        //
+        this.health+=change;
+        this.health=Math.min(Math.max(this.health, MIN_Health), TOTAL_Health);//keep health between min & new max
+        //
+        overlay.updateMaxHealth(this.health,this.MAXIMUM_HEALTH,group,change);
     }
 
     private void updateTime() {

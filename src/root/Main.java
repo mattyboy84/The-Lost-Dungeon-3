@@ -98,10 +98,10 @@ public class Main extends Application {
                 case J -> player.currentRoom.forceOpenDoors(group);
                 case M -> player.getOverlay().revealMap();
                 case TAB -> player.getOverlay().over(group);
-                case C -> player.increaseHealth(1, group);
-                case V -> player.decreaseHealth(1, group);
-                case B -> player.increaseMaxHealth(2, group);
-                case N -> player.decreaseMaxHealth(2, group);
+                case C -> player.changeHealthBy(1);
+                case V -> player.changeHealthBy(-1);
+                case B -> player.changeMaxHealthBy(2, group);
+                case N -> player.changeMaxHealthBy(-2, group);
                 case I -> player.getOverlay().miniMap.updateMinimap(9, 9);
             }
         });

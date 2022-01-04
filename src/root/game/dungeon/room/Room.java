@@ -308,7 +308,7 @@ public class Room implements Runnable {
             dir.limit(1);
             System.out.println(dir);
             System.out.println("player hit");
-            Main.player.decreaseHealth(1, group);
+            Main.player.changeHealthBy(-1);
             Main.player.applyForce(dir, 40);
         }
 
