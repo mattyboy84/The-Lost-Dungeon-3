@@ -14,6 +14,7 @@ import root.Main;
 import root.game.util.ViewOrder;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 //            this.position = new Vecc2f((200 * Main.scaleX) + ((size >= (MAX / 4)) ? (size - (MAX / 4)) * width_heart : size * width_heart), (50 * Main.scaleY) + ((size >= (MAX / 4)) ? width_heart : 0));
 
@@ -252,11 +253,12 @@ public class Player_Overlay implements Sprite_Splitter {
         ImageView heart;
         String file = "file:src\\resources\\gfx\\ui\\ui_hearts.png";
         int sheetScale = 3;
-        int width_heart = (int) ((16 * Main.scaleX * sheetScale));
         //
         Image heart_FULL = (imageGetter(file, 0, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
         Image heart_HALF = (imageGetter(file, 16, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
         Image heart_EMPTY = (imageGetter(file, 32, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
+        //
+        int width_heart = (int) ((heart_FULL.getWidth()*0.9));
 
         public Heart(ArrayList<Heart> hearts, int health) {
             switch (health){
@@ -267,8 +269,8 @@ public class Player_Overlay implements Sprite_Splitter {
                     this.heart = new ImageView(heart_EMPTY);
                     break;
             }
-            this.position = new Vecc2f((200 + ((((hearts.size()>7)?(hearts.size()-7):(hearts.size()+1)) * width_heart))) * Main.scaleX,
-                    ((80)+(((hearts.size()>7)?(1):(0))*width_heart)) * Main.scaleY);
+            this.position = new Vecc2f(((200*Main.scaleX) + ((((hearts.size()>7)?(hearts.size()-7):(hearts.size()+1)) * width_heart))),
+                    ((80*Main.scaleY)+(((hearts.size()>7)?(1):(0))*width_heart)));
         }
 
         public void load(Group group) {
