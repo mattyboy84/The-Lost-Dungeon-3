@@ -252,7 +252,7 @@ public class Player_Overlay implements Sprite_Splitter {
         ImageView heart;
         String file = "file:src\\resources\\gfx\\ui\\ui_hearts.png";
         int sheetScale = 3;
-        int width_heart = (int) ((16 * Main.scaleX * sheetScale) * 0.7);
+        int width_heart = (int) ((16 * Main.scaleX * sheetScale));
         //
         Image heart_FULL = (imageGetter(file, 0, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
         Image heart_HALF = (imageGetter(file, 16, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));

@@ -124,9 +124,10 @@ public class Main extends Application {
         });
 
 
-        //ImageView a = new ImageView(Effects.tiny_enemyGuts[11]);
-        //a.relocate(800,800);
+        //ImageView a = new ImageView(Effects.enemyGuts[Effects.enemyGuts.length-1]);
+        //a.relocate(screenWidth/2,screenHeight/2);
         //group.getChildren().add(a);
+        //a.toFront();
 
 
         stage.setScene(scene);//bypassed the menu scene for now

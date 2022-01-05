@@ -21,7 +21,6 @@ public class Rock implements Sprite_Splitter {
     Hitbox hitbox;
     Random random = new Random();
 
-
     //boolean intact;
 
     enum State {
