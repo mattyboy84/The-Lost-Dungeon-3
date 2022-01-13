@@ -22,20 +22,20 @@ public class Effects implements Runnable, Sprite_Splitter {
 
     @Override
     public void run() {
-        explodeAnimation = prepareEffect("file:src\\resources\\gfx\\effects\\effect_029_explosion.png", scaleX, scaleY, 2, 0, 0, 96, 96, 12, 384);
-        explosionMarkImages = prepareEffect("file:src\\resources\\gfx\\effects\\effect_017_bombradius.png", scaleX, scaleY, 2, 0, 0, 96, 64, 8, 192);
-        BLUEtearCollideAnimation = prepareEffect("file:src\\resources\\gfx\\effects\\effect_015_tearpoof.png", scaleX, scaleY, 2, 0, 0, 64, 64, 16, 256);
-        REDtearCollideAnimation = prepareEffect("file:src\\resources\\gfx\\effects\\effect_003_bloodtear.png", scaleX, scaleY, 2, 0, 0, 64, 64, 16, 256);
-        bloodPool_small = prepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 0, 0, 32, 32, 12, 64);
-        bloodPool_medium = prepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 64, 0, 48, 48, 6, 160);
-        bloodPool_large = prepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 160, 0, 96, 96, 6, 448);
-        enemyGuts = prepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 2, 0, 0, 16, 16, 12, 64);
-        tiny_enemyGuts = prepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 3, 0, 48, 4, 4, 12, 32);
+        explodeAnimation = perepareEffect("file:src\\resources\\gfx\\effects\\effect_029_explosion.png", scaleX, scaleY, 2, 0, 0, 96, 96, 12, 384);
+        explosionMarkImages = perepareEffect("file:src\\resources\\gfx\\effects\\effect_017_bombradius.png", scaleX, scaleY, 2, 0, 0, 96, 64, 8, 192);
+        BLUEtearCollideAnimation = perepareEffect("file:src\\resources\\gfx\\effects\\effect_015_tearpoof.png", scaleX, scaleY, 2, 0, 0, 64, 64, 16, 256);
+        REDtearCollideAnimation = perepareEffect("file:src\\resources\\gfx\\effects\\effect_003_bloodtear.png", scaleX, scaleY, 2, 0, 0, 64, 64, 16, 256);
+        bloodPool_small = perepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 0, 0, 32, 32, 12, 64);
+        bloodPool_medium = perepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 64, 0, 48, 48, 6, 160);
+        bloodPool_large = perepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 160, 0, 96, 96, 6, 448);
+        enemyGuts = perepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 2, 0, 0, 16, 16, 12, 64);
+        tiny_enemyGuts = perepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 3, 0, 48, 4, 4, 12, 32);
     }
 
-    private Image[] prepareEffect(String file, float scaleX, float scaleY, int sheetScale, int x, int y, int width, int height, int size, int xReset) {
+    private Image[] perepareEffect(String file, float scaleX, float scaleY, int sheetScale, int x, int y, int width, int height, int size, int xReset) {
         Image[] a = new Image[size];
-        for (int i = 0; i < a.length; i++) {//might need -1
+        for (int i = 0; i < a.length; i++) {
             a[i] = imageGetter(file, x, y, width, height, scaleX, scaleY, sheetScale);
             x += width;
             if (x >= xReset) {

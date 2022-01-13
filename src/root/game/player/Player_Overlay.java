@@ -14,7 +14,6 @@ import root.Main;
 import root.game.util.ViewOrder;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 //            this.position = new Vecc2f((200 * Main.scaleX) + ((size >= (MAX / 4)) ? (size - (MAX / 4)) * width_heart : size * width_heart), (50 * Main.scaleY) + ((size >= (MAX / 4)) ? width_heart : 0));
 
@@ -258,7 +257,7 @@ public class Player_Overlay implements Sprite_Splitter {
         Image heart_HALF = (imageGetter(file, 16, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
         Image heart_EMPTY = (imageGetter(file, 32, 0, 16, 16, Main.scaleX, Main.scaleY, sheetScale));
         //
-        int width_heart = (int) ((heart_FULL.getWidth()*0.9));
+        int width_heart = (int) heart_EMPTY.getWidth();
 
         public Heart(ArrayList<Heart> hearts, int health) {
             switch (health){

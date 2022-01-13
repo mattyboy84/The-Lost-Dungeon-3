@@ -8,3 +8,8 @@ TOP LEFT: 0,0
 TOP RIGHT: 1391,0
 BOTTOM LEFT: 0,617
 BOTTOM RIGHT: 1391,617
+
+re-consider current rocks as components - move to sub class of a 
+parent class 'Rock' - when a rocks component is damaged,
+all other components act accordingly.
+Divide rock types into 2x2, 2x1,1x2.
