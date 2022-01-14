@@ -149,16 +149,13 @@ public class Room implements Runnable {
         sheetScale = rockTemplate.get("SheetScale").getAsFloat();
         width = rockTemplate.get("Width").getAsInt();
         height = rockTemplate.get("Height").getAsInt();
-        rows = rockTemplate.get("Rows").getAsInt();
-        columns = rockTemplate.get("Columns").getAsInt();
         borderX = rockTemplate.get("BorderX").getAsInt();
         borderY = rockTemplate.get("BorderY").getAsInt();
         for (int k = 0; k < rockTemplate.get("rocksARR").getAsJsonArray().size(); k++) {
             int a = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("PositionX").getAsInt();
             int b = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("PositionY").getAsInt();
-            int c = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageX").getAsInt();
-            int d = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("ImageY").getAsInt();
-            rocks.add(new Rock(a, b, c, d, name, sheetScale, width, height, rows, columns, borderX, borderY, scaleX, scaleY));
+            String type = rockTemplate.get("rocksARR").getAsJsonArray().get(k).getAsJsonObject().get("Type").getAsString();
+            rocks.add(new Rock(a, b, type, name, sheetScale, width, height, borderX, borderY, scaleX, scaleY));
         }
     }
 
@@ -321,11 +318,12 @@ public class Room implements Runnable {
         }
 
         {//rock checker
+            /*TODO RE-ADD THIS
             for (Rock rock : rocks) {
                 if (rock.state == Rock.State.Intact && (Vecc2f.distance(x, y, rock.centerPos.x, rock.centerPos.y) < radius)) {
                     rock.blowUp(group);
                 }
-            }
+            }*/
         }
         for (int k = 0; k < enemies.size(); k++) {//TODO enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
 
@@ -359,11 +357,11 @@ public class Room implements Runnable {
                 a.add(door.getDoorBlock());
             }
         }
-        for (Rock rock : rocks) {
-            if (rock.state == Rock.State.Intact) {
-                a.add((Rectangle) rock.hitbox.getShape());
-            }
+
+        for (Rock rock : rocks) {//each rock gets its parts hitboxes.
+                a.addAll(rock.getBoundaries());
         }
+
         return a;
     }
 

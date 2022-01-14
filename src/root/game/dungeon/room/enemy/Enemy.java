@@ -44,7 +44,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, ArrayList<Rectangle> roomBoundaries) {
         this.avgScale = ((scaleX + scaleY) / 2);
-        this.position = new Vecc2f(pos);
+        this.position = new Vecc2f(pos.x*scaleX,pos.y*scaleY);
         this.boundaries = roomBoundaries;
         this.roomShading = shading;
 

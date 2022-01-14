@@ -42,8 +42,8 @@
     },
     {
       "enemy": "attack fly",
-      "PositionX": 550,
-      "PositionY": 900
+      "PositionX": 700,
+      "PositionY": 500
     }
   ],
   "Rocks": {
@@ -59,56 +59,7 @@
       {
         "PositionX": 0,
         "PositionY": 0,
-        "ImageX": 0,
-        "ImageY": 0
-      },
-      {
-        "PositionX": 103,
-        "PositionY": 0,
-        "ImageX": 0,
-        "ImageY": 0
-      },
-      {
-        "PositionX": 206,
-        "PositionY": 0,
-        "ImageX": 1,
-        "ImageY": 0
-      },
-      {
-        "PositionX": 0,
-        "PositionY": 103,
-        "ImageX": 1,
-        "ImageY": 0
-      },
-      {
-        "PositionX": 103,
-        "PositionY": 103,
-        "ImageX": 2,
-        "ImageY": 0
-      },
-      {
-        "PositionX": 0,
-        "PositionY": 206,
-        "ImageX": 1,
-        "ImageY": 0
-      },
-      {
-        "PositionX": 0,
-        "PositionY": 515,
-        "ImageX": 1,
-        "ImageY": 0
-      },
-      {
-        "PositionX": 103,
-        "PositionY": 515,
-        "ImageX": 2,
-        "ImageY": 0
-      },
-      {
-        "PositionX": 103,
-        "PositionY": 618,
-        "ImageX": 0,
-        "ImageY": 0
+        "Type": "2x2"
       }
     ]
   }
