@@ -18,7 +18,6 @@ public class Main extends Application {
 
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     static Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-
     //
     //1080p
     static int madeWithWidth = 1920;

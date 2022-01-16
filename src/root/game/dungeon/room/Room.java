@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 
@@ -189,8 +190,8 @@ public class Room implements Runnable {
             Vecc2f pos = new Vecc2f(enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
-                case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading,getAllBoundaries()));
-                case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading,getAllBoundaries()));
+                case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, getAllBoundaries()));
+                case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, getAllBoundaries()));
             }
         }
     }
@@ -278,8 +279,8 @@ public class Room implements Runnable {
         for (int k = 0; k < bombs.size(); k++) {
             bombs.get(k).unload(group, bombs);
         }
-        for (int k = 0; k <tears.size() ; k++) {
-            tears.get(k).destroy(group,tears);
+        for (int k = 0; k < tears.size(); k++) {
+            tears.get(k).destroy(group, tears);
         }
     }
 
@@ -292,8 +293,8 @@ public class Room implements Runnable {
         addBombSub(group, bombTemplate, centerPos, 3);
     }
 
-    public void addNewTear(String direction,int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY,float veloLimit) {
-        tears.add(new Tear(direction,damage,group,pos,velocity,scaleX,scaleY,veloLimit,tears,enemies,getAllBoundaries()));
+    public void addNewTear(String direction, int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY, float veloLimit) {
+        tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, getAllBoundaries()));
     }
 
     public void explosionDamageAroundPoint(Active_Bomb currentBomb, float x, float y, int radius, Group group) {
@@ -318,12 +319,11 @@ public class Room implements Runnable {
         }
 
         {//rock checker
-            /*TODO RE-ADD THIS
+            //checks all rocks and rock parts if they're to be destroyed
             for (Rock rock : rocks) {
-                if (rock.state == Rock.State.Intact && (Vecc2f.distance(x, y, rock.centerPos.x, rock.centerPos.y) < radius)) {
-                    rock.blowUp(group);
-                }
-            }*/
+                rock.check(group,x,y,radius);
+                //System.out.println(rock.rock_parts.size());
+            }
         }
         for (int k = 0; k < enemies.size(); k++) {//TODO enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
 
@@ -347,7 +347,7 @@ public class Room implements Runnable {
     }
 
     public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp) {
-        this.backgroundItems.newRealTimeProp(group,centerX,centerY,RealTimeProp);
+        this.backgroundItems.newRealTimeProp(group, centerX, centerY, RealTimeProp);
     }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
@@ -359,7 +359,7 @@ public class Room implements Runnable {
         }
 
         for (Rock rock : rocks) {//each rock gets its parts hitboxes.
-                a.addAll(rock.getBoundaries());
+            a.addAll(rock.getBoundaries());
         }
 
         return a;
