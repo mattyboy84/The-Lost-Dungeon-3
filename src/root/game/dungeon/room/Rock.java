@@ -19,7 +19,7 @@ public class Rock implements Sprite_Splitter {
     int i, j;
     float scaleX, scaleY;
     float sheetScale;
-
+    boolean markedDelete;
 
     public Rock(int positionX, int positionY, String type, String name, float sheetScale, int width, int height, int borderX, int borderY, float scaleX, float scaleY) {
         this.type = type;
@@ -63,11 +63,6 @@ public class Rock implements Sprite_Splitter {
     }
 
     public void load(Group group) {
-        /*
-        this.rock.relocate(this.position.x, this.position.y);
-        this.rock.setViewOrder(ViewOrder.props_layer.getViewOrder());
-         */
-        //
         for (Rock_Part rock_part : rock_parts) {
             rock_part.load(group);
         }
@@ -77,8 +72,6 @@ public class Rock implements Sprite_Splitter {
         for (Rock_Part rock_part : rock_parts) {
             rock_part.unload(group);
         }
-        //group.getChildren().remove(this.hitbox.getShape());
-        //group.getChildren().removeAll(this.rock);
     }
 
     public void blowUp(Group group, int partIndex) {
@@ -96,8 +89,8 @@ public class Rock implements Sprite_Splitter {
         return centerPos;
     }
 
-    public ArrayList getBoundaries() {
-        ArrayList<Rectangle> arrayList = new ArrayList();
+    public ArrayList<Rectangle> getBoundaries() {
+        ArrayList<Rectangle> arrayList = new ArrayList<>();
         for (Rock_Part rock_part : rock_parts) {
             arrayList.add((Rectangle) rock_part.hitbox.getShape());
         }

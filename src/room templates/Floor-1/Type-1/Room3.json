@@ -63,6 +63,11 @@
         "PositionX": 0,
         "PositionY": 0,
         "Type": "2x2"
+      },
+      {
+        "PositionX": 1501,
+        "PositionY": 0,
+        "Type": "2x2"
       }
     ]
   }

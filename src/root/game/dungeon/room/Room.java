@@ -99,12 +99,13 @@ public class Room implements Runnable {
         itemAdder(this.roomTemplate.getAsJsonArray("items"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " Items Complete");
         //
-        enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
-        System.out.println("Thread: " + threadName + " Enemies Complete");
-        //
         rockAdder(this.roomTemplate.getAsJsonObject("Rocks"), scaleX, scaleY);
         System.out.println("Thread: " + threadName + " Rocks Complete");
         //
+        enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
+        System.out.println("Thread: " + threadName + " Enemies Complete");
+        //
+
         //213 x 180
         if (upType > 0) {
             doors.add(new Door("up", 0, this.upType, this.type, scaleX, scaleY, screenBounds, background));
@@ -188,10 +189,10 @@ public class Room implements Runnable {
 
             JsonObject enemytemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\classic\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
-
+            System.out.println("ABCDE " + getBoundaries().size());
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
-                case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, getAllBoundaries()));
-                case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, getAllBoundaries()));
+                case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+                case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
             }
         }
     }
@@ -322,9 +323,15 @@ public class Room implements Runnable {
             //checks all rocks and rock parts if they're to be destroyed
             for (Rock rock : rocks) {
                 rock.check(group,x,y,radius);
+                if (rock.rock_parts.size()==0){
+                    System.out.println("rock destroyed");
+                    rock.markedDelete=true;
+                }
                 //System.out.println(rock.rock_parts.size());
             }
+            rocks.removeIf(rock -> rock.markedDelete);
         }
+        //
         for (int k = 0; k < enemies.size(); k++) {//TODO enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
 
         }
@@ -335,7 +342,7 @@ public class Room implements Runnable {
                 item.applyForce(dir, 10);
             }
         }
-        for (Door door : doors) {//doors in range will be have their frame damaged and be opened if closed (not locked)
+        for (Door door : doors) {//doors in range will  have their frame damaged and be opened if closed (not locked)
             if (Vecc2f.distance(x, y, door.centerPos.x, door.centerPos.y) < (int) (radius * 0.8)) {
                 door.blowUp(group);
             }
@@ -357,17 +364,17 @@ public class Room implements Runnable {
                 a.add(door.getDoorBlock());
             }
         }
-
         for (Rock rock : rocks) {//each rock gets its parts hitboxes.
-            a.addAll(rock.getBoundaries());
+            for (int k = 0; k <rock.rock_parts.size() ; k++) {
+                a.add((Rectangle) rock.rock_parts.get(k).hitbox.getShape());
+            }
         }
 
         return a;
     }
 
     public ArrayList<Rectangle> getAllBoundaries() {//provides an arraylist of obstacles.
-        ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
-        a.addAll(getBoundaries());
+        ArrayList<Rectangle> a = new ArrayList<>(getBoundaries());
         for (Door door : doors) {
             a.add(door.getDoorTrigger());
         }

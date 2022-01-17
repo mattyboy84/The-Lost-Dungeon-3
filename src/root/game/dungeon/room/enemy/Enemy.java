@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.game.dungeon.Shading;
+import root.game.dungeon.room.Room;
 import root.game.util.Entity_Shader;
 import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
@@ -36,16 +37,16 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Image[] images;
     int lightRadius;
     Image[] deathImages;
-    ArrayList<Rectangle> boundaries;
+    Room parentRoom;
     Shading roomShading;
 
     Timeline timeline=new Timeline();
     Timeline deathTimeline;
 
-    public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, ArrayList<Rectangle> roomBoundaries) {
+    public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         this.avgScale = ((scaleX + scaleY) / 2);
         this.position = new Vecc2f(pos.x*scaleX,pos.y*scaleY);
-        this.boundaries = roomBoundaries;
+        this.parentRoom = parentRoom;
         this.roomShading = shading;
 
         this.name = enemyTemplate.get("enemy").getAsString();
@@ -91,7 +92,9 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     }
 
     public void checkBoundaries() {
-        for (Rectangle boundary : this.boundaries) {
+        //System.out.println(boundaries.size());
+        for (Rectangle boundary : this.parentRoom.getAllBoundaries()) {
+            //System.out.println(boundary.getBoundsInParent().getMinX());
             if (boundary.getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
                 this.position.sub(this.velocity);
                 this.position.set((int) this.position.x, (int) this.position.y);
@@ -107,6 +110,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             //every enemy will have the base of shader checking,boundary checking & updating of center pos
             removeShader();
             updateCenterPos();
+            //
+            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude()) : (veloLimit));
             //
             enemySpecificMovement();//will be overridden for each enemy
             //
