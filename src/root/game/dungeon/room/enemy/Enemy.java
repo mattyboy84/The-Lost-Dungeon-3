@@ -11,6 +11,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
+import root.game.player.Tear;
 import root.game.util.Entity_Shader;
 import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
@@ -40,12 +41,12 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Room parentRoom;
     Shading roomShading;
 
-    Timeline timeline=new Timeline();
+    Timeline timeline = new Timeline();
     Timeline deathTimeline;
 
     public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         this.avgScale = ((scaleX + scaleY) / 2);
-        this.position = new Vecc2f(pos.x*scaleX,pos.y*scaleY);
+        this.position = new Vecc2f(pos.x * scaleX, pos.y * scaleY);
         this.parentRoom = parentRoom;
         this.roomShading = shading;
 
@@ -124,6 +125,10 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     public abstract void enemySpecificMovement();
 
+    public void inflictDamage(int damage, ArrayList<Enemy> enemies, ArrayList<Tear> tears) {
+
+    }
+
     public void addShader() {
         if (this.lightRadius > 0) {
             roomShading.addActiveSource((float) (this.hitbox.getCenterX()), (float) (this.hitbox.getCenterY()), shader, this.hashCode());
@@ -152,4 +157,15 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     public void unload(Group group) {
 
     }
+
+
+    public Hitbox getHitbox() {
+        return hitbox;
+    }
+
+    public void setHitbox(Hitbox hitbox) {
+        this.hitbox = hitbox;
+    }
+
+
 }

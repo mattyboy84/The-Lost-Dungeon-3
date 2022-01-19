@@ -100,7 +100,7 @@ public class Tear implements Sprite_Splitter {
             boundaryCheck(boundaries, group, tears);
             shadowCheck(group, tears);//when the hitbox hits the center of the shadow it will hit the floor and explode
             //
-            enemyCheck(enemies, group, tears);
+            enemyCheck(enemies, group, tears);//when enemy & tear hitbox overlap, the enemy will be damaged and pushed
         }));
         tearTimeline.setCycleCount(Timeline.INDEFINITE);
         tearTimeline.play();
@@ -113,10 +113,15 @@ public class Tear implements Sprite_Splitter {
     }
 
     private void enemyCheck(ArrayList<Enemy> enemies, Group group, ArrayList<Tear> tears) {//check for enemies
-        //TODO add enemy collisions after enemy rework
-        //for (int i = 0; i <enemies.size() ; i++) {
+        for (Enemy enemy : enemies) {
+            if (this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent())) {
+                System.out.println("enemy Hit");
+                hitSomething(group, tears);
+                //TODO inflict enemy damage and apply force
+                enemy.inflictDamage(damage,enemies,tears);
 
-        //}
+            }
+        }
     }
 
     public void boundaryCheck(ArrayList<Rectangle> boundaries, Group group, ArrayList<Tear> tears) {//check for boundaries
