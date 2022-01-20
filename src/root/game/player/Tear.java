@@ -2,7 +2,6 @@ package root.game.player;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.Event;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -118,10 +117,18 @@ public class Tear implements Sprite_Splitter {
                 System.out.println("enemy Hit");
                 hitSomething(group, tears);
                 //TODO inflict enemy damage and apply force
-                enemy.inflictDamage(damage,enemies,tears);
+
+                Vecc2f dir=new Vecc2f(this.velocity.x,this.velocity.y);
+                dir.limit(1);
+
+                enemy.applyForce(dir,10);
+                enemy.inflictDamage(damage,group, enemies);
 
             }
         }
+        //removing enemy in looped 'inflictDamage()' caused a concurrent thread error - this doesn't
+        //the concurrent thread error could have been ignored
+        enemies.removeIf(enemy -> enemy.markedDelete);
     }
 
     public void boundaryCheck(ArrayList<Rectangle> boundaries, Group group, ArrayList<Tear> tears) {//check for boundaries

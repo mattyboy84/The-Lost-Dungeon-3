@@ -11,20 +11,26 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
-import root.game.player.Tear;
 import root.game.util.Entity_Shader;
 import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
-import root.game.player.Player;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
+    public boolean markedDelete;
+
+    int deathImagePointer = 1;
+    Random rand=new Random();
+
+    Vecc2f startPosition;
     Vecc2f position;
-    Vecc2f centerPos = new Vecc2f();
+    public Vecc2f centerPos = new Vecc2f();
     Vecc2f velocity = new Vecc2f();
+    Vecc2f acceleration = new Vecc2f();
     float veloLimit;
     float avgScale;
     float[][] shader;
@@ -43,10 +49,16 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     Timeline timeline = new Timeline();
     Timeline deathTimeline;
+    //
+    int imageSwapInterval = 0;
+    int imageSwapIntervalCounter = 0;
+    int imageCounter = 0;
+    //
 
     public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         this.avgScale = ((scaleX + scaleY) / 2);
-        this.position = new Vecc2f(pos.x * scaleX, pos.y * scaleY);
+        this.startPosition=new Vecc2f(pos.x * scaleX, pos.y * scaleY);
+        this.position = new Vecc2f(this.startPosition.x,this.startPosition.y);
         this.parentRoom = parentRoom;
         this.roomShading = shading;
 
@@ -88,8 +100,18 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
                 int y = object1.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("y").getAsInt();
                 deathImages[i] = imageGetter("file:" + object1.get("DeathFilePath").getAsString(), x, y, Dwidth, Dheight, scaleX, scaleY, sheetScale);
             }
+            deathTimelineSetup();
         }
+    }
 
+    public void deathTimelineSetup() {
+        deathTimeline = new Timeline(new KeyFrame(Duration.millis(80), event -> {
+            //
+            this.enemy.setImage(deathImages[deathImagePointer]);
+            deathImagePointer = (deathImagePointer >= deathImages.length - 1) ? (0) : ++deathImagePointer;
+            //
+        }));
+        deathTimeline.setCycleCount(deathImages.length - 1);
     }
 
     public void checkBoundaries() {
@@ -112,7 +134,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             removeShader();
             updateCenterPos();
             //
-            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude()) : (veloLimit));
+            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.8f) : (veloLimit));
             //
             enemySpecificMovement();//will be overridden for each enemy
             //
@@ -125,8 +147,56 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     public abstract void enemySpecificMovement();
 
-    public void inflictDamage(int damage, ArrayList<Enemy> enemies, ArrayList<Tear> tears) {
+    public void inflictDamage(int damage, Group group, ArrayList<Enemy> enemies) {
+        this.health -= damage;
+        this.health = Math.max(0, this.health);
+        //
+        if (this.health == 0) {
+            beginDeath(group, enemies);
+        }
+    }
 
+    public void beginDeath(Group group, ArrayList<Enemy> enemies) {
+        if (deathImages.length > 0) {
+            //starts death animation
+            this.timeline.pause();
+            int x = (int) (deathImages[0].getWidth() - this.enemy.getBoundsInParent().getWidth());
+            int y = (int) (deathImages[0].getHeight() - this.enemy.getBoundsInParent().getWidth());
+            this.enemy.setImage(deathImages[0]);
+            group.getChildren().remove(this.hitbox.getShape());
+            this.position.sub(x / 2, y / 2);
+            this.enemy.relocate(this.position.x, this.position.y);
+            this.deathTimeline.play();
+            removeShader();
+            this.deathTimeline.setOnFinished(event -> {
+                unload(group);
+                enemies.remove(this);
+            });
+        } else {
+            unload(group);
+            removeShader();
+            this.markedDelete = true;
+        }
+    }
+
+    public void linearImageSwapper(Image[] images) {
+        if (++imageSwapIntervalCounter >= imageSwapInterval) {
+            linearImageSwapperSub(images);
+            imageSwapIntervalCounter = 0;
+        }
+    }
+
+    public void linearImageSwapperSub(Image[] images) {
+        this.enemy.setImage(images[imageCounter]);
+        imageCounter++;
+        if (imageCounter > images.length - 1) {
+            imageCounter = 0;
+        }
+    }
+
+    public void applyForce(Vecc2f dir, int magnitude) {
+        dir.mult(magnitude);
+        this.velocity.add(dir);
     }
 
     public void addShader() {
@@ -149,7 +219,6 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         this.centerPos.set(this.hitbox.getCenterX(), this.hitbox.getCenterY());
     }
 
-
     public void load(Group group) {
 
     }
@@ -158,7 +227,6 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     }
 
-
     public Hitbox getHitbox() {
         return hitbox;
     }
@@ -166,6 +234,5 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     public void setHitbox(Hitbox hitbox) {
         this.hitbox = hitbox;
     }
-
 
 }

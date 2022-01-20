@@ -18,14 +18,12 @@ import java.util.ArrayList;
 
 public class Enemy_AttackFly extends Enemy {
 
-    int imageSwapInterval = 20;
-    int imageSwapIntervalCounter = 0;
-    int imageCounter = 0;
-
     public Enemy_AttackFly(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         super(enemyTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
 
         setVeloLimit(2.5f);
+        //will swap linear images every 20/60 secs
+        imageSwapInterval=20;
 
         timelineSetup();
     }
@@ -43,21 +41,6 @@ public class Enemy_AttackFly extends Enemy {
         this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
     }
 
-    private void linearImageSwapper(Image[] images) {
-        if (++imageSwapIntervalCounter >= imageSwapInterval) {
-            linearImageSwapperSub(images);
-            imageSwapIntervalCounter = 0;
-        }
-    }
-
-    private void linearImageSwapperSub(Image[] images) {
-        this.enemy.setImage(images[imageCounter]);
-        imageCounter++;
-        if (imageCounter > images.length-1) {
-            imageCounter = 0;
-        }
-    }
-
     @Override
     public void load(Group group) {
         group.getChildren().addAll(this.hitbox.getShape(), this.enemy);
@@ -72,7 +55,11 @@ public class Enemy_AttackFly extends Enemy {
 
     @Override
     public void unload(Group group) {
-        group.getChildren().removeAll(this.enemy, this.hitbox.getShape());
+        group.getChildren().removeAll(this.enemy);
+        try{
+            group.getChildren().remove(this.hitbox.getShape());
+        }catch (Exception e){}
+        //
         this.timeline.pause();
     }
 }

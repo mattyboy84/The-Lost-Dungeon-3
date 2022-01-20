@@ -321,19 +321,26 @@ public class Room implements Runnable {
         {//rock checker
             //checks all rocks and rock parts if they're to be destroyed
             for (Rock rock : rocks) {
-                rock.check(group,x,y,radius);
-                if (rock.rock_parts.size()==0){
+                rock.check(group, x, y, radius);
+                if (rock.rock_parts.size() == 0) {
                     System.out.println("rock destroyed");
-                    rock.markedDelete=true;
+                    rock.markedDelete = true;
                 }
                 //System.out.println(rock.rock_parts.size());
             }
             rocks.removeIf(rock -> rock.markedDelete);
         }
-        //
-        for (int k = 0; k < enemies.size(); k++) {//TODO enemy checker - enemies in range will be pushed away from bomb & damaged/killed.
-
+        {//
+            for (Enemy enemy : enemies) {
+                enemy.inflictDamage(5, group,enemies);//TODO Remember bomb default damage is 5
+                //
+                Vecc2f dir = new Vecc2f(enemy.centerPos).sub(new Vecc2f(x, y));
+                dir.limit(1);
+                enemy.applyForce(dir, 30);
+            }
+            enemies.removeIf(enemy -> enemy.markedDelete);
         }
+        //
         for (Item item : items) {//item checker - items in range will be pushed away from bomb
             if ((Vecc2f.distance(x, y, item.centerPos.x, item.centerPos.y) < (radius * 0.8))) {
                 Vecc2f dir = new Vecc2f(item.centerPos).sub(new Vecc2f(x, y));
@@ -364,7 +371,7 @@ public class Room implements Runnable {
             }
         }
         for (Rock rock : rocks) {//each rock gets its parts hitboxes.
-            for (int k = 0; k <rock.rock_parts.size() ; k++) {
+            for (int k = 0; k < rock.rock_parts.size(); k++) {
                 a.add((Rectangle) rock.rock_parts.get(k).hitbox.getShape());
             }
         }
