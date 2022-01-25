@@ -338,6 +338,7 @@ public class Room implements Runnable {
                 dir.limit(1);
                 enemy.applyForce(dir, 30);
             }
+            //removing enemy in loop causes a concurrent thread error
             enemies.removeIf(enemy -> enemy.markedDelete);
         }
         //
@@ -360,7 +361,11 @@ public class Room implements Runnable {
     }
 
     public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp) {
-        this.backgroundItems.newRealTimeProp(group, centerX, centerY, RealTimeProp);
+       newRealTimeProp(group,centerX,centerY,RealTimeProp,1.0);
+    }
+
+    public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp,double opacity) {
+        this.backgroundItems.newRealTimeProp(group, centerX, centerY, RealTimeProp,opacity);
     }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
@@ -454,5 +459,11 @@ public class Room implements Runnable {
     @Override
     public String toString() {
         return "Room";
+    }
+
+    public void checkDoors(Group group) {
+        if (enemies.size()==0){
+            openDoors(group);
+        }
     }
 }

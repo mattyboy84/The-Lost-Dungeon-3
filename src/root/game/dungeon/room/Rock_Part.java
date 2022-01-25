@@ -27,7 +27,7 @@ public class Rock_Part implements Sprite_Splitter {
 
     public void load(Group group) {
         group.getChildren().addAll(this.hitbox.getShape(),this.part);
-        //this.hitbox.getShape().setVisible(true);
+        this.hitbox.getShape().setVisible(false);
         //this.hitbox.getShape().toFront();
         //
         this.part.relocate(this.position.x, this.position.y);

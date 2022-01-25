@@ -4,6 +4,7 @@
   "filePath": "monster_010_fly",
   "Health": 12,
   "SheetScale": 3,
+  "GutNumber": 4,
   "EnemyImages": {
     "Width": 32,
     "Height": 32,

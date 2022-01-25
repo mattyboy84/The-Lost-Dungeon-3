@@ -33,12 +33,11 @@ public class Enemy_AttackFly extends Enemy {
         dir.sub(this.centerPos);
         dir.limit(0.5);
         velocity.add(dir);
-        this.position.add(this.velocity);
+        //this.position.add(this.velocity);
         //
         linearImageSwapper(this.images);
         //
-        this.enemy.relocate(this.position.x, this.position.y);
-        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
+        relocate();
     }
 
     @Override
@@ -61,5 +60,6 @@ public class Enemy_AttackFly extends Enemy {
         }catch (Exception e){}
         //
         this.timeline.pause();
+        removeShader();
     }
 }

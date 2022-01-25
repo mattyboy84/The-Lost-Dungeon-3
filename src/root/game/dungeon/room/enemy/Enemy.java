@@ -11,10 +11,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
-import root.game.util.Entity_Shader;
-import root.game.util.Hitbox;
-import root.game.util.Sprite_Splitter;
-import root.game.util.Vecc2f;
+import root.game.util.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,7 +21,10 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     public boolean markedDelete;
 
     int deathImagePointer = 1;
-    Random rand=new Random();
+    Random rand = new Random();
+
+    int gutNumber = 0;
+    int bloodNumber = 0;
 
     Vecc2f startPosition;
     Vecc2f position;
@@ -57,8 +57,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         this.avgScale = ((scaleX + scaleY) / 2);
-        this.startPosition=new Vecc2f(pos.x * scaleX, pos.y * scaleY);
-        this.position = new Vecc2f(this.startPosition.x,this.startPosition.y);
+        this.startPosition = new Vecc2f(pos.x * scaleX, pos.y * scaleY);
+        this.position = new Vecc2f(this.startPosition.x, this.startPosition.y);
         this.parentRoom = parentRoom;
         this.roomShading = shading;
 
@@ -69,6 +69,11 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         this.maxHealth = enemyTemplate.get("Health").getAsInt();
         this.health = maxHealth;
         this.sheetScale = enemyTemplate.get("SheetScale").getAsInt();
+        //
+        try {
+            gutNumber = enemyTemplate.get("GutNumber").getAsInt();
+        } catch (Exception e) {//catch will trigger if enemy template has no guts then value will remain at 0
+        }
 
         this.hitbox = new Hitbox(enemyTemplate.get("Hitbox").getAsJsonObject(), sheetScale, scaleX, scaleY);
 
@@ -91,14 +96,14 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         }
         //
         if (enemyTemplate.get("hasDeathImages").getAsBoolean()) {
-            JsonObject object1 = enemyTemplate.get("DeathImages").getAsJsonObject();
+            JsonObject deathObject = enemyTemplate.get("DeathImages").getAsJsonObject();
             deathImages = new Image[enemyTemplate.get("DeathImages").getAsJsonObject().get("Images").getAsJsonArray().size()];
-            int Dwidth = object1.get("DeathWidth").getAsInt();
-            int Dheight = object1.get("DeathHeight").getAsInt();
+            int Dwidth = deathObject.get("DeathWidth").getAsInt();
+            int Dheight = deathObject.get("DeathHeight").getAsInt();
             for (int i = 0; i < deathImages.length; i++) {
-                int x = object1.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("x").getAsInt();
-                int y = object1.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("y").getAsInt();
-                deathImages[i] = imageGetter("file:" + object1.get("DeathFilePath").getAsString(), x, y, Dwidth, Dheight, scaleX, scaleY, sheetScale);
+                int x = deathObject.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("x").getAsInt();
+                int y = deathObject.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("y").getAsInt();
+                deathImages[i] = imageGetter("file:" + deathObject.get("DeathFilePath").getAsString(), x, y, Dwidth, Dheight, scaleX, scaleY, sheetScale);
             }
             deathTimelineSetup();
         }
@@ -134,7 +139,9 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             removeShader();
             updateCenterPos();
             //
-            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.8f) : (veloLimit));
+            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.8f) : (veloLimit*1.0));
+            //
+            seperationSetter();
             //
             enemySpecificMovement();//will be overridden for each enemy
             //
@@ -143,6 +150,40 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             addShader();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
+    }
+
+    public void seperationSetter() {
+        Vecc2f seperation = seperation(this.position, this.velocity);
+        applyForce(seperation.limit(1),0.4f);
+    }
+
+    public Vecc2f seperation(Vecc2f position, Vecc2f velocity) {
+        Vecc2f steering = new Vecc2f();
+        int total = 0;
+        //
+        for (Enemy enemy : parentRoom.enemies) {
+            total = getTotal(position, steering, total, enemy.position);
+        }
+        if (total > 0) {
+            steering.div(total);
+            steering.setMag(12);
+            steering.sub(velocity);
+            steering.limit((float) 0.5);
+        }
+        steering.mult((float) 2);
+        return steering;
+    }
+
+    private int getTotal(Vecc2f position, Vecc2f steering, int total, Vecc2f position2) {
+        float d;
+        d = (position.distance(position2));
+        if ((d < 100) && position != position2) {
+            Vecc2f difference = new Vecc2f().sub(position, position2);
+            difference.div(d * d);
+            steering.add(difference);
+            total++;
+        }
+        return total;
     }
 
     public abstract void enemySpecificMovement();
@@ -169,13 +210,27 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             this.deathTimeline.play();
             removeShader();
             this.deathTimeline.setOnFinished(event -> {
-                unload(group);
-                enemies.remove(this);
+                beginRemoval(group, enemies);
             });
-        } else {
-            unload(group);
+        } else {//no death animation
             removeShader();
             this.markedDelete = true;
+            beginRemoval(group, enemies);
+        }
+    }
+
+    private void beginRemoval(Group group, ArrayList<Enemy> enemies) {
+        unload(group);
+        enemies.remove(this);
+        parentRoom.checkDoors(group);
+        debrisCheck(group);
+    }
+
+    private void debrisCheck(Group group) {
+        for (int i = 0; i < gutNumber; i++) {
+            int x = this.hitbox.getCenterX() + (((rand.nextInt(2) * 2) - 1) * rand.nextInt(this.hitbox.width));
+            int y = this.hitbox.getCenterY() + (((rand.nextInt(2) * 2) - 1) * rand.nextInt(this.hitbox.height));
+            parentRoom.newRealTimeProp(group, x, y, Effects.enemyGuts[rand.nextInt(Effects.enemyGuts.length - 1)], 0.5 + (2 * rand.nextFloat()));
         }
     }
 
@@ -197,6 +252,15 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     public void applyForce(Vecc2f dir, int magnitude) {
         dir.mult(magnitude);
         this.velocity.add(dir);
+    }
+    public void applyForce(Vecc2f dir, float magnitude) {
+        dir.mult(magnitude);
+        this.velocity.add(dir);
+    }
+
+    public void relocate() {
+        this.enemy.relocate(this.position.x, this.position.y);
+        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
     }
 
     public void addShader() {

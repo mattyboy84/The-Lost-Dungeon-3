@@ -107,20 +107,22 @@ public class Vecc2f {
         return (float) Math.sqrt(x1 * x1 + y1 * y1);
     }
 
-    public void limit(float limit) {
+    public Vecc2f limit(float limit) {
         if (limit < magnitude()) {
             float constVar = limit / magnitude();
             this.x = this.x * constVar;
             this.y = this.y * constVar;
         }
+        return new Vecc2f(x,y);
     }
 
-    public void limit(double limit) {
+    public Vecc2f limit(double limit) {
         if (limit < magnitude()) {
             double constVar = limit / magnitude();
             this.x = (float) (this.x * constVar);
             this.y = (float) (this.y * constVar);
         }
+        return new Vecc2f(x,y);
     }
 
     public Vecc2f add(Vecc2f vec) {

@@ -29,7 +29,7 @@ public class Effects implements Runnable, Sprite_Splitter {
         bloodPool_small = perepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 0, 0, 32, 32, 12, 64);
         bloodPool_medium = perepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 64, 0, 48, 48, 6, 160);
         bloodPool_large = perepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 160, 0, 96, 96, 6, 448);
-        enemyGuts = perepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 2, 0, 0, 16, 16, 12, 64);
+        enemyGuts = perepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 3, 0, 0, 16, 16, 12, 64);
         tiny_enemyGuts = perepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 3, 0, 48, 4, 4, 12, 32);
     }
 

@@ -116,19 +116,11 @@ public class Tear implements Sprite_Splitter {
             if (this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent())) {
                 System.out.println("enemy Hit");
                 hitSomething(group, tears);
-                //TODO inflict enemy damage and apply force
-
-                Vecc2f dir=new Vecc2f(this.velocity.x,this.velocity.y);
-                dir.limit(1);
-
-                enemy.applyForce(dir,10);
+                //
+                enemy.applyForce(new Vecc2f(this.velocity.x,this.velocity.y).limit(1),10);
                 enemy.inflictDamage(damage,group, enemies);
-
             }
         }
-        //removing enemy in looped 'inflictDamage()' caused a concurrent thread error - this doesn't
-        //the concurrent thread error could have been ignored
-        enemies.removeIf(enemy -> enemy.markedDelete);
     }
 
     public void boundaryCheck(ArrayList<Rectangle> boundaries, Group group, ArrayList<Tear> tears) {//check for boundaries

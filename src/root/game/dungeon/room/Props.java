@@ -5,7 +5,6 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 import root.game.util.ViewOrder;
@@ -50,12 +49,11 @@ public class Props implements Sprite_Splitter {
         //this.prop.setRotate(90 * (random.nextInt(4)));
     }
 
-    public Props(Image image, float centerX, float centerY, Group group) {//real Time props
+    public Props(Image image, float centerX, float centerY, Group group, double opacity) {//real Time props
         this.prop=new ImageView(image);
+        this.prop.setOpacity(opacity);
         this.position=new Vecc2f(centerX-(this.prop.getBoundsInParent().getWidth()/2),centerY-(this.prop.getBoundsInParent().getHeight()/2));
         load(group);
-
-
     }
 
     public void load(Group group) {

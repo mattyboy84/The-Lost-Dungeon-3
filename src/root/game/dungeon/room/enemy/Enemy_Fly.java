@@ -36,18 +36,17 @@ public class Enemy_Fly extends Enemy {
         //movement
         pushBack.random2D(20 + rand.nextInt(10));
         pushBack.limit((float) 0.5);
-        this.acceleration.mult((float) 0.85);
+        this.acceleration.mult((float) 0.8);
         this.acceleration.add(pushBack);
         this.acceleration.limit((float) 1.5);
         this.velocity.add(this.acceleration);
         this.velocity.limit(1);
         this.position.add(this.velocity);
+        this.velocity.mult(0.85);
         //
         linearImageSwapper(this.images);
         //
-
-        this.enemy.relocate(this.position.x, this.position.y);
-        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
+        relocate();
     }
 
     @Override
@@ -64,7 +63,12 @@ public class Enemy_Fly extends Enemy {
 
     @Override
     public void unload(Group group) {
-        group.getChildren().removeAll(this.enemy, this.hitbox.getShape());
+        group.getChildren().removeAll(this.enemy);
+        try{
+            group.getChildren().remove(this.hitbox.getShape());
+        }catch (Exception e){}
+        //
         this.timeline.pause();
+        removeShader();
     }
 }

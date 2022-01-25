@@ -38,8 +38,8 @@ public class Background_items {
         }
     }
 
-    public void newRealTimeProp(Group group, float centerX, float centerY, Image image) {
-        this.props.add(new Props(image,centerX,centerY,group));
+    public void newRealTimeProp(Group group, float centerX, float centerY, Image image,double opacity) {
+        this.props.add(new Props(image,centerX,centerY,group,opacity));
 
     }
 }
