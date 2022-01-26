@@ -30,7 +30,6 @@ public class Shading {
     PixelReader pixelReader;
 
     Float[][] screen = new Float[(int) screenBounds.getWidth()][(int) screenBounds.getHeight()];
-    ArrayList<Points> sources = new ArrayList<Points>();
     ArrayList<Points> activeSources = new ArrayList<Points>();
     //
     float scaleX, scaleY, avgScale;

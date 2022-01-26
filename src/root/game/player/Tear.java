@@ -27,9 +27,11 @@ public class Tear implements Sprite_Splitter {
     float travelDistance = 0;
     float yDrop = 0.5f;
     float yAcc = 0.09f;
+    float avgScale;
 
 
     public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Rectangle> boundaries) {
+        this.avgScale= ((scaleX+scaleY)/2);
         this.position = new Vecc2f(position);
         this.damage = damage;
         this.shadowPosition = new Vecc2f(position);
@@ -117,7 +119,7 @@ public class Tear implements Sprite_Splitter {
                 System.out.println("enemy Hit");
                 hitSomething(group, tears);
                 //
-                enemy.applyForce(new Vecc2f(this.velocity.x,this.velocity.y).limit(1),10);
+                enemy.applyForce(new Vecc2f(this.velocity.x,this.velocity.y).limit(1),10*this.avgScale);
                 enemy.inflictDamage(damage,group, enemies);
             }
         }

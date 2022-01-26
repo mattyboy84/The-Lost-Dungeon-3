@@ -33,7 +33,7 @@ public class Enemy_AttackFly extends Enemy {
         dir.sub(this.centerPos);
         dir.limit(0.5);
         velocity.add(dir);
-        //this.position.add(this.velocity);
+        this.position.add(this.velocity);
         //
         linearImageSwapper(this.images);
         //
