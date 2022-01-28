@@ -1,19 +1,12 @@
 package root.game.dungeon.room.enemy;
 
 import com.google.gson.JsonObject;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
-import root.game.player.Player;
 import root.game.util.Vecc2f;
 import root.game.util.ViewOrder;
-
-import java.util.ArrayList;
 
 public class Enemy_Fly extends Enemy {
     Vecc2f        pushBack = new Vecc2f();
@@ -44,7 +37,7 @@ public class Enemy_Fly extends Enemy {
         this.position.add(this.velocity);
         this.velocity.mult(0.85);
         //
-        linearImageSwapper(this.images);
+        linearImageSwapper(this.idleAnimation);
         //
         relocate();
     }

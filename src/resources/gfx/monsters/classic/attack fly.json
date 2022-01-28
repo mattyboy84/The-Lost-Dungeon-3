@@ -5,7 +5,7 @@
   "Health": 12,
   "SheetScale": 3,
   "GutNumber": 4,
-  "EnemyImages": {
+  "idleAnimation": {
     "Width": 32,
     "Height": 32,
     "Images": [
@@ -28,8 +28,7 @@
   },
   "Light": true,
   "Radius": 50,
-  "hasDeathImages": true,
-  "DeathImages": {
+  "DeathAnimation": {
     "DeathFilePath": "src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
     "DeathWidth": 64,
     "DeathHeight": 64,

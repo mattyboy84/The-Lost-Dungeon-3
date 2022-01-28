@@ -249,7 +249,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
             //
             this.position.add(this.velocity);
-            this.centerPos.set(this.bodyHitbox.getCenterX(), ((this.bodyHitbox.getCenterY()+this.headHitbox.getCenterY())/2));
+            this.centerPos.set(this.bodyHitbox.getCenterX(), ((this.bodyHitbox.getCenterY() + this.headHitbox.getCenterY()) / 2));
             //
             boundaryChecker(group);
             //
@@ -295,6 +295,10 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 updateScore(-1);
                 updateTime();
             }
+
+
+            //System.out.println(movingDirection);
+
             //
             c.relocate(this.position.x, this.position.y);
             //
@@ -364,18 +368,18 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public void changeHealthBy(int change) {
         this.health += change;
-        this.health=Math.min(Math.max(this.health, MIN_Health), TOTAL_Health);//keep health between min & max
+        this.health = Math.min(Math.max(this.health, MIN_Health), TOTAL_Health);//keep health between min & max
         overlay.updateHearts(this.health);
     }
 
     public void changeMaxHealthBy(int change, Group group) {
         this.TOTAL_Health += change;
-        this.TOTAL_Health=Math.min(Math.max(this.TOTAL_Health, MIN_Health), MAXIMUM_HEALTH);//keep total health between min & max
+        this.TOTAL_Health = Math.min(Math.max(this.TOTAL_Health, MIN_Health), MAXIMUM_HEALTH);//keep total health between min & max
         //
-        this.health+=change;
-        this.health=Math.min(Math.max(this.health, MIN_Health), TOTAL_Health);//keep health between min & new max
+        this.health += change;
+        this.health = Math.min(Math.max(this.health, MIN_Health), TOTAL_Health);//keep health between min & new max
         //
-        overlay.updateMaxHealth(this.health,this.MAXIMUM_HEALTH,group,change);
+        overlay.updateMaxHealth(this.health, this.MAXIMUM_HEALTH, group, change);
     }
 
     private void updateTime() {
@@ -518,6 +522,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     private void playerAnimator() {
         float angle = this.direction.toAngle() + 90;
+        angle = (angle > 360) ? (angle - 360) : (angle);
         if (angle > 45 && angle < 135) {//right
             this.movingDirection = "east";
             body.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);

@@ -113,7 +113,7 @@ public class Vecc2f {
             this.x = this.x * constVar;
             this.y = this.y * constVar;
         }
-        return new Vecc2f(x,y);
+        return new Vecc2f(x, y);
     }
 
     public Vecc2f limit(double limit) {
@@ -122,7 +122,7 @@ public class Vecc2f {
             this.x = (float) (this.x * constVar);
             this.y = (float) (this.y * constVar);
         }
-        return new Vecc2f(x,y);
+        return new Vecc2f(x, y);
     }
 
     public Vecc2f add(Vecc2f vec) {
@@ -339,20 +339,17 @@ public class Vecc2f {
     }
 
     public void fromAngle(double v) {
-        float a =magnitude();
-        this.x = (float) Math.cos(Math.toRadians(v))*a;
-        this.y = (float) Math.sin(Math.toRadians(v))*a;
+        float a = magnitude();
+        this.x = (float) Math.cos(Math.toRadians(v)) * a;
+        this.y = (float) Math.sin(Math.toRadians(v)) * a;
     }
 
     public float toAngle() {
         if (x == 0) // special cases
-            return (y > 0)? 90
-                    : (y == 0)? 0
-                    : 270;
+            return (y > 0) ? 90 : (y == 0) ? 0 : 270;
         else if (y == 0) // special cases
-            return (x >= 0)? 0
-                    : 180;
-        float ret = (float) Math.toDegrees((Math.atan((float)y/x)));
+            return (x >= 0) ? 0 : 180;
+        float ret = (float) Math.toDegrees((Math.atan((float) y / x)));
         if (x < 0 && y < 0) // quadrant Ⅲ
             ret = 180 + ret;
         else if (x < 0) // quadrant Ⅱ

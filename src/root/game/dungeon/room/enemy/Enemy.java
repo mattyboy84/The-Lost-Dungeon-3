@@ -41,9 +41,11 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     int sheetScale;
     Hitbox hitbox;
     ImageView enemy;
-    Image[] images;
+    Image[] idleAnimation;
+    Image[] deathAnimation;
+    Image[] attack1Animation;
+    Image[] attack2Animation;
     int lightRadius;
-    Image[] deathImages;
     Room parentRoom;
     Shading roomShading;
 
@@ -76,47 +78,73 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         }
 
         this.hitbox = new Hitbox(enemyTemplate.get("Hitbox").getAsJsonObject(), sheetScale, scaleX, scaleY);
-
+        //Template location
         String file = "file:src\\resources\\gfx\\monsters\\" + type + "\\" + filePath + ".png";
-        images = new Image[enemyTemplate.get("EnemyImages").getAsJsonObject().get("Images").getAsJsonArray().size()];
-        JsonObject object = enemyTemplate.get("EnemyImages").getAsJsonObject();
-        int width = object.get("Width").getAsInt();
-        int height = object.get("Width").getAsInt();
-        for (int i = 0; i < images.length; i++) {
-            int x = object.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("x").getAsInt();
-            int y = object.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("y").getAsInt();
-            images[i] = imageGetter(file, x, y, width, height, scaleX, scaleY, sheetScale);
+        /**
+         * Animation setup
+         */
+        //IDLE ANIMATION
+        try {//attempt to find and setup the idle animation
+            idleAnimation = new Image[enemyTemplate.get("idleAnimation").getAsJsonObject().get("Images").getAsJsonArray().size()];
+            animationSetup(enemyTemplate, idleAnimation, "idleAnimation", file, scaleX, scaleY);
+        } catch (Exception ignored) {
+        }
+        //ATTACK 1 ANIMATION
+        try {//attempt to find and setup the attack 1 animation
+            attack1Animation = new Image[enemyTemplate.get("attack1Animation").getAsJsonObject().get("Images").getAsJsonArray().size()];
+            animationSetup(enemyTemplate, attack1Animation, "attack1Animation", file, scaleX, scaleY);
+        } catch (Exception ignored) {
+        }
+        //ATTACK 2 ANIMATION
+        try {//attempt to find and setup the attack 2 animation
+            attack2Animation = new Image[enemyTemplate.get("attack2Animation").getAsJsonObject().get("Images").getAsJsonArray().size()];
+            animationSetup(enemyTemplate, attack2Animation, "attack2Animation", file, scaleX, scaleY);
+        } catch (Exception ignored) {
         }
         //
-        enemy = new ImageView(images[0]);
+        enemy = new ImageView(idleAnimation[0]);
         //
         if (enemyTemplate.get("Light").getAsBoolean()) {
             lightRadius = enemyTemplate.get("Radius").getAsInt();
             shader = setupShader(lightRadius);
         }
-        //
-        if (enemyTemplate.get("hasDeathImages").getAsBoolean()) {
-            JsonObject deathObject = enemyTemplate.get("DeathImages").getAsJsonObject();
-            deathImages = new Image[enemyTemplate.get("DeathImages").getAsJsonObject().get("Images").getAsJsonArray().size()];
+        //DEATH Animation
+        try {
+            JsonObject deathObject = enemyTemplate.get("DeathAnimation").getAsJsonObject();
+            deathAnimation = new Image[enemyTemplate.get("DeathAnimation").getAsJsonObject().get("Images").getAsJsonArray().size()];
             int Dwidth = deathObject.get("DeathWidth").getAsInt();
             int Dheight = deathObject.get("DeathHeight").getAsInt();
-            for (int i = 0; i < deathImages.length; i++) {
+            for (int i = 0; i < deathAnimation.length; i++) {
                 int x = deathObject.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("x").getAsInt();
                 int y = deathObject.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("y").getAsInt();
-                deathImages[i] = imageGetter("file:" + deathObject.get("DeathFilePath").getAsString(), x, y, Dwidth, Dheight, scaleX, scaleY, sheetScale);
+                deathAnimation[i] = imageGetter("file:" + deathObject.get("DeathFilePath").getAsString(), x, y, Dwidth, Dheight, scaleX, scaleY, sheetScale);
             }
             deathTimelineSetup();
+        } catch (Exception ignored) {
+            //no death animation
+        }
+
+    }
+
+    private void animationSetup(JsonObject enemyTemplate, Image[] animation, String animationName, String file, float scaleX, float scaleY) {
+        JsonObject object = enemyTemplate.get(animationName).getAsJsonObject();
+        int width = object.get("Width").getAsInt();
+        int height = object.get("Width").getAsInt();
+        for (int i = 0; i < animation.length; i++) {
+            int x = object.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("x").getAsInt();
+            int y = object.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("y").getAsInt();
+            animation[i] = imageGetter(file, x, y, width, height, scaleX, scaleY, sheetScale);
         }
     }
 
     public void deathTimelineSetup() {
         deathTimeline = new Timeline(new KeyFrame(Duration.millis(80), event -> {
             //
-            this.enemy.setImage(deathImages[deathImagePointer]);
-            deathImagePointer = (deathImagePointer >= deathImages.length - 1) ? (0) : ++deathImagePointer;
+            this.enemy.setImage(deathAnimation[deathImagePointer]);
+            deathImagePointer = (deathImagePointer >= deathAnimation.length - 1) ? (0) : ++deathImagePointer;
             //
         }));
-        deathTimeline.setCycleCount(deathImages.length - 1);
+        deathTimeline.setCycleCount(deathAnimation.length - 1);
     }
 
     public void checkBoundaries() {
@@ -139,7 +167,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             removeShader();
             updateCenterPos();
             //
-            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.8f) : (veloLimit*1.0));
+            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.8f) : (veloLimit * 1.0));
             //
             seperationSetter();
             //
@@ -154,7 +182,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     public void seperationSetter() {
         Vecc2f seperation = seperation(this.position, this.velocity);
-        applyForce(seperation.limit(1),0.4f);
+        applyForce(seperation.limit(1), 0.4f);
     }
 
     public Vecc2f seperation(Vecc2f position, Vecc2f velocity) {
@@ -198,12 +226,12 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     }
 
     public void beginDeath(Group group, ArrayList<Enemy> enemies) {
-        if (deathImages.length > 0) {
+        if (deathAnimation.length > 0) {
             //starts death animation
             this.timeline.pause();
-            int x = (int) (deathImages[0].getWidth() - this.enemy.getBoundsInParent().getWidth());
-            int y = (int) (deathImages[0].getHeight() - this.enemy.getBoundsInParent().getWidth());
-            this.enemy.setImage(deathImages[0]);
+            int x = (int) (deathAnimation[0].getWidth() - this.enemy.getBoundsInParent().getWidth());
+            int y = (int) (deathAnimation[0].getHeight() - this.enemy.getBoundsInParent().getWidth());
+            this.enemy.setImage(deathAnimation[0]);
             group.getChildren().remove(this.hitbox.getShape());
             this.position.sub(x / 2, y / 2);
             this.enemy.relocate(this.position.x, this.position.y);
@@ -253,6 +281,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         dir.mult(magnitude);
         this.velocity.add(dir);
     }
+
     public void applyForce(Vecc2f dir, float magnitude) {
         dir.mult(magnitude);
         this.velocity.add(dir);
