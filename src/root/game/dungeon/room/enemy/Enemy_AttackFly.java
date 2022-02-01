@@ -15,8 +15,6 @@ public class Enemy_AttackFly extends Enemy {
         super(enemyTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
 
         setVeloLimit(2.5f);
-        //will swap linear images every 20/60 secs
-        imageSwapInterval=20;
 
         timelineSetup();
     }
@@ -28,13 +26,14 @@ public class Enemy_AttackFly extends Enemy {
         velocity.add(dir);
         this.position.add(this.velocity);
         //
-        linearImageSwapper(this.idleAnimation);
+        linearImageSwapper(this.idleAnimation,this.IDLEimageSwapInterval);
         //
         relocate();
     }
 
     @Override
     public void load(Group group) {
+        this.activeShader=shader;
         group.getChildren().addAll(this.hitbox.getShape(), this.enemy);
         this.enemy.setViewOrder(ViewOrder.enemy_boss_layer.getViewOrder());
         this.hitbox.getShape().setViewOrder(ViewOrder.enemy_boss_layer.getViewOrder());
@@ -47,12 +46,13 @@ public class Enemy_AttackFly extends Enemy {
 
     @Override
     public void unload(Group group) {
+        this.activeShader=emptyShader;
+        removeShader();
         group.getChildren().removeAll(this.enemy);
         try{
             group.getChildren().remove(this.hitbox.getShape());
         }catch (Exception e){}
         //
         this.timeline.pause();
-        removeShader();
     }
 }

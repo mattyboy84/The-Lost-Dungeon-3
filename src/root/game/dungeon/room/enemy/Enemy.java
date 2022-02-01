@@ -1,6 +1,7 @@
 package root.game.dungeon.room.enemy;
 
 import com.google.gson.JsonObject;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
@@ -33,11 +34,14 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Vecc2f acceleration = new Vecc2f();
     float veloLimit;
     float avgScale;
+    float[][] activeShader;
     float[][] shader;
+    float[][] emptyShader = new float[0][0];
     String name;
     String type;
     String filePath;
-    int health, maxHealth;
+    public int health;
+    int maxHealth;
     int sheetScale;
     Hitbox hitbox;
     ImageView enemy;
@@ -45,19 +49,27 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Image[] deathAnimation;
     Image[] attack1Animation;
     Image[] attack2Animation;
+    //
+    int IDLEimageSwapInterval = 0;
+    int ATTACK1imageSwapInterval = 0;
+    int ATTACK2imageSwapInterval = 0;
+    //
     int lightRadius;
     Room parentRoom;
     Shading roomShading;
 
-    Timeline timeline = new Timeline();
+    public Timeline timeline = new Timeline();
     Timeline deathTimeline;
     //
-    int imageSwapInterval = 0;
+
+    //
     int imageSwapIntervalCounter = 0;
     int imageCounter = 0;
     //
+    int uniqueID;
 
     public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
+        this.uniqueID = rand.nextInt(Integer.MAX_VALUE);
         this.avgScale = ((scaleX + scaleY) / 2);
         this.startPosition = new Vecc2f(pos.x * scaleX, pos.y * scaleY);
         this.position = new Vecc2f(this.startPosition.x, this.startPosition.y);
@@ -84,19 +96,22 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
          * Animation setup
          */
         //IDLE ANIMATION
-        try {//attempt to find and setup the idle animation
+        try {//attempt to find and set-up the idle animation
+            IDLEimageSwapInterval = enemyTemplate.get("idleAnimation").getAsJsonObject().get("SwapInterval").getAsInt();
             idleAnimation = new Image[enemyTemplate.get("idleAnimation").getAsJsonObject().get("Images").getAsJsonArray().size()];
             animationSetup(enemyTemplate, idleAnimation, "idleAnimation", file, scaleX, scaleY);
         } catch (Exception ignored) {
         }
         //ATTACK 1 ANIMATION
-        try {//attempt to find and setup the attack 1 animation
+        try {//attempt to find and set-up the attack 1 animation
+            ATTACK1imageSwapInterval = enemyTemplate.get("attack1Animation").getAsJsonObject().get("SwapInterval").getAsInt();
             attack1Animation = new Image[enemyTemplate.get("attack1Animation").getAsJsonObject().get("Images").getAsJsonArray().size()];
             animationSetup(enemyTemplate, attack1Animation, "attack1Animation", file, scaleX, scaleY);
         } catch (Exception ignored) {
         }
         //ATTACK 2 ANIMATION
-        try {//attempt to find and setup the attack 2 animation
+        try {//attempt to find and set-up the attack 2 animation
+            ATTACK2imageSwapInterval = enemyTemplate.get("attack2Animation").getAsJsonObject().get("SwapInterval").getAsInt();
             attack2Animation = new Image[enemyTemplate.get("attack2Animation").getAsJsonObject().get("Images").getAsJsonArray().size()];
             animationSetup(enemyTemplate, attack2Animation, "attack2Animation", file, scaleX, scaleY);
         } catch (Exception ignored) {
@@ -226,7 +241,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     }
 
     public void beginDeath(Group group, ArrayList<Enemy> enemies) {
-        if (deathAnimation.length > 0) {
+        if (deathAnimation != null) {
             //starts death animation
             this.timeline.pause();
             int x = (int) (deathAnimation[0].getWidth() - this.enemy.getBoundsInParent().getWidth());
@@ -262,8 +277,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         }
     }
 
-    public void linearImageSwapper(Image[] images) {
-        if (++imageSwapIntervalCounter >= imageSwapInterval) {
+    public void linearImageSwapper(Image[] images, int swapInterval) {
+        if (++imageSwapIntervalCounter >= swapInterval) {
             linearImageSwapperSub(images);
             imageSwapIntervalCounter = 0;
         }
@@ -294,13 +309,13 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     public void addShader() {
         if (this.lightRadius > 0) {
-            roomShading.addActiveSource((float) (this.hitbox.getCenterX()), (float) (this.hitbox.getCenterY()), shader, this.hashCode());
+            roomShading.addActiveSource((float) (this.hitbox.getCenterX()), (float) (this.hitbox.getCenterY()), this.activeShader, this.uniqueID);
         }
     }
 
     public void removeShader() {
         if (this.lightRadius > 0) {
-            this.roomShading.removeActiveSource(hashCode());
+            this.roomShading.removeActiveSource(this.uniqueID);
         }
     }
 

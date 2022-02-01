@@ -6,6 +6,4 @@ public interface Item_Animation {
 
     public abstract void postLoader(Group group);
     public abstract void postUnLoader(Group group);
-
-
 }

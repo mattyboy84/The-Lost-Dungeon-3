@@ -90,7 +90,6 @@ public class Dungeon {
         //Image[][] rocks = rockGetter();
 
         finalDungeonGen(scaleX, scaleY, screenBounds, this.shading);
-
     }
 
     private void finalDungeonGen(float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
@@ -107,7 +106,13 @@ public class Dungeon {
 
                     right = roomChecker(i, j, 0, +1);
 
-                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading));
+                    if (i == startX && j == startY) {
+                        rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading,true));
+                    } else {
+                        rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading,false));
+                    }
+
+
                     rooms.get(rooms.size() - 1).start();
                 }
             }

@@ -8,6 +8,7 @@
   "idleAnimation": {
     "Width": 32,
     "Height": 32,
+    "SwapInterval": 20,
     "Images": [
       {
         "x": 0,

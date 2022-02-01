@@ -36,7 +36,7 @@
   ],
   "enemies": [
     {
-      "enemy": "fly",
+      "enemy": "pooter",
       "PositionX": 500,
       "PositionY": 500
     },

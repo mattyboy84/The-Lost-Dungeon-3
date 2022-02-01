@@ -1,5 +1,6 @@
 package root.game.player;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -7,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import root.game.dungeon.room.Room;
 import root.game.dungeon.room.enemy.Enemy;
 import root.game.util.*;
 
@@ -29,14 +31,13 @@ public class Tear implements Sprite_Splitter {
     float yAcc = 0.09f;
     float avgScale;
 
-
     public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Rectangle> boundaries) {
-        this.avgScale= ((scaleX+scaleY)/2);
+        this.avgScale = ((scaleX + scaleY) / 2);
         this.position = new Vecc2f(position);
         this.damage = damage;
         this.shadowPosition = new Vecc2f(position);
         this.shadowPosition.add(0, 30 * (scaleY));//scaled 30 pixels under the tear to start
-        this.velocity = new Vecc2f(velocity.x/2,velocity.y/2);
+        this.velocity = new Vecc2f(velocity.x / 2, velocity.y / 2);
         this.flyDistance *= scaleY;
         //
         switch (direction) {
@@ -59,6 +60,7 @@ public class Tear implements Sprite_Splitter {
         if (damage > 12) {
             damage = 12;
         }
+
 
         this.tearHitbox = new Hitbox("Circle", damage + 1, damage + 1, scale, scaleX, scaleY, damage, damage);
         this.tearHitbox.getShape().setVisible(false);
@@ -115,12 +117,12 @@ public class Tear implements Sprite_Splitter {
 
     private void enemyCheck(ArrayList<Enemy> enemies, Group group, ArrayList<Tear> tears) {//check for enemies
         for (Enemy enemy : enemies) {
-            if (this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent())) {
+            if (this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent()) && enemy.timeline.getStatus() == Animation.Status.RUNNING) {
                 System.out.println("enemy Hit");
                 hitSomething(group, tears);
                 //
-                enemy.applyForce(new Vecc2f(this.velocity.x,this.velocity.y).limit(1),10*this.avgScale);
-                enemy.inflictDamage(damage,group, enemies);
+                enemy.applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), 10 * this.avgScale);
+                enemy.inflictDamage(damage, group, enemies);
             }
         }
     }

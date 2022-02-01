@@ -8,13 +8,11 @@ import root.game.dungeon.room.Room;
 import root.game.util.Vecc2f;
 import root.game.util.ViewOrder;
 
-public class Enemy_Fly extends Enemy {
-    Vecc2f pushBack = new Vecc2f();
-
-    public Enemy_Fly(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
+public class Enemy_Pooter extends Enemy {
+    public Enemy_Pooter(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         super(enemyTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
 
-        setVeloLimit(2.5f);//
+        setVeloLimit(3f);
 
         timelineSetup();
     }
@@ -22,21 +20,15 @@ public class Enemy_Fly extends Enemy {
     @Override
     public void enemySpecificMovement() {//will run every frame
         //movement
-        pushBack.random2D(20 + rand.nextInt(10));
-        this.acceleration.mult((float) 0.8);
-        this.acceleration.add(pushBack);
-        this.velocity.add(this.acceleration);
-        this.position.add(this.velocity);
-        this.velocity.mult(0.95);
-        //
-        linearImageSwapper(this.idleAnimation, this.IDLEimageSwapInterval);
+
+
+
         //
         relocate();
     }
 
     @Override
     public void load(Group group) {
-        this.activeShader=shader;
         group.getChildren().addAll(this.hitbox.getShape(), this.enemy);
         this.enemy.setViewOrder(ViewOrder.enemy_boss_layer.getViewOrder());
         this.hitbox.getShape().setViewOrder(ViewOrder.enemy_boss_layer.getViewOrder());
@@ -58,5 +50,6 @@ public class Enemy_Fly extends Enemy {
         }
         //
         this.timeline.pause();
+        removeShader();
     }
 }

@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import root.Main;
+import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
@@ -24,6 +25,7 @@ import java.util.Random;
 
 
 public class Room implements Runnable {
+
     public static int finishedRoom;
     //
     public Thread t;
@@ -41,6 +43,7 @@ public class Room implements Runnable {
     int upType, downType, leftType, rightType;
     int floorLevel;
     float scaleX, scaleY;
+    boolean skipEnemy;
     Rectangle2D screenBounds;
     //
     JsonObject roomTemplate = null;
@@ -59,7 +62,7 @@ public class Room implements Runnable {
     String parentThreadName;
     //ShadingThread shadingThread;
 
-    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName, Shading shading) {
+    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName, Shading shading, boolean enemyOverrise) {
         //
         this.parentThreadName = threadName;
         this.threadName = threadName;
@@ -79,6 +82,7 @@ public class Room implements Runnable {
         this.screenBounds = screenBounds;
         //
         this.shading = shading;
+        this.skipEnemy = enemyOverrise;
     }
 
     public Room() {
@@ -102,8 +106,10 @@ public class Room implements Runnable {
         rockAdder(this.roomTemplate.getAsJsonObject("Rocks"), scaleX, scaleY);
         System.out.println("Thread: " + threadName + " Rocks Complete");
         //
-        enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
-        System.out.println("Thread: " + threadName + " Enemies Complete");
+        if (!skipEnemy) {
+            enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
+            System.out.println("Thread: " + threadName + " Enemies Complete");
+        }
         //
 
         //213 x 180
@@ -145,7 +151,7 @@ public class Room implements Runnable {
     }
 
     private void rockAdder(JsonObject rockTemplate, float scaleX, float scaleY) {
-        int width, height, rows, columns, borderX, borderY;
+        int width, height, borderX, borderY;
         float sheetScale;
         String name = rockTemplate.get("name").getAsString();
         sheetScale = rockTemplate.get("SheetScale").getAsFloat();
@@ -192,10 +198,10 @@ public class Room implements Runnable {
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
                 case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
                 case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+                case "pooter" -> enemies.add(new Enemy_Pooter(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
             }
         }
     }
-
     private StringBuilder roomTemplateGetter(String file1) {
         File directPath = new File(file1);
         String[] contents = directPath.list();
@@ -230,8 +236,8 @@ public class Room implements Runnable {
         this.background.load(group);
         this.backgroundItems.load(group);
         //
-        for (Door door : doors) {
-            door.load(group);
+        for (Enemy enemy : enemies) {
+            enemy.load(group);
         }
         /*
         //base work for when a boss is defeated.
@@ -244,8 +250,8 @@ public class Room implements Runnable {
             item.load(group);
         }
         //
-        for (Enemy enemy : enemies) {
-            enemy.load(group);
+        for (Door door : doors) {
+            door.load(group);
         }
         //
         for (Rock rock : rocks) {
@@ -261,16 +267,16 @@ public class Room implements Runnable {
         this.background.unload(group);
         this.backgroundItems.unload(group);
         //
-        for (Door door : doors) {
-            door.unload(group);
+        for (Enemy enemy : enemies) {
+            enemy.unload(group);
         }
         //
         for (Item item : items) {
             item.unload(group);
         }
         //
-        for (Enemy enemy : enemies) {
-            enemy.unload(group);
+        for (Door door : doors) {
+            door.unload(group);
         }
         //
         for (Rock rock : rocks) {
@@ -299,7 +305,6 @@ public class Room implements Runnable {
 
     public void explosionDamageAroundPoint(Active_Bomb currentBomb, float x, float y, int radius, Group group) {
         radius *= ((scaleX + scaleY) / 2);
-
 
         if (Vecc2f.distance(x, y, Player.centerPos.x, Player.centerPos.y) < radius) {//player check - player will be pushed away from bomb & damaged
             Vecc2f dir = new Vecc2f(Player.centerPos).sub(new Vecc2f(x, y));
@@ -332,7 +337,7 @@ public class Room implements Runnable {
         }
         {//
             for (Enemy enemy : enemies) {
-                enemy.inflictDamage(5, group,enemies);//TODO Remember bomb default damage is 5
+                enemy.inflictDamage(5, group, enemies);//TODO Remember bomb default damage is 5
                 //
                 Vecc2f dir = new Vecc2f(enemy.centerPos).sub(new Vecc2f(x, y));
                 dir.limit(1);
@@ -361,11 +366,11 @@ public class Room implements Runnable {
     }
 
     public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp) {
-       newRealTimeProp(group,centerX,centerY,RealTimeProp,1.0);
+        newRealTimeProp(group, centerX, centerY, RealTimeProp, 1.0);
     }
 
-    public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp,double opacity) {
-        this.backgroundItems.newRealTimeProp(group, centerX, centerY, RealTimeProp,opacity);
+    public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp, double opacity) {
+        this.backgroundItems.newRealTimeProp(group, centerX, centerY, RealTimeProp, opacity);
     }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
@@ -462,7 +467,7 @@ public class Room implements Runnable {
     }
 
     public void checkDoors(Group group) {
-        if (enemies.size()==0){
+        if (enemies.size() == 0) {
             openDoors(group);
         }
     }

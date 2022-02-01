@@ -20,8 +20,6 @@ public class Props implements Sprite_Splitter {
     int width, height, rows, columns, borderX, borderY;
     Random random = new Random();
     //
-    //int spriteScaleX = 3;
-    //int spriteScaleY = 3;
 
     //    ImageView imageView = new ImageView(new Image("file:src\\default_floor.png", (new Image("file:src\\default_floor.png").getWidth() * scaleX), (new Image("file:src\\default_floor.png").getHeight() * scaleY), true, false));
     public Props(JsonObject props, float scaleX, float scaleY, Rectangle2D screenBounds) {
@@ -106,38 +104,6 @@ public class Props implements Sprite_Splitter {
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
-    public void setColumns(int columns) {
-        this.columns = columns;
-    }
-
-    public int getBorderX() {
-        return borderX;
-    }
-
-    public void setBorderX(int borderX) {
-        this.borderX = borderX;
-    }
-
-    public int getBorderY() {
-        return borderY;
-    }
-
-    public void setBorderY(int borderY) {
-        this.borderY = borderY;
     }
 
     public Random getRandom() {
