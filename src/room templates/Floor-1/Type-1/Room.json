@@ -39,11 +39,6 @@
       "enemy": "pooter",
       "PositionX": 500,
       "PositionY": 500
-    },
-    {
-      "enemy": "attack fly",
-      "PositionX": 700,
-      "PositionY": 500
     }
   ],
   "Rocks": {

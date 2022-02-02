@@ -306,14 +306,17 @@ public class DungeonMap implements Sprite_Splitter {
         }
 
         public void cutOffLeft(Bounds edge) {
-            int as = (int) Math.abs(this.piece.getBoundsInParent().getMinX() - edge.getMinX()) + 1;
-            this.piece.setImage((new ImageView(new WritableImage(this.piece.getImage().getPixelReader(),
-                    (int) (as), (int) (0), (int) (this.piece.getBoundsInParent().getWidth() - as), (int) (this.piece.getBoundsInParent().getHeight()))).getImage()));
-            this.alt = true;
-            this.altPos = new Vecc2f(this.position);
-            this.position.add(as, 0);
-            this.piece.relocate(this.position.x, this.position.y);
-
+            try {
+                int as = (int) Math.abs(this.piece.getBoundsInParent().getMinX() - edge.getMinX()) + 1;
+                this.piece.setImage((new ImageView(new WritableImage(this.piece.getImage().getPixelReader(),
+                        (int) (as), (int) (0), (int) (this.piece.getBoundsInParent().getWidth() - as), (int) (this.piece.getBoundsInParent().getHeight()))).getImage()));
+                this.alt = true;
+                this.altPos = new Vecc2f(this.position);
+                this.position.add(as, 0);
+                this.piece.relocate(this.position.x, this.position.y);
+            }catch (Exception e){
+                System.out.println(e);
+            }
         }
 
         public void iconCheck(boolean b) {

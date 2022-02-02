@@ -117,7 +117,7 @@ public class Tear implements Sprite_Splitter {
 
     private void enemyCheck(ArrayList<Enemy> enemies, Group group, ArrayList<Tear> tears) {//check for enemies
         for (Enemy enemy : enemies) {
-            if (this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent()) && enemy.timeline.getStatus() == Animation.Status.RUNNING) {
+            if (enemy!=null && this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent()) && !(enemy.state == Enemy.states.dying)) {
                 System.out.println("enemy Hit");
                 hitSomething(group, tears);
                 //

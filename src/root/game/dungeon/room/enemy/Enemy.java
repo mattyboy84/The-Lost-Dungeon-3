@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import root.Main;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
 import root.game.util.*;
@@ -58,17 +59,32 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Room parentRoom;
     Shading roomShading;
 
-    public Timeline timeline = new Timeline();
+    Timeline timeline = new Timeline();
     Timeline deathTimeline;
-    //
-
     //
     int imageSwapIntervalCounter = 0;
     int imageCounter = 0;
     //
     int uniqueID;
 
+    //
+    public enum states {
+        idle,
+        attack1,
+        attack2,
+
+        dying
+    }
+
+    public states state;
+
+
+    //
+
     public Enemy(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
+        //
+        this.state = states.idle;
+        //
         this.uniqueID = rand.nextInt(Integer.MAX_VALUE);
         this.avgScale = ((scaleX + scaleY) / 2);
         this.startPosition = new Vecc2f(pos.x * scaleX, pos.y * scaleY);
@@ -117,7 +133,10 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         } catch (Exception ignored) {
         }
         //
-        enemy = new ImageView(idleAnimation[0]);
+        try {
+            enemy = new ImageView(idleAnimation[0]);
+        } catch (Exception ignored) {
+        }
         //
         if (enemyTemplate.get("Light").getAsBoolean()) {
             lightRadius = enemyTemplate.get("Radius").getAsInt();
@@ -165,7 +184,6 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     public void checkBoundaries() {
         //System.out.println(boundaries.size());
         for (Rectangle boundary : this.parentRoom.getAllBoundaries()) {
-            //System.out.println(boundary.getBoundsInParent().getMinX());
             if (boundary.getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
                 this.position.sub(this.velocity);
                 this.position.set((int) this.position.x, (int) this.position.y);
@@ -189,10 +207,30 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             enemySpecificMovement();//will be overridden for each enemy
             //
             checkBoundaries();
+            checkForPlayer();
             //
             addShader();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
+    }
+
+    private void checkForPlayer() {
+        if ((hitbox.getShape().getBoundsInParent().intersects(Main.player.getBodyHitbox().getShape().getBoundsInParent()) ||
+                hitbox.getShape().getBoundsInParent().intersects(Main.player.getHeadHitbox().getShape().getBoundsInParent())) && Main.player.isVulnerable()) {
+            //
+            Vecc2f originalVELO=new Vecc2f(velocity.x,velocity.y);
+
+            Vecc2f enemyPushback = new Vecc2f(velocity.x, velocity.y);
+            enemyPushback.mult(-1);
+            enemyPushback.setMag((velocity.magnitude() < veloLimit * 0.25) ? (veloLimit) : (velocity.magnitude()));//if enemy is 'slow' the push back is adjusted
+            applyForce(enemyPushback, 10);
+            //
+            Main.player.inflictDamage(1);//TODO REMEMBER current default enemy damage is 1
+            Vecc2f pushback = new Vecc2f(originalVELO.x,originalVELO.y);
+            pushback.setMag((originalVELO.magnitude() < veloLimit * 0.25) ? (veloLimit) : (originalVELO.magnitude()));//if enemy is 'slow' the push back is adjusted
+
+            Main.player.applyForce(pushback,3);
+        }
     }
 
     public void seperationSetter() {
@@ -235,7 +273,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         this.health -= damage;
         this.health = Math.max(0, this.health);
         //
-        if (this.health == 0) {
+        if (this.health == 0 && (state != states.dying)) {
+            state = states.dying;
             beginDeath(group, enemies);
         }
     }
@@ -277,19 +316,26 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         }
     }
 
-    public void linearImageSwapper(Image[] images, int swapInterval) {
+    /***
+     *
+     *@param images - will be sent an array of images for it to linearly progress through
+     *@param swapInterval - an image will update every 'swapInterval' frames
+     *@return the return statement return the current frame for if something needs to be done at that frame
+     */
+    public int linearImageSwapper(Image[] images, int swapInterval) {
         if (++imageSwapIntervalCounter >= swapInterval) {
-            linearImageSwapperSub(images);
-            imageSwapIntervalCounter = 0;
-        }
-    }
 
-    public void linearImageSwapperSub(Image[] images) {
-        this.enemy.setImage(images[imageCounter]);
-        imageCounter++;
-        if (imageCounter > images.length - 1) {
-            imageCounter = 0;
+            this.enemy.setImage(images[imageCounter]);
+            imageCounter++;
+            if (imageCounter > images.length - 1) {
+                imageCounter = 0;
+                //return true;
+            }
+
+            imageSwapIntervalCounter = 0;
+            return imageCounter;
         }
+        return -1;
     }
 
     public void applyForce(Vecc2f dir, int magnitude) {

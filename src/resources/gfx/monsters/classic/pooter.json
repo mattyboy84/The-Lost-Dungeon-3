@@ -8,7 +8,7 @@
   "idleAnimation": {
     "Width": 32,
     "Height": 32,
-    "SwapInterval": 20,
+    "SwapInterval": 16,
     "Images": [
       {
         "x": 0,
@@ -23,7 +23,7 @@
   "attack1Animation": {
     "Width": 32,
     "Height": 32,
-    "SwapInterval": 14,
+    "SwapInterval": 40,
     "Images": [
       {
         "x": 64,

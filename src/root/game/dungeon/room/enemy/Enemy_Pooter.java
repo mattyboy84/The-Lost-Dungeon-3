@@ -21,8 +21,15 @@ public class Enemy_Pooter extends Enemy {
     public void enemySpecificMovement() {//will run every frame
         //movement
 
+        switch (state) {
+            case idle:
 
+                break;
+            case attack1:
 
+                break;
+        }
+        //linearImageSwapper(attack1Animation, ATTACK1imageSwapInterval); - works
         //
         relocate();
     }
@@ -41,7 +48,7 @@ public class Enemy_Pooter extends Enemy {
 
     @Override
     public void unload(Group group) {
-        this.activeShader=emptyShader;
+        this.activeShader = emptyShader;
         removeShader();
         group.getChildren().removeAll(this.enemy);
         try {

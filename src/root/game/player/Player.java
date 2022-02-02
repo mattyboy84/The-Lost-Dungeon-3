@@ -80,6 +80,8 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     int shotTimer;
     int scoreTimer;
     int bombTimer;
+    int vulnerableTimer;
+    final int vulnerableDuration=60;
     //
     public Room currentRoom;
     Player_Overlay overlay;
@@ -211,6 +213,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
             currentRoom.shading.removeActiveSource(hashCode());
             //timers
+            vulnerableTimer++;
             animationTimer++;
             doorTriggerTimer++;
             attackingTimer++;
@@ -245,7 +248,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             }
             relocate();
 
-            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude()) : (veloLimit));
+            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude()*0.9) : (veloLimit));
 
             //
             this.position.add(this.velocity);
@@ -625,6 +628,9 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
         overlay.load(group);
     }
+    public boolean isVulnerable(){
+        return (vulnerableTimer>vulnerableDuration);
+    }
 
     private void startChecker() {
         if (!start) {
@@ -727,4 +733,11 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     public Player_Overlay getOverlay() {
         return overlay;
     }
+
+    public void inflictDamage(int damage) {
+        vulnerableTimer=0;
+        this.changeHealthBy(-damage);
+
+    }
+
 }
