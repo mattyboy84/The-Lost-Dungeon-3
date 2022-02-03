@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import root.Main;
 import root.game.dungeon.room.Room;
 import root.game.dungeon.room.enemy.Enemy;
 import root.game.util.*;
@@ -31,7 +32,16 @@ public class Tear implements Sprite_Splitter {
     float yAcc = 0.09f;
     float avgScale;
 
-    public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Rectangle> boundaries) {
+    public Target target;
+
+    public enum Target {
+        player,
+        enemy
+    }
+
+    public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Rectangle> boundaries, Target tearTarget) {
+        this.target = tearTarget;
+
         this.avgScale = ((scaleX + scaleY) / 2);
         this.position = new Vecc2f(position);
         this.damage = damage;
@@ -64,8 +74,11 @@ public class Tear implements Sprite_Splitter {
 
         this.tearHitbox = new Hitbox("Circle", damage + 1, damage + 1, scale, scaleX, scaleY, damage, damage);
         this.tearHitbox.getShape().setVisible(false);
-        this.tearImage.setImage(imageGetter("file:src\\resources\\gfx\\tears.png", 32 * damage, 32 * ((damage > 7) ? (1) : (0)), 32, 32, scaleX, scaleY, scale));
-        //
+        if (target == Target.enemy)
+            this.tearImage.setImage(imageGetter("file:src\\resources\\gfx\\tears.png", (32 * ((damage>7)?(damage-7):(damage))), (32 * ((damage > 7) ? (1) : (0))), 32, 32, scaleX, scaleY, scale));
+        else if (target==Target.player) {damage+=4;
+            this.tearImage.setImage(imageGetter("file:src\\resources\\gfx\\tears.png", (32 * ((damage > 7) ? (damage - 7) : (damage))), (32 * ((damage > 7) ? (1) : (0))) + 64, 32, 32, scaleX, scaleY, scale));
+        }//
         float a = (float) (((this.tearHitbox.radius)) / new Image("file:src\\resources\\gfx\\shadow.png").getWidth()) * 2;//scale shadow to tear size
         //
         this.shadowImage.setImage(imageGetter("file:src\\resources\\gfx\\shadow.png", 0, 0, (int) (120), (int) (49), a, a, 1));
@@ -81,7 +94,10 @@ public class Tear implements Sprite_Splitter {
 
     private void explodeTimelineSetup() {
         explodeTimeline = new Timeline(new KeyFrame(Duration.millis(70), event -> {
+            if (target == Target.enemy)
             this.tearImage.setImage(Effects.BLUEtearCollideAnimation[explodeCounter]);//runs through the collision animation
+            else if (target==Target.player)
+                this.tearImage.setImage(Effects.REDtearCollideAnimation[explodeCounter]);
             explodeCounter++;
         }));
         explodeTimeline.setCycleCount(Effects.BLUEtearCollideAnimation.length - 1);
@@ -103,10 +119,25 @@ public class Tear implements Sprite_Splitter {
             boundaryCheck(boundaries, group, tears);
             shadowCheck(group, tears);//when the hitbox hits the center of the shadow it will hit the floor and explode
             //
-            enemyCheck(enemies, group, tears);//when enemy & tear hitbox overlap, the enemy will be damaged and pushed
+            if (target == Target.enemy)
+                enemyCheck(enemies, group, tears);//when enemy & tear hitbox overlap, the enemy will be damaged and pushed
+                //
+            else if (target == Target.player)
+                playerCheck(group, tears);//when a player and enemy's tear overlap, the player will be damaged.
         }));
         tearTimeline.setCycleCount(Timeline.INDEFINITE);
         tearTimeline.play();
+    }
+
+    private void playerCheck(Group group, ArrayList<Tear> tears) {
+        if (this.tearHitbox.getShape().getBoundsInParent().intersects(Main.player.getHeadHitbox().getShape().getBoundsInParent()) ||
+                this.tearHitbox.getShape().getBoundsInParent().intersects(Main.player.getBodyHitbox().getShape().getBoundsInParent()) && Main.player.isVulnerable()) {
+            Main.player.inflictDamage(this.damage);
+            Main.player.applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), (int) (10 * this.avgScale));
+            //
+            System.out.println("Player hit by Enemy tear");
+            hitSomething(group, tears);
+        }
     }
 
     private void shadowCheck(Group group, ArrayList<Tear> tears) {
@@ -116,14 +147,17 @@ public class Tear implements Sprite_Splitter {
     }
 
     private void enemyCheck(ArrayList<Enemy> enemies, Group group, ArrayList<Tear> tears) {//check for enemies
-        for (Enemy enemy : enemies) {
-            if (enemy!=null && this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent()) && !(enemy.state == Enemy.states.dying)) {
-                System.out.println("enemy Hit");
-                hitSomething(group, tears);
-                //
-                enemy.applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), 10 * this.avgScale);
-                enemy.inflictDamage(damage, group, enemies);
+        try {
+            for (Enemy enemy : enemies) {
+                if (enemy != null && this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent()) && !(enemy.state == Enemy.states.dying)) {
+                    System.out.println("enemy Hit");
+                    hitSomething(group, tears);
+                    //
+                    enemy.applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), 10 * this.avgScale);
+                    enemy.inflictDamage(damage, group, enemies);
+                }
             }
+        } catch (Exception ignored) {
         }
     }
 
@@ -139,7 +173,10 @@ public class Tear implements Sprite_Splitter {
     private void hitSomething(Group group, ArrayList<Tear> tears) {
         this.tearTimeline.stop();
         group.getChildren().removeAll(this.tearHitbox.getShape(), this.shadowImage);
+          if (target==Target.enemy)
         this.tearImage.setImage(Effects.BLUEtearCollideAnimation[0]);
+        else if (target==Target.player)
+              this.tearImage.setImage(Effects.REDtearCollideAnimation[0]);
         this.position.sub(this.tearImage.getBoundsInParent().getWidth() / 2, this.tearImage.getBoundsInParent().getHeight() / 2);
         this.tearImage.relocate(this.position.x, this.position.y);
 
@@ -150,6 +187,7 @@ public class Tear implements Sprite_Splitter {
     }
 
     public void destroy(Group group, ArrayList<Tear> tears) {
+        System.out.println("Tear destroyed");
         group.getChildren().remove(this.tearImage);//this component is always on screen
         try {
             group.getChildren().remove(this.tearHitbox.getShape());//hitbox is removed when colliding but also needs to be removed when leaving a room - error would occur otherwise.

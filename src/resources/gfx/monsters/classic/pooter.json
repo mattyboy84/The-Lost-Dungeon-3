@@ -23,7 +23,7 @@
   "attack1Animation": {
     "Width": 32,
     "Height": 32,
-    "SwapInterval": 40,
+    "SwapInterval": 8,
     "Images": [
       {
         "x": 64,

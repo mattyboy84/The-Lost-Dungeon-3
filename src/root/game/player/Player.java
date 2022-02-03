@@ -81,7 +81,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     int scoreTimer;
     int bombTimer;
     int vulnerableTimer;
-    final int vulnerableDuration=60;
+    final int vulnerableDuration = 60;
     //
     public Room currentRoom;
     Player_Overlay overlay;
@@ -211,6 +211,9 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     private void playerController(Dungeon dungeon) {
         controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
+
+            //System.out.println(currentRoom.tears.size());
+
             currentRoom.shading.removeActiveSource(hashCode());
             //timers
             vulnerableTimer++;
@@ -248,7 +251,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             }
             relocate();
 
-            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude()*0.9) : (veloLimit));
+            this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.9) : (veloLimit));
 
             //
             this.position.add(this.velocity);
@@ -276,7 +279,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             if (attacking && attackingTimer >= shootCooldown) {
                 SHOOTINGheadChanger();
                 //shoot tear
-                currentRoom.addNewTear(this.lookingDirection, damage, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY()), this.velocity, scaleX, scaleY, this.veloLimit);
+                currentRoom.addNewTear(this.lookingDirection, damage, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY()), this.velocity, scaleX, scaleY, this.veloLimit, Tear.Target.enemy);
                 //System.out.println(new Vecc2f(this.headHitbox.getShape().getLayoutX(),this.headHitbox.getShape().getLayoutY()));
                 //
                 justShot = true;
@@ -586,6 +589,8 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     }
 
     public void applyForce(Vecc2f direction, int magnitude) {
+        direction.add(0.1,0.1);
+        System.out.println(direction);
         direction.mult(magnitude);
         this.acceleration.set(0, 0);
         this.velocity.add(direction);
@@ -628,8 +633,9 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
         overlay.load(group);
     }
-    public boolean isVulnerable(){
-        return (vulnerableTimer>vulnerableDuration);
+
+    public boolean isVulnerable() {
+        return (vulnerableTimer > vulnerableDuration);
     }
 
     private void startChecker() {
@@ -735,9 +741,16 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     }
 
     public void inflictDamage(int damage) {
-        vulnerableTimer=0;
+        vulnerableTimer = 0;
         this.changeHealthBy(-damage);
 
     }
 
+    public Vecc2f getCenterPos() {
+        return centerPos;
+    }
+
+    public Vecc2f getPosition() {
+        return position;
+    }
 }

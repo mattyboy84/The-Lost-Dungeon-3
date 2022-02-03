@@ -1,5 +1,7 @@
 package root.game.util;
 
+import javafx.geometry.NodeOrientation;
+
 import java.util.Random;
 
 /**
@@ -353,9 +355,9 @@ public class Vecc2f {
         if (x < 0 && y < 0) // quadrant Ⅲ
             ret = 180 + ret;
         else if (x < 0) // quadrant Ⅱ
-            ret = 180 + ret; // it actually substracts
+            ret = 180 + ret; // it actually subtracts
         else if (y < 0) // quadrant Ⅳ
-            ret = 270 + (90 + ret); // it actually substracts
+            ret = 270 + (90 + ret); // it actually subtracts
         return ret;
     }
 }

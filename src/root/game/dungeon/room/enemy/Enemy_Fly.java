@@ -35,7 +35,7 @@ public class Enemy_Fly extends Enemy {
     }
 
     @Override
-    public void load(Group group) {
+    protected void postLoading(Group group) {
         this.activeShader=shader;
         group.getChildren().addAll(this.hitbox.getShape(), this.enemy);
         this.enemy.setViewOrder(ViewOrder.enemy_boss_layer.getViewOrder());
@@ -48,7 +48,7 @@ public class Enemy_Fly extends Enemy {
     }
 
     @Override
-    public void unload(Group group) {
+    protected void postUnLoading(Group group) {
         this.activeShader=emptyShader;
         removeShader();
         group.getChildren().removeAll(this.enemy);

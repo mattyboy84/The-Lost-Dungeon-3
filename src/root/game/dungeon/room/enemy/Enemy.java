@@ -1,7 +1,6 @@
 package root.game.dungeon.room.enemy;
 
 import com.google.gson.JsonObject;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
@@ -31,10 +30,11 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Vecc2f startPosition;
     Vecc2f position;
     public Vecc2f centerPos = new Vecc2f();
-    Vecc2f velocity = new Vecc2f();
+    Vecc2f velocity = new Vecc2f(0,0);
     Vecc2f acceleration = new Vecc2f();
     float veloLimit;
     float avgScale;
+    float scaleX,scaleY;
     float[][] activeShader;
     float[][] shader;
     float[][] emptyShader = new float[0][0];
@@ -50,6 +50,9 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Image[] deathAnimation;
     Image[] attack1Animation;
     Image[] attack2Animation;
+    //Timers
+    int stateTransitionTimer;
+
     //
     int IDLEimageSwapInterval = 0;
     int ATTACK1imageSwapInterval = 0;
@@ -66,6 +69,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     int imageCounter = 0;
     //
     int uniqueID;
+    //
+    Group parentGroup;
 
     //
     public enum states {
@@ -86,6 +91,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         this.state = states.idle;
         //
         this.uniqueID = rand.nextInt(Integer.MAX_VALUE);
+        this.scaleX=scaleX;
+        this.scaleY=scaleY;
         this.avgScale = ((scaleX + scaleY) / 2);
         this.startPosition = new Vecc2f(pos.x * scaleX, pos.y * scaleY);
         this.position = new Vecc2f(this.startPosition.x, this.startPosition.y);
@@ -199,6 +206,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             //every enemy will have the base of shader checking,boundary checking & updating of center pos
             removeShader();
             updateCenterPos();
+            //timers that may be used amongst enemies.
+            stateTransitionTimer++;
             //
             this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.8f) : (veloLimit * 1.0));
             //
@@ -374,12 +383,19 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     }
 
     public void load(Group group) {
+        this.parentGroup=group;
 
+        postLoading(group);
     }
+
+    protected abstract void postLoading(Group group);
 
     public void unload(Group group) {
 
+        postUnLoading(group);
     }
+
+    protected abstract void postUnLoading(Group group);
 
     public Hitbox getHitbox() {
         return hitbox;
@@ -389,4 +405,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         this.hitbox = hitbox;
     }
 
+    public Vecc2f getPosition() {
+        return position;
+    }
 }

@@ -54,7 +54,7 @@ public class Room implements Runnable {
     public ArrayList<Rock> rocks = new ArrayList<>();
     //
     ArrayList<Active_Bomb> bombs = new ArrayList<>();
-    ArrayList<Tear> tears = new ArrayList<Tear>();
+    public ArrayList<Tear> tears = new ArrayList<Tear>();
 
     //
     Door trapDoor;
@@ -285,7 +285,7 @@ public class Room implements Runnable {
         for (int k = 0; k < bombs.size(); k++) {
             bombs.get(k).unload(group, bombs);
         }
-        for (int k = 0; k < tears.size(); k++) {
+        for (int k = tears.size()-1; k >-1; k--) {//doing to back-to-front avoids concurrent errors from terminating while in a loop
             tears.get(k).destroy(group, tears);
         }
     }
@@ -299,8 +299,9 @@ public class Room implements Runnable {
         addBombSub(group, bombTemplate, centerPos, 3);
     }
 
-    public void addNewTear(String direction, int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY, float veloLimit) {
-        tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, getAllBoundaries()));
+    public void addNewTear(String direction, int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY, float veloLimit, Tear.Target tearTarget) {
+        tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, getAllBoundaries(),tearTarget));
+        System.out.println(tears.size());
     }
 
     public void explosionDamageAroundPoint(Active_Bomb currentBomb, float x, float y, int radius, Group group) {
@@ -311,7 +312,7 @@ public class Room implements Runnable {
             dir.limit(1);
             System.out.println(dir);
             System.out.println("player hit");
-            Main.player.changeHealthBy(-1);
+            Main.player.inflictDamage(-1);
             Main.player.applyForce(dir, 40);
         }
 

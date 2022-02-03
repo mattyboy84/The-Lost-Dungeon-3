@@ -314,8 +314,7 @@ public class DungeonMap implements Sprite_Splitter {
                 this.altPos = new Vecc2f(this.position);
                 this.position.add(as, 0);
                 this.piece.relocate(this.position.x, this.position.y);
-            }catch (Exception e){
-                System.out.println(e);
+            }catch (Exception ignored){
             }
         }
 
