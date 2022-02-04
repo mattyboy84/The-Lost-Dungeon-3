@@ -301,7 +301,6 @@ public class Room implements Runnable {
 
     public void addNewTear(String direction, int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY, float veloLimit, Tear.Target tearTarget) {
         tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, getAllBoundaries(),tearTarget));
-        System.out.println(tears.size());
     }
 
     public void explosionDamageAroundPoint(Active_Bomb currentBomb, float x, float y, int radius, Group group) {
@@ -344,8 +343,6 @@ public class Room implements Runnable {
                 dir.limit(1);
                 enemy.applyForce(dir, 30);
             }
-            //removing enemy in loop causes a concurrent thread error
-            enemies.removeIf(enemy -> enemy.markedDelete);
         }
         //
         for (Item item : items) {//item checker - items in range will be pushed away from bomb

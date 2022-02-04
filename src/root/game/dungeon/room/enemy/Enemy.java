@@ -19,8 +19,6 @@ import java.util.Random;
 
 public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
-    public boolean markedDelete;
-
     int deathImagePointer = 1;
     Random rand = new Random();
 
@@ -140,16 +138,13 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         } catch (Exception ignored) {
         }
         //
-        try {
             enemy = new ImageView(idleAnimation[0]);
-        } catch (Exception ignored) {
-        }
         //
-        if (enemyTemplate.get("Light").getAsBoolean()) {
-            lightRadius = enemyTemplate.get("Radius").getAsInt();
+        try{//attempts to get the light radius if there is one.
+            lightRadius = enemyTemplate.get("light").getAsJsonObject().get("Radius").getAsInt();
             shader = setupShader(lightRadius);
-        }
-        //DEATH Animation
+        }catch (Exception ignored){}
+        //DEATH Animation - setups one the animation if there is one.
         try {
             JsonObject deathObject = enemyTemplate.get("DeathAnimation").getAsJsonObject();
             deathAnimation = new Image[enemyTemplate.get("DeathAnimation").getAsJsonObject().get("Images").getAsJsonArray().size()];
@@ -164,7 +159,6 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         } catch (Exception ignored) {
             //no death animation
         }
-
     }
 
     private void animationSetup(JsonObject enemyTemplate, Image[] animation, String animationName, String file, float scaleX, float scaleY) {
@@ -305,7 +299,6 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             });
         } else {//no death animation
             removeShader();
-            this.markedDelete = true;
             beginRemoval(group, enemies);
         }
     }

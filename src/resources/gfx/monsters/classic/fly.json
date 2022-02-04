@@ -27,8 +27,9 @@
     "xDelta": 7,
     "yDelta": 5
   },
-  "Light": true,
-  "Radius": 50,
+  "Light": {
+    "Radius": 50
+  },
   "DeathAnimation": {
     "DeathFilePath": "src\\resources\\gfx\\monsters\\classic\\monster_010_fly.png",
     "DeathWidth": 64,
