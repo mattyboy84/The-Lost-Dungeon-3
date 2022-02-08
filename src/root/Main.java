@@ -7,12 +7,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import root.game.dungeon.Dungeon;
+import root.game.music.Music;
 import root.game.player.Player;
 import root.game.util.Effects;
 import root.game.util.ViewOrder;
+
+import java.io.File;
 
 public class Main extends Application {
 
@@ -56,6 +62,9 @@ public class Main extends Application {
         //
         Effects effects = new Effects();//initialise used effects on separate thread
         effects.start();
+        //
+        Music musics = new Music();
+        musics.start();
         //
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
         Dungeon.displayMap(dungeon.map);
@@ -102,6 +111,8 @@ public class Main extends Application {
                 case B -> player.changeMaxHealthBy(2, group);
                 case N -> player.changeMaxHealthBy(-2, group);
                 case I -> player.getOverlay().miniMap.updateMinimap(9, 9);
+                case G -> Music.addSFX(Music.sounds.thunder.getSound(),true,this.hashCode());
+                case H -> Music.removeSound(this.hashCode());
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
@@ -123,10 +134,7 @@ public class Main extends Application {
         });
 
 
-        //ImageView a = new ImageView(Effects.enemyGuts[Effects.enemyGuts.length-1]);
-        //a.relocate(screenWidth/2,screenHeight/2);
-        //group.getChildren().add(a);
-        //a.toFront();
+        //Music.addSFX(Music.sounds.thunder.getSound());
 
 
         stage.setScene(scene);//bypassed the menu scene for now
