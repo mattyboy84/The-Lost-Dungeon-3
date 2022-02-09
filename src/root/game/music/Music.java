@@ -70,9 +70,13 @@ public class Music implements Runnable {
             sfx_sound.changeVolume(SFXVolume);
         }
     }
-    //
-    //
-    //
+
+    public static void changeMusicVolume(Double newVolume){
+        MusicVolume=newVolume;
+        for (Sound music_sound : Music_Sounds) {
+            music_sound.changeVolume(MusicVolume);
+        }
+    }
 
     public static void addMusic(MediaPlayer music,@NamedArg("repeat") boolean repeat, @NamedArg("Unique Hashcode") int hashcode){
         Music_Sounds.add(new Sound(music,repeat,hashcode,Music_Sounds));
@@ -119,17 +123,7 @@ public class Music implements Runnable {
             mediaSound.play();
             //
 
-            mediaSound.setOnEndOfMedia(() -> {
-                if (this.repeat) {
-                    mediaSound.seek(Duration.ONE);
-                } else {
-                    try {
-                        SFX_Sounds.remove(this);
-                    } catch (Exception ignored) {//self terminates
-                    }
-                }
-
-            });
+            endOfMedia(SFX_Sounds);
         }
 
         public Sound(MediaPlayer music, boolean repeat, int hashcode, ArrayList<Sound> music_sounds) {
@@ -143,18 +137,7 @@ public class Music implements Runnable {
             this.mediaSound.play();
             //
 
-            mediaSound.setOnEndOfMedia(() -> {
-                if (this.repeat) {
-                    mediaSound.seek(Duration.ONE);
-                } else {
-                    try {
-                        music_sounds.remove(this);
-                    } catch (Exception ignored) {//self terminates
-                    }
-                }
-
-            });
-
+            endOfMedia(music_sounds);
         }
 
         public void check(int targetCode, ArrayList<Sound> activeSounds) {
@@ -166,6 +149,19 @@ public class Music implements Runnable {
 
         public void changeVolume(double sfxVolume) {
             mediaSound.setVolume(0.01*sfxVolume);
+        }
+
+        private void endOfMedia(ArrayList<Sound> sounds) {
+            mediaSound.setOnEndOfMedia(() -> {
+                if (this.repeat) {
+                    mediaSound.seek(Duration.ONE);
+                } else {
+                    try {
+                        sounds.remove(this);
+                    } catch (Exception ignored) {//self terminates
+                    }
+                }
+            });
         }
     }
 }

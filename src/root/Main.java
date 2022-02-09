@@ -108,7 +108,6 @@ public class Main extends Application {
                 case G -> Music.addSFX(Music.sfx.thunder.getSound(),true,this.hashCode());
                 case H -> Music.removeSFX(this.hashCode());
                 case K -> Music.addMusic(Music.mediaTable.get("the caves"),true,this.hashCode());
-                //case K -> Music
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
@@ -129,8 +128,6 @@ public class Main extends Application {
             }
         });
 
-
-        System.out.println(Music.mediaTable.get("the caves"));
 
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);
