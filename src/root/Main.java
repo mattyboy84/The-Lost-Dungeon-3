@@ -65,6 +65,7 @@ public class Main extends Application {
         //
         Music musics = new Music();
         musics.start();
+        Music.SFXVolume=Music.SFXVolume*1;//'Override' TODO Remember this
         //
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
         Dungeon.displayMap(dungeon.map);
@@ -112,7 +113,7 @@ public class Main extends Application {
                 case N -> player.changeMaxHealthBy(-2, group);
                 case I -> player.getOverlay().miniMap.updateMinimap(9, 9);
                 case G -> Music.addSFX(Music.sounds.thunder.getSound(),true,this.hashCode());
-                case H -> Music.removeSound(this.hashCode());
+                case H -> Music.removeSFX(this.hashCode());
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
