@@ -7,18 +7,19 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Music implements Runnable {
 
     //
     //
 
-    public enum sounds {
+    public enum sfx {
         thunder("thunder4");
 
-        private final String sound;
+        private String sound;
 
-        sounds(String a) {
+        sfx(String a) {
             this.sound = a;
         }
 
@@ -35,8 +36,11 @@ public class Music implements Runnable {
     private Thread t;
     String threadName = "Music thread";
     static ArrayList<Sound> SFX_Sounds = new ArrayList<>();
+    static ArrayList<Sound> Music_Sounds = new ArrayList<>();
     public static double  SFXVolume = 10;//this is a percent from 0% to 100%
-
+    public static double MusicVolume=8;//this is a percent
+    //
+    public static HashMap<String,MediaPlayer> mediaTable=new HashMap();
     /*
     File f3 = new File("src\\resources\\sfx\\thunder4.wav");
         Media media3 = new Media(f3.toURI().toString());
@@ -66,11 +70,26 @@ public class Music implements Runnable {
             sfx_sound.changeVolume(SFXVolume);
         }
     }
+    //
+    //
+    //
+
+    public static void addMusic(MediaPlayer music,@NamedArg("repeat") boolean repeat, @NamedArg("Unique Hashcode") int hashcode){
+        Music_Sounds.add(new Sound(music,repeat,hashcode,Music_Sounds));
+    }
 
     @Override
     public void run() {
+        prepareMedia("the caves");
 
+    }
 
+    private void prepareMedia(String fileName) {
+        MediaPlayer temp;
+        File f3 = new File("src\\resources\\music\\" + fileName + ".wav");
+        Media media3 = new Media(f3.toURI().toString());
+        temp = new MediaPlayer(media3);
+        mediaTable.put(fileName, temp);
     }
 
     public void start() {
@@ -87,7 +106,7 @@ public class Music implements Runnable {
         private boolean repeat;
         private int parentHashCode;
 
-        public Sound(String sound, boolean repeat, int hashcode, ArrayList<Sound> activeSounds) {
+        public Sound(String sound, boolean repeat, int hashcode, ArrayList<Sound> SFX_Sounds) {
             this.repeat = repeat;
             this.parentHashCode=hashcode;//TODO Hash code alone may not be enough - 1 object may have multiple sounds
             //
@@ -96,7 +115,7 @@ public class Music implements Runnable {
             File f3 = new File("src\\resources\\sfx\\" + sound + ".wav");
             Media media3 = new Media(f3.toURI().toString());
             mediaSound = new MediaPlayer(media3);
-            mediaSound.setVolume(0.1);
+            mediaSound.setVolume(0.01*SFXVolume);
             mediaSound.play();
             //
 
@@ -105,12 +124,37 @@ public class Music implements Runnable {
                     mediaSound.seek(Duration.ONE);
                 } else {
                     try {
-                        activeSounds.remove(this);
+                        SFX_Sounds.remove(this);
                     } catch (Exception ignored) {//self terminates
                     }
                 }
 
             });
+        }
+
+        public Sound(MediaPlayer music, boolean repeat, int hashcode, ArrayList<Sound> music_sounds) {
+            this.repeat = repeat;
+            this.parentHashCode=hashcode;//TODO Hash code alone may not be enough - 1 object may have multiple sounds
+            //
+            System.out.println("added music: " + music);
+            //
+            this.mediaSound=music;
+            mediaSound.setVolume(0.01*MusicVolume);
+            this.mediaSound.play();
+            //
+
+            mediaSound.setOnEndOfMedia(() -> {
+                if (this.repeat) {
+                    mediaSound.seek(Duration.ONE);
+                } else {
+                    try {
+                        music_sounds.remove(this);
+                    } catch (Exception ignored) {//self terminates
+                    }
+                }
+
+            });
+
         }
 
         public void check(int targetCode, ArrayList<Sound> activeSounds) {
