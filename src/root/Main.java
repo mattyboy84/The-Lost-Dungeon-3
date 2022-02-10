@@ -6,12 +6,16 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import root.game.dungeon.Dungeon;
 import root.game.music.Music;
 import root.game.player.Player;
 import root.game.util.Effects;
+
+import java.io.File;
 
 public class Main extends Application {
 
@@ -107,7 +111,7 @@ public class Main extends Application {
                 case I -> player.getOverlay().miniMap.updateMinimap(9, 9);
                 case G -> Music.addSFX(Music.sfx.thunder.getSound(),true,this.hashCode());
                 case H -> Music.removeSFX(this.hashCode());
-                case K -> Music.addMusic(Music.mediaTable.get("the caves"),true,this.hashCode());
+                case K -> Music.addMusic("the caves",true,this.hashCode());
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
@@ -133,7 +137,6 @@ public class Main extends Application {
         stage.setFullScreen(true);
         stage.show();
     }
-
     public static void main(String[] args) {
         launch(args);
     }

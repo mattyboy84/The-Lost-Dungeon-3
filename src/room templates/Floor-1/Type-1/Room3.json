@@ -22,6 +22,9 @@
     "BorderX": 213,
     "BorderY": 180
   },
+  "Music": {
+    "music": "the caves"
+  },
   "items": [
     {
       "item": "coin",

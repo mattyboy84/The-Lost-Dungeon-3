@@ -12,6 +12,7 @@ import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
+import root.game.music.Music;
 import root.game.player.Player;
 import root.game.player.Tear;
 import root.game.util.Vecc2f;
@@ -55,6 +56,8 @@ public class Room implements Runnable {
     //
     ArrayList<Active_Bomb> bombs = new ArrayList<>();
     public ArrayList<Tear> tears = new ArrayList<Tear>();
+    //
+    String music = null;
 
     //
     Door trapDoor;
@@ -111,6 +114,10 @@ public class Room implements Runnable {
             System.out.println("Thread: " + threadName + " Enemies Complete");
         }
         //
+        try {
+            this.music = this.roomTemplate.get("Music").getAsJsonObject().get("music").getAsString();
+        } catch (Exception ignored) {
+        }
 
         //213 x 180
         if (upType > 0) {
@@ -202,6 +209,7 @@ public class Room implements Runnable {
             }
         }
     }
+
     private StringBuilder roomTemplateGetter(String file1) {
         File directPath = new File(file1);
         String[] contents = directPath.list();
@@ -235,6 +243,8 @@ public class Room implements Runnable {
         this.shading.load(group);
         this.background.load(group);
         this.backgroundItems.load(group);
+        //will attempt to add the music to the array
+        Music.addMusic(this.music,true,this.hashCode());
         //
         for (Enemy enemy : enemies) {
             enemy.load(group);
@@ -285,7 +295,7 @@ public class Room implements Runnable {
         for (int k = 0; k < bombs.size(); k++) {
             bombs.get(k).unload(group, bombs);
         }
-        for (int k = tears.size()-1; k >-1; k--) {//doing to back-to-front avoids concurrent errors from terminating while in a loop
+        for (int k = tears.size() - 1; k > -1; k--) {//doing to back-to-front avoids concurrent errors from terminating while in a loop
             tears.get(k).destroy(group, tears);
         }
     }
@@ -300,7 +310,7 @@ public class Room implements Runnable {
     }
 
     public void addNewTear(String direction, int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY, float veloLimit, Tear.Target tearTarget) {
-        tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, getAllBoundaries(),tearTarget));
+        tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, getAllBoundaries(), tearTarget));
     }
 
     public void explosionDamageAroundPoint(Active_Bomb currentBomb, float x, float y, int radius, Group group) {
@@ -449,6 +459,10 @@ public class Room implements Runnable {
 
     public JsonObject getRoomTemplate() {
         return roomTemplate;
+    }
+
+    public String getMusic() {
+        return music;
     }
 
     public void setRoomTemplate(JsonObject roomTemplate) {

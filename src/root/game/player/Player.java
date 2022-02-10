@@ -16,6 +16,7 @@ import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.Door;
 import root.game.dungeon.room.Room;
 import root.game.dungeon.room.Room;
+import root.game.music.Music;
 import root.game.util.*;
 import root.game.player.*;
 import root.game.dungeon.Shading;
@@ -361,9 +362,14 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 overlay.miniMap.updateMinimap(this.roomX, this.roomY);
                 overlay.largeMap.updateLargemap(this.roomX, this.roomY, screenBounds);
                 currentRoom.unload(group);
+                Music.clearSFX();
+                String oldMusic = currentRoom.getMusic();
                 roomFinder(dungeon);
                 currentRoom.load(group);
-                //System.out.println(currentRoom.room);
+                String newMusic=currentRoom.getMusic();
+                Music.transition(oldMusic,newMusic);
+                //
+
                 //
                 if (currentRoom.enemies.size() == 0) {
                     currentRoom.openDoors(group);
