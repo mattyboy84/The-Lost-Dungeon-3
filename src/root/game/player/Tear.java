@@ -11,9 +11,11 @@ import javafx.util.Duration;
 import root.Main;
 import root.game.dungeon.room.Room;
 import root.game.dungeon.room.enemy.Enemy;
+import root.game.music.Music;
 import root.game.util.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Tear implements Sprite_Splitter {
     ImageView tearImage = new ImageView();
@@ -31,6 +33,7 @@ public class Tear implements Sprite_Splitter {
     float yDrop = 0.5f;
     float yAcc = 0.09f;
     float avgScale;
+    Random random=new Random();
 
     public Target target;
 
@@ -41,7 +44,7 @@ public class Tear implements Sprite_Splitter {
 
     public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Rectangle> boundaries, Target tearTarget) {
         this.target = tearTarget;
-
+        Music.addSFX("tear fire " +(random.nextInt(2)+4),false,this.hashCode());
         this.avgScale = ((scaleX + scaleY) / 2);
         this.position = new Vecc2f(position);
         this.damage = damage;

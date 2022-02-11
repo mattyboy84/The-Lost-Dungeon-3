@@ -23,10 +23,12 @@ import root.game.dungeon.Shading;
 
 import javax.security.auth.callback.LanguageCallback;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public static boolean loaded = false;
+    Random random=new Random();
     //
     int animateCounter;
     //
@@ -748,6 +750,8 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public void inflictDamage(int damage) {
         vulnerableTimer = 0;
+        Music.addSFX("hurt grunt "+random.nextInt(3),false, random.nextInt(Integer.MAX_VALUE));
+        //will choose 1 of 3 hurt sound effects
         this.changeHealthBy(-damage);
 
     }

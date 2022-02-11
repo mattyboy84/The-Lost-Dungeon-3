@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import root.Main;
+import root.game.music.Music;
 import root.game.util.*;
 
 import java.io.BufferedReader;
@@ -183,6 +184,9 @@ public class Active_Bomb implements Sprite_Splitter {
         subActive();
         this.activeTimeline.play();
         this.activeTimeline.setOnFinished(actionEvent -> {//starts the explosion
+            //
+            Music.addSFX("explosion_strong"+(random.nextInt(3)+1),false,this.hashCode());//randomly adds 1 of 3 explosion sfx sounds
+            //
             group.getChildren().remove(this.hitbox.getShape());
             room.explosionDamageAroundPoint(this, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight() / 2)), 175, group);
             room.newRealTimeProp(group, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight())), Effects.explosionMarkImages[random.nextInt(Effects.explosionMarkImages.length-1)]);

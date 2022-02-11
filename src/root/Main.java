@@ -40,7 +40,6 @@ public class Main extends Application {
     Dungeon dungeon = new Dungeon();
     public static Player player = new Player();
 
-
     @Override
     public void start(Stage stage) throws Exception {
 
@@ -62,7 +61,7 @@ public class Main extends Application {
         //
         Music musics = new Music();
         musics.start();
-        Music.SFXVolume=Music.SFXVolume*1;//'Override' TODO Remember this
+        //Music.SFXVolume=Music.SFXVolume*0;//'Override' TODO Remember this
         //
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
         Dungeon.displayMap(dungeon.map);
@@ -109,9 +108,8 @@ public class Main extends Application {
                 case B -> player.changeMaxHealthBy(2, group);
                 case N -> player.changeMaxHealthBy(-2, group);
                 case I -> player.getOverlay().miniMap.updateMinimap(9, 9);
-                case G -> Music.addSFX(Music.sfx.thunder.getSound(),true,this.hashCode());
-                case H -> Music.removeSFX(this.hashCode());
-                case K -> Music.addMusic("the caves",true,this.hashCode());
+                case K -> Music.addMusic("the caves",false,64);
+
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
