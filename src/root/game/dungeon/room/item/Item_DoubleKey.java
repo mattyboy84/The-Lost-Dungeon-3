@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
+import root.game.music.Music;
 import root.game.player.Player;
 import root.game.player.Player_Overlay;
 import root.game.util.Sprite_Splitter;
@@ -59,6 +60,7 @@ public class Item_DoubleKey extends Item implements Sprite_Splitter {
     @Override
     public void checkCollision(Player player, ArrayList<Item> items, Group group) {
         if (player.getBodyHitbox().getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent()) && (player.keyNumber < Player_Overlay.MAX_ITEM_NUMBER)) {
+            Music.addSFX(false,this.hashCode(), Music.sfx.key_pickup);
             player.updateKeys(this.effect);
             group.getChildren().remove(this.sparkle);
             unload(group);

@@ -346,7 +346,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         }
     }
 
-    private void doorTriggerChecker(Dungeon dungeon) {
+    private void doorTriggerChecker(Dungeon dungeon) {//"LOAD" "UNLOAD" "MAP"
         for (int i = 0; i < currentRoom.doors.size(); i++) {
             if (currentRoom.doors.get(i).getDoorTrigger().getBoundsInParent().intersects(this.bodyHitbox.getShape().getBoundsInParent())) {
                 System.out.println("changing room");
@@ -369,7 +369,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 roomFinder(dungeon);
                 currentRoom.load(group);
                 String newMusic=currentRoom.getMusic();
-                Music.transition(oldMusic,newMusic);
+                Music.transition(oldMusic,newMusic,currentRoom);
                 //
 
                 //
@@ -446,8 +446,9 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     private void boundaryChecker(Group group) {
         for (int i = 0; i < currentRoom.doors.size(); i++) {
             if (currentRoom.doors.get(i).getDoorBlock().getBoundsInParent().intersects(this.bodyHitbox.getShape().getBoundsInParent()) && (currentRoom.doors.get(i).state == Door.State.locked)) {
-                System.out.println("opening locked door");
+                System.out.println("opening locked door");//unlock door
                 currentRoom.doors.get(i).forceOpen(group);
+                Music.addSFX(false,Integer.MAX_VALUE, Music.sfx.lock_break_0, Music.sfx.lock_break_1);
                 updateKeys(-1);
             }
         }
@@ -750,7 +751,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public void inflictDamage(int damage) {
         vulnerableTimer = 0;
-        Music.addSFX("hurt grunt "+random.nextInt(3),false, random.nextInt(Integer.MAX_VALUE));
+        Music.addSFX(false, random.nextInt(Integer.MAX_VALUE),Music.sfx.hurt_grunt_0,Music.sfx.hurt_grunt_1,Music.sfx.hurt_grunt_2);
         //will choose 1 of 3 hurt sound effects
         this.changeHealthBy(-damage);
 

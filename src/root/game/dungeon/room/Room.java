@@ -245,6 +245,8 @@ public class Room implements Runnable {
         this.backgroundItems.load(group);
         //will attempt to add the music to the array
         Music.addMusic(this.music,true,this.hashCode());
+        //Music.addIntroMusic(this.music,false,this.hashCode());
+
         //
         for (Enemy enemy : enemies) {
             enemy.load(group);

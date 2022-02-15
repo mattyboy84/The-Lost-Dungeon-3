@@ -109,6 +109,7 @@ public class Main extends Application {
                 case N -> player.changeMaxHealthBy(-2, group);
                 case I -> player.getOverlay().miniMap.updateMinimap(9, 9);
                 case K -> Music.addMusic("the caves",false,64);
+                case L -> Music.a("the caves");
 
             }
         });

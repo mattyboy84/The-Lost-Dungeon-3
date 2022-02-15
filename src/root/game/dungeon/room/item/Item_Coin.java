@@ -10,6 +10,7 @@ import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
+import root.game.music.Music;
 import root.game.player.Player;
 import root.game.player.Player_Overlay;
 import root.game.util.Sprite_Splitter;
@@ -99,6 +100,9 @@ public class Item_Coin extends Item implements Item_Animation, Sprite_Splitter {
             this.item.relocate(this.position.x, this.position.y);
 
             this.item.setImage(pickup[0]);
+            //
+            Music.addSFX(false,this.hashCode(), Music.sfx.penny_pickup_1);
+            //
             this.pickupTimeline.play();
 
             this.pickupTimeline.setOnFinished(actionEvent -> {

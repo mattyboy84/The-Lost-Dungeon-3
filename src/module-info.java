@@ -1,9 +1,10 @@
 module JavaFxApplication {
-requires javafx.fxml;
-requires javafx.controls;
+    requires javafx.fxml;
+    requires javafx.controls;
+    requires javafx.media;
+
     requires gson;
     requires AnimateFX;
-    requires javafx.media;
 
     opens root;
 }

@@ -44,7 +44,7 @@ public class Tear implements Sprite_Splitter {
 
     public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Rectangle> boundaries, Target tearTarget) {
         this.target = tearTarget;
-        Music.addSFX("tear fire " +(random.nextInt(2)+4),false,this.hashCode());
+        Music.addSFX(false,this.hashCode(),Music.sfx.tear_fire_4,Music.sfx.tear_fire_5);
         this.avgScale = ((scaleX + scaleY) / 2);
         this.position = new Vecc2f(position);
         this.damage = damage;
@@ -183,6 +183,8 @@ public class Tear implements Sprite_Splitter {
     }
 
     private void hitSomething(Group group, ArrayList<Tear> tears) {
+        Music.addSFX(false,this.hashCode(), Music.sfx.splatter_0,Music.sfx.splatter_1,Music.sfx.splatter_2,Music.sfx.splatter_3,Music.sfx.splatter_4,Music.sfx.splatter_5);
+        //
         this.tearTimeline.stop();
         group.getChildren().removeAll(this.tearHitbox.getShape(), this.shadowImage);
         if (target == Target.enemy)

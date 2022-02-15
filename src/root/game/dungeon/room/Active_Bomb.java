@@ -185,7 +185,7 @@ public class Active_Bomb implements Sprite_Splitter {
         this.activeTimeline.play();
         this.activeTimeline.setOnFinished(actionEvent -> {//starts the explosion
             //
-            Music.addSFX("explosion_strong"+(random.nextInt(3)+1),false,this.hashCode());//randomly adds 1 of 3 explosion sfx sounds
+            Music.addSFX(false,this.hashCode(), Music.sfx.explosion_strong1, Music.sfx.explosion_strong2, Music.sfx.explosion_strong3);//randomly adds 1 of 3 explosion sfx sounds
             //
             group.getChildren().remove(this.hitbox.getShape());
             room.explosionDamageAroundPoint(this, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight() / 2)), 175, group);
