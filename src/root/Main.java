@@ -6,16 +6,12 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import root.game.dungeon.Dungeon;
 import root.game.music.Music;
 import root.game.player.Player;
 import root.game.util.Effects;
-
-import java.io.File;
 
 public class Main extends Application {
 
@@ -102,14 +98,13 @@ public class Main extends Application {
                 case F -> stage.setFullScreen(!stage.isFullScreen());
                 case J -> player.currentRoom.forceOpenDoors(group);
                 case M -> player.getOverlay().revealMap();
-                case TAB -> player.getOverlay().over(group);
+                case TAB -> player.getOverlay().swapMapView(group);
                 case C -> player.changeHealthBy(1);
                 case V -> player.changeHealthBy(-1);
                 case B -> player.changeMaxHealthBy(2, group);
                 case N -> player.changeMaxHealthBy(-2, group);
                 case I -> player.getOverlay().miniMap.updateMinimap(9, 9);
                 case K -> Music.addMusic("the caves",false,64);
-                case L -> Music.a("the caves");
 
             }
         });
@@ -130,7 +125,6 @@ public class Main extends Application {
                 System.out.println("Mouse: " + mouseEvent.getX() + " " + mouseEvent.getY());
             }
         });
-
 
         stage.setScene(scene);//bypassed the menu scene for now
         stage.setFullScreen(true);

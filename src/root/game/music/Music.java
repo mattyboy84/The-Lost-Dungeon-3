@@ -7,20 +7,12 @@ import javafx.util.Duration;
 import root.game.dungeon.room.Room;
 
 import java.io.File;
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 public class Music implements Runnable {
-
-
-    public static void a(String the_caves) {
-        for (Sound music_sound : MUSIC_Sounds) {
-            if (music_sound.musicName.equalsIgnoreCase(the_caves)) {
-                music_sound.mediaLayer.setMute(false);
-            }
-        }
-    }
 
     public enum sfx {
         explosion_strong1("explosion_strong1"),
@@ -42,8 +34,7 @@ public class Music implements Runnable {
         lock_break_1("lock break 1"),
         penny_pickup_1("penny pickup 1");
 
-
-        private String sound;
+        private final String sound;
 
         sfx(String a) {
             this.sound = a;
@@ -121,7 +112,10 @@ public class Music implements Runnable {
         //
         if (newMusic) {
             System.out.println("new music added to array");
+            //
             MUSIC_Sounds.add(new Sound(musicName, repeat, hashcode, MUSIC_Sounds, musicTable, true));
+            //
+            //MUSIC_Sounds.add(new Sound(musicName + " intro", false, hashcode, MUSIC_Sounds, musicTable, true));
         }
     }
 
@@ -134,25 +128,26 @@ public class Music implements Runnable {
     }
 
     public static void transition(String oldMusic, String newMusic, Room currentRoom) {
-        if (!(oldMusic.equalsIgnoreCase("") || newMusic.equalsIgnoreCase(""))) {
-            for (Sound music_sound : MUSIC_Sounds) {
-                if (music_sound.musicName.equalsIgnoreCase(oldMusic) && !(oldMusic.equalsIgnoreCase(newMusic))) {
-                    music_sound.mediaSound.pause();
-                }
-                if (music_sound.mediaLayer != null) {
-                    music_sound.mediaLayer.pause();
-                }
+        if ((oldMusic.equalsIgnoreCase("") || newMusic.equalsIgnoreCase(""))) {
+            return;
+        }
+        for (Sound music_sound : MUSIC_Sounds) {
+            if (music_sound.musicName.equalsIgnoreCase(oldMusic) && !(oldMusic.equalsIgnoreCase(newMusic))) {
+                music_sound.mediaSound.pause();
             }
-            //
-            for (Sound music_sound : MUSIC_Sounds) {
-                if (music_sound.musicName.equalsIgnoreCase(newMusic)&& !(oldMusic.equalsIgnoreCase(newMusic))) {
-                    music_sound.mediaSound.play();
-                }
-                if (music_sound.mediaLayer != null && layerCheck(currentRoom)) {
-                    music_sound.mediaLayer.play();
-                    music_sound.mediaLayer.seek(music_sound.mediaSound.getCurrentTime());
-                    music_sound.mediaLayer.setMute(false);
-                }
+            if (music_sound.mediaLayer != null) {
+                music_sound.mediaLayer.pause();
+            }
+        }
+        //
+        for (Sound music_sound : MUSIC_Sounds) {
+            if (music_sound.musicName.equalsIgnoreCase(newMusic) && !(oldMusic.equalsIgnoreCase(newMusic))) {
+                music_sound.mediaSound.play();
+            }
+            if (music_sound.mediaLayer != null && layerCheck(currentRoom)) {
+                music_sound.mediaLayer.play();
+                music_sound.mediaLayer.seek(music_sound.mediaSound.getCurrentTime());
+                music_sound.mediaLayer.setMute(false);
             }
         }
     }
@@ -162,7 +157,7 @@ public class Music implements Runnable {
         boolean enemies = (currentRoom.enemies.size() >= enemyLayerActivation);
         //boolean boss = (currentRoom.bosses.size() > 0);// TODO Remember to activate this when bosses are added
         if (enemies /*|| boss*/) {
-            System.out.println("--- active ---");
+            //System.out.println("--- layer active ---");
             return true;
         }
         return false;
@@ -253,7 +248,7 @@ public class Music implements Runnable {
             //
             try {
                 this.mediaLayer = new MediaPlayer(table.get(sound + " layer"));
-                System.out.println(sound + " layer");
+                //System.out.println(sound + " layer");
                 this.mediaLayer.setVolume(0.01 * (MusicVolume - 2));
                 this.mediaLayer.setMute(true);
                 this.mediaLayer.play();
@@ -269,7 +264,7 @@ public class Music implements Runnable {
             this.parentHashCode = hashcode;//TODO Hash code alone may not be enough - 1 object may have multiple sounds
             //
             this.musicName = sound;
-            System.out.println("added sound: " + musicName);
+            //System.out.println("added sound: " + musicName);
             //
             this.mediaSound = new MediaPlayer(table.get(sound));
             this.mediaSound.setVolume(0.01 * soundVolume);

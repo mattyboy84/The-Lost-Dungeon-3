@@ -179,7 +179,7 @@ public class Player_Overlay implements Sprite_Splitter {
         }
     }
 
-    public void over(Group group) {
+    public void swapMapView(Group group) {
         this.txtScore.setVisible(!this.txtScore.isVisible());
         this.txtTime.setVisible(!this.txtTime.isVisible());
         if (map.equals("minimap")) {

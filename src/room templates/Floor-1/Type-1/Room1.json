@@ -35,11 +35,13 @@
   "enemies": [
     {
       "enemy": "fly",
+      "type": "classic",
       "PositionX": 500,
       "PositionY": 500
     },
     {
       "enemy": "attack fly",
+      "type": "classic",
       "PositionX": 1400,
       "PositionY": 700
     }

@@ -45,11 +45,13 @@
   "enemies": [
     {
       "enemy": "fly",
+      "type": "classic",
       "PositionX": 800,
       "PositionY": 500
     },
     {
       "enemy": "pooter",
+      "type": "classic",
       "PositionX": 1400,
       "PositionY": 700
     }

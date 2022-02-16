@@ -200,7 +200,7 @@ public class Room implements Runnable {
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
         for (int k = 0; k < enemyArray.size(); k++) {
 
-            JsonObject enemytemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\classic\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
+            JsonObject enemytemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\"+enemyArray.get(k).getAsJsonObject().get("type").getAsString()+"\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
                 case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
@@ -245,8 +245,6 @@ public class Room implements Runnable {
         this.backgroundItems.load(group);
         //will attempt to add the music to the array
         Music.addMusic(this.music,true,this.hashCode());
-        //Music.addIntroMusic(this.music,false,this.hashCode());
-
         //
         for (Enemy enemy : enemies) {
             enemy.load(group);

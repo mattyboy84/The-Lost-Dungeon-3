@@ -40,6 +40,7 @@
   "enemies": [
     {
       "enemy": "pooter",
+      "type": "classic",
       "PositionX": 500,
       "PositionY": 500
     }

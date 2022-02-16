@@ -402,6 +402,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public void updateScore(int diff) {
         this.score += diff;
+        this.score=Math.max(this.score,0);//stops score from going below 0
         overlay.updateScore(score);
     }
 
