@@ -12,6 +12,7 @@ import root.game.dungeon.Dungeon;
 import root.game.music.Music;
 import root.game.player.Player;
 import root.game.util.Effects;
+import root.game.util.Vecc2f;
 
 public class Main extends Application {
 

@@ -9,6 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import root.Main;
 import root.game.dungeon.Dungeon;
+import root.game.dungeon.room.boss.Boss;
+import root.game.dungeon.room.boss.Boss_Pin;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
@@ -51,6 +53,7 @@ public class Room implements Runnable {
     Background_items backgroundItems;
     public ArrayList<Door> doors = new ArrayList<>();
     public ArrayList<Enemy> enemies = new ArrayList<>();
+    public ArrayList<Boss> bosses = new ArrayList<Boss>();
     public ArrayList<Item> items = new ArrayList<>();
     public ArrayList<Rock> rocks = new ArrayList<>();
     //
@@ -112,6 +115,11 @@ public class Room implements Runnable {
         if (!skipEnemy) {
             enemyAdder(this.roomTemplate.getAsJsonArray("enemies"), scaleX, scaleY, screenBounds, shading);
             System.out.println("Thread: " + threadName + " Enemies Complete");
+        }
+        try {
+            bossAdder(this.roomTemplate.getAsJsonArray("bosses"), scaleX, scaleY, screenBounds, shading);
+            System.out.println("Thread: " + threadName + " Bosses Complete");
+        } catch (Exception ignored) {
         }
         //
         try {
@@ -200,13 +208,26 @@ public class Room implements Runnable {
     private void enemyAdder(JsonArray enemyArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
         for (int k = 0; k < enemyArray.size(); k++) {
 
-            JsonObject enemytemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\"+enemyArray.get(k).getAsJsonObject().get("type").getAsString()+"\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
+            JsonObject enemytemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\" + enemyArray.get(k).getAsJsonObject().get("type").getAsString() + "\\" + enemyArray.get(k).getAsJsonObject().get("enemy").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(enemyArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), enemyArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
             switch (enemyArray.get(k).getAsJsonObject().get("enemy").getAsString()) {
                 case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
                 case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
                 case "pooter" -> enemies.add(new Enemy_Pooter(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
             }
+        }
+    }
+
+    private void bossAdder(JsonArray bossArray, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading) {
+        for (int k = 0; k < bossArray.size(); k++) {
+
+            JsonObject bossTemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\bosses\\" + bossArray.get(k).getAsJsonObject()
+                    .get("type").getAsString() + "\\" + bossArray.get(k).getAsJsonObject().get("boss").getAsString() + ".json"))).getAsJsonObject();
+            Vecc2f pos = new Vecc2f(bossArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), bossArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
+            switch (bossArray.get(k).getAsJsonObject().get("boss").getAsString()) {
+                case "pin" -> bosses.add(new Boss_Pin(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+            }
+
         }
     }
 
@@ -244,10 +265,14 @@ public class Room implements Runnable {
         this.background.load(group);
         this.backgroundItems.load(group);
         //will attempt to add the music to the array
-        Music.addMusic(this.music,true,this.hashCode());
+        Music.addMusic(this.music, true, this.hashCode());
         //
         for (Enemy enemy : enemies) {
             enemy.load(group);
+        }
+        //
+        for (Boss boss : bosses) {
+            boss.load(group);
         }
         /*
         //base work for when a boss is defeated.
@@ -279,6 +304,10 @@ public class Room implements Runnable {
         //
         for (Enemy enemy : enemies) {
             enemy.unload(group);
+        }
+        //
+        for (Boss boss : bosses) {
+            boss.unload(group);
         }
         //
         for (Item item : items) {
@@ -313,7 +342,7 @@ public class Room implements Runnable {
         tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, getAllBoundaries(), tearTarget));
     }
 
-    public void explosionDamageAroundPoint(Active_Bomb currentBomb, float x, float y, int radius, Group group) {
+    public void explosionDamageAroundPoint(float x, float y, int radius, Group group) {
         radius *= ((scaleX + scaleY) / 2);
 
         if (Vecc2f.distance(x, y, Player.centerPos.x, Player.centerPos.y) < radius) {//player check - player will be pushed away from bomb & damaged
@@ -321,12 +350,12 @@ public class Room implements Runnable {
             dir.limit(1);
             System.out.println(dir);
             System.out.println("player hit");
-            Main.player.inflictDamage(-1);
+            Main.player.inflictDamage(1);
             Main.player.applyForce(dir, 40);
         }
 
         for (Active_Bomb bomb : bombs) {//force applied to other active bombs in room
-            if ((Vecc2f.distance(x, y, bomb.centerPos.x, bomb.centerPos.y) < radius) && (currentBomb != bomb)) {
+            if ((Vecc2f.distance(x, y, bomb.centerPos.x, bomb.centerPos.y) < radius) && !((bomb.centerPos.x == x) && (bomb.centerPos.y == y))) {
                 Vecc2f dir = new Vecc2f(bomb.centerPos).sub(new Vecc2f(x, y));
                 dir.limit(1);
                 bomb.applyForce(dir, 10);
@@ -369,8 +398,8 @@ public class Room implements Runnable {
         }
     }
 
-    public void explosionDamageAroundPoint(Active_Bomb bomb, Vecc2f point, int radius, Group group) {
-        explosionDamageAroundPoint(bomb, point.x, point.y, radius, group);
+    public void explosionDamageAroundPoint(Vecc2f point, int radius, Group group) {
+        explosionDamageAroundPoint(point.x, point.y, radius, group);
     }
 
     public void newRealTimeProp(Group group, float centerX, float centerY, Image RealTimeProp) {

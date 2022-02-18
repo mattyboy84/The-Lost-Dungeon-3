@@ -27,6 +27,7 @@ public class Active_Bomb implements Sprite_Splitter {
     Image[] activeAnimation;
     Vecc2f position = new Vecc2f();
     Vecc2f velocity = new Vecc2f();
+    Vecc2f originPoint=new Vecc2f();
     public Vecc2f centerPos = new Vecc2f();
     Hitbox hitbox;
     JsonObject template = null;
@@ -60,6 +61,7 @@ public class Active_Bomb implements Sprite_Splitter {
         this.hitbox = new Hitbox(this.template.getAsJsonObject("Hitbox"), (int) sheetScale, scaleX, scaleY);
         this.bomb = new ImageView(imageGetter(file, startX, startY, width, height, scaleX, scaleY, sheetScale));
         this.centerPos.set(this.hitbox.getCenterX(), this.hitbox.getCenterY());
+        this.originPoint=new Vecc2f(centerPos.x,centerPos.y);
         this.position.set(centerPos.x - (this.bomb.getBoundsInParent().getWidth() / 2), centerPos.y - (this.bomb.getBoundsInParent().getHeight() / 2));
         activeAnimationSetup(file, scaleX, scaleY, sheetScale, this.template.get("ActiveAnimation").getAsJsonArray());
         //
@@ -166,43 +168,57 @@ public class Active_Bomb implements Sprite_Splitter {
     }
 
     public void load(Group group, Room room, ArrayList<Active_Bomb> bombs) {
-        group.getChildren().addAll(this.bomb, this.hitbox.getShape());
-        this.bomb.relocate(this.position.x, this.position.y);
-        this.bomb.setViewOrder(ViewOrder.items_layer.getViewOrder());
-        //
-        this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
-        this.hitbox.getShape().setViewOrder(ViewOrder.items_layer.getViewOrder());
-        this.hitbox.getShape().setVisible(false);
-        //START TIMELINES
-        forceListener.play();
-
-        //starts the bomb pulsing
-        new RubberBand(this.bomb).play();
-        this.pulseTimeline.play();
-
-        //starts to swap active bomb images
-        subActive();
-        this.activeTimeline.play();
-        this.activeTimeline.setOnFinished(actionEvent -> {//starts the explosion
+        if (this.fuse>0) {
+            group.getChildren().addAll(this.bomb, this.hitbox.getShape());
+            this.bomb.relocate(this.position.x, this.position.y);
+            this.bomb.setViewOrder(ViewOrder.items_layer.getViewOrder());
             //
-            Music.addSFX(false,this.hashCode(), Music.sfx.explosion_strong1, Music.sfx.explosion_strong2, Music.sfx.explosion_strong3);//randomly adds 1 of 3 explosion sfx sounds
-            //
-            group.getChildren().remove(this.hitbox.getShape());
-            room.explosionDamageAroundPoint(this, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight() / 2)), 175, group);
-            room.newRealTimeProp(group, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight())), Effects.explosionMarkImages[random.nextInt(Effects.explosionMarkImages.length-1)]);
+            this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
+            this.hitbox.getShape().setViewOrder(ViewOrder.items_layer.getViewOrder());
+            this.hitbox.getShape().setVisible(false);
+            //START TIMELINES
+            forceListener.play();
+
+            //starts the bomb pulsing
+            new RubberBand(this.bomb).play();
+            this.pulseTimeline.play();
+
+            //starts to swap active bomb images
+            subActive();
+            this.activeTimeline.play();
+            this.activeTimeline.setOnFinished(actionEvent -> {//starts the explosion
+                //
+                Music.addSFX(false, this.hashCode(), Music.sfx.explosion_strong1, Music.sfx.explosion_strong2, Music.sfx.explosion_strong3);//randomly adds 1 of 3 explosion sfx sounds
+                //
+                group.getChildren().remove(this.hitbox.getShape());
+                room.explosionDamageAroundPoint(this.centerPos.x, this.centerPos.y, 175, group);
+                room.newRealTimeProp(group, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight())), Effects.explosionMarkImages[random.nextInt(Effects.explosionMarkImages.length - 1)]);
+                this.position.sub((int) ((Effects.explodeAnimation[0].getWidth() / 2) - (this.bomb.getBoundsInParent().getWidth() / 2)), (int) ((Effects.explodeAnimation[0].getHeight() * 0.8)));
+                subExplosion();
+                this.bomb.relocate(this.position.x, this.position.y);
+                this.forceListener.stop();
+                this.explosionTimeline.play();
+                //
+
+            });
+            this.explosionTimeline.setOnFinished(actionEvent -> {
+                deleteObject(group, bombs);
+                //System.out.println("bomb removed");
+            });
+        }else {//instant set off bomb - not the best way to do it...
+            group.getChildren().add(this.bomb);
+            room.newRealTimeProp(group, (float) (this.position.x + (this.bomb.getBoundsInParent().getWidth() / 2)), (float) (this.position.y + (this.bomb.getBoundsInParent().getHeight())), Effects.explosionMarkImages[random.nextInt(Effects.explosionMarkImages.length - 1)]);
+            System.out.println(this.originPoint);
             this.position.sub((int) ((Effects.explodeAnimation[0].getWidth() / 2) - (this.bomb.getBoundsInParent().getWidth() / 2)), (int) ((Effects.explodeAnimation[0].getHeight() * 0.8)));
             subExplosion();
+            room.explosionDamageAroundPoint(this.originPoint, 175, group);
             this.bomb.relocate(this.position.x, this.position.y);
-            this.forceListener.stop();
             this.explosionTimeline.play();
-            //
-
-        });
-        this.explosionTimeline.setOnFinished(actionEvent -> {
-            deleteObject(group, bombs);
-            //System.out.println("bomb removed");
-        });
-
+            this.explosionTimeline.setOnFinished(actionEvent -> {
+                deleteObject(group, bombs);
+                //System.out.println("bomb removed");
+            });
+        }
 
         //at end of timelines when bomb detonates call back to damage to damage/ destroy stuff
     }

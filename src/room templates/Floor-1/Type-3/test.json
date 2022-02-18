@@ -27,6 +27,14 @@
   },
   "items": [],
   "enemies": [],
+  "bosses": [
+    {
+      "boss": "pin",
+      "type": "classic",
+      "PositionX": 500,
+      "PositionY": 500
+    }
+  ],
   "Rocks": {
     "name": "rocks_basement",
     "SheetScale": 3.21875,
