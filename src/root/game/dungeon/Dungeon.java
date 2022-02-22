@@ -62,7 +62,7 @@ public class Dungeon {
             //
             map[this.startX - 1][this.startY] = 1;
             map[this.startX + 1][this.startY] = 1;//TODO Remember this
-            map[this.startX][this.startY + 1] = 1;
+            map[this.startX][this.startY + 1] = 3;
             map[this.startX][this.startY - 1] = 1;
             //
             //

@@ -43,8 +43,15 @@
       "type": "classic",
       "PositionX": 500,
       "PositionY": 500
+    },
+    {
+      "enemy": "spider",
+      "type": "classic",
+      "PositionX": 600,
+      "PositionY": 500
     }
   ],
+  "bosses": [],
   "Rocks": {
     "name": "rocks_basement",
     "SheetScale": 3.21875,

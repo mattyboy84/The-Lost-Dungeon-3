@@ -3,6 +3,7 @@ package root.game.dungeon.room.enemy;
 import com.google.gson.JsonObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import root.game.Tear.Tear;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
 import root.game.player.Player;
@@ -55,5 +56,10 @@ public class Enemy_AttackFly extends Enemy {
         }catch (Exception e){}
         //
         this.timeline.pause();
+    }
+
+    @Override
+    public boolean collidesWith(Tear tear) {
+        return tear.tearHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent());
     }
 }

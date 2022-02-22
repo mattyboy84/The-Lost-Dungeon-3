@@ -27,6 +27,7 @@
   },
   "items": [],
   "enemies": [],
+  "bosses": [],
   "Rocks": {
     "name": "rocks_basement",
     "SheetScale": 3.21875,

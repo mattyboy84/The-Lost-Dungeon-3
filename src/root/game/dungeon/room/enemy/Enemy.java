@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.Main;
+import root.game.Tear.Tear;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
 import root.game.util.*;
@@ -164,7 +165,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     private void animationSetup(JsonObject enemyTemplate, Image[] animation, String animationName, String file, float scaleX, float scaleY) {
         JsonObject object = enemyTemplate.get(animationName).getAsJsonObject();
         int width = object.get("Width").getAsInt();
-        int height = object.get("Width").getAsInt();
+        int height = object.get("Height").getAsInt();
         for (int i = 0; i < animation.length; i++) {
             int x = object.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("x").getAsInt();
             int y = object.get("Images").getAsJsonArray().get(i).getAsJsonObject().get("y").getAsInt();
@@ -389,6 +390,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     }
 
     protected abstract void postUnLoading(Group group);
+
+    public abstract  boolean collidesWith(Tear tear);
 
     public Hitbox getHitbox() {
         return hitbox;

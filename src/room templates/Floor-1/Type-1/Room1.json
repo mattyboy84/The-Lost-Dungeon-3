@@ -46,6 +46,7 @@
       "PositionY": 700
     }
   ],
+  "bosses": [],
   "Rocks": {
     "name": "rocks_basement",
     "SheetScale": 3.21875,

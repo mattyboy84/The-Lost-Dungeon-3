@@ -3,14 +3,7 @@
   "type": "classic",
   "filePath": "boss_019_pin",
   "Health": 120,
-  "SheetScale": 3,
+  "SheetScale": 2,
   "GutNumber": 14,
-  "idleAnimation": {
-  },
-  "Hitbox": {
-  },
-  "Light": {
-  },
-  "DeathAnimation": {
-  }
+  "damage": 1
 }

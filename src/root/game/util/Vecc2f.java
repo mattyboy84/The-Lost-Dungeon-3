@@ -203,12 +203,12 @@ public class Vecc2f {
         }
     }
 
-    public void random2D(int modifier) {
+    public Vecc2f random2D(int modifier) {
         //unit vector with a magnitude of 1
         this.x = (((random.nextFloat() * 2) - 1) / modifier);
         this.y = (((random.nextFloat() * 2) - 1) / modifier);
         // System.out.println(this.x + "  " + this.y + "  " + magnitude());
-
+        return new Vecc2f(x, y);
     }
 
 

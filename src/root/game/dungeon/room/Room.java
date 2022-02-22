@@ -8,7 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import root.Main;
-import root.game.dungeon.Dungeon;
+import root.game.Tear.Arc_Tear;
 import root.game.dungeon.room.boss.Boss;
 import root.game.dungeon.room.boss.Boss_Pin;
 import root.game.dungeon.room.enemy.*;
@@ -16,14 +16,13 @@ import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
 import root.game.music.Music;
 import root.game.player.Player;
-import root.game.player.Tear;
+import root.game.Tear.Tear;
 import root.game.util.Vecc2f;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 
@@ -119,7 +118,8 @@ public class Room implements Runnable {
         try {
             bossAdder(this.roomTemplate.getAsJsonArray("bosses"), scaleX, scaleY, screenBounds, shading);
             System.out.println("Thread: " + threadName + " Bosses Complete");
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            System.out.println(e);
         }
         //
         try {
@@ -214,6 +214,7 @@ public class Room implements Runnable {
                 case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
                 case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
                 case "pooter" -> enemies.add(new Enemy_Pooter(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+                case "spider"-> enemies.add(new Enemy_Spider(enemytemplate,pos,scaleX,scaleY,screenBounds,shading,this));
             }
         }
     }
@@ -225,7 +226,7 @@ public class Room implements Runnable {
                     .get("type").getAsString() + "\\" + bossArray.get(k).getAsJsonObject().get("boss").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(bossArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), bossArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
             switch (bossArray.get(k).getAsJsonObject().get("boss").getAsString()) {
-                case "pin" -> bosses.add(new Boss_Pin(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+                //case "pin" -> bosses.add(new Boss_Pin(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
             }
 
         }
@@ -339,7 +340,11 @@ public class Room implements Runnable {
     }
 
     public void addNewTear(String direction, int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY, float veloLimit, Tear.Target tearTarget) {
-        tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, getAllBoundaries(), tearTarget));
+        tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies,bosses, getAllBoundaries(), tearTarget));
+    }
+
+    public void addNewArc_Tear(int damage, Vecc2f startPos, Vecc2f endPos, Group parentGroup, Tear.Target tearTarget) {
+        tears.add(new Arc_Tear(damage,startPos,endPos, scaleX, scaleY, tears, enemies,bosses, tearTarget,parentGroup));
     }
 
     public void explosionDamageAroundPoint(float x, float y, int radius, Group group) {

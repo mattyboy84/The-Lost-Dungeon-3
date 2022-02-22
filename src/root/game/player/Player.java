@@ -8,21 +8,15 @@ import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import root.game.Tear.Tear;
 import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.Door;
 import root.game.dungeon.room.Room;
-import root.game.dungeon.room.Room;
 import root.game.music.Music;
 import root.game.util.*;
-import root.game.player.*;
-import root.game.dungeon.Shading;
 
-import javax.security.auth.callback.LanguageCallback;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
@@ -349,7 +343,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     private void doorTriggerChecker(Dungeon dungeon) {//"LOAD" "UNLOAD" "MAP"
         for (int i = 0; i < currentRoom.doors.size(); i++) {
             if (currentRoom.doors.get(i).getDoorTrigger().getBoundsInParent().intersects(this.bodyHitbox.getShape().getBoundsInParent())) {
-                System.out.println("changing room");
                 this.position.set(currentRoom.doors.get(i).relocatePos);
                 relocate();
                 this.acceleration.set(0, 0);
@@ -371,7 +364,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 String newMusic=currentRoom.getMusic();
                 Music.transition(oldMusic,newMusic,currentRoom);
                 //
-
+                System.out.println("changing room to: " + currentRoom.room);
                 //
                 if (currentRoom.enemies.size() == 0) {
                     currentRoom.openDoors(group);

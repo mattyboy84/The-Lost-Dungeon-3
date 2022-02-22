@@ -1,6 +1,5 @@
-package root.game.player;
+package root.game.Tear;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -9,7 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.Main;
-import root.game.dungeon.room.Room;
+import root.game.dungeon.room.boss.Boss;
 import root.game.dungeon.room.enemy.Enemy;
 import root.game.music.Music;
 import root.game.util.*;
@@ -20,7 +19,7 @@ import java.util.Random;
 public class Tear implements Sprite_Splitter {
     ImageView tearImage = new ImageView();
     ImageView shadowImage = new ImageView();
-    Hitbox tearHitbox;
+    public Hitbox tearHitbox;
     int damage;
     Vecc2f position, shadowPosition;
     Vecc2f velocity;
@@ -33,7 +32,7 @@ public class Tear implements Sprite_Splitter {
     float yDrop = 0.5f;
     float yAcc = 0.09f;
     float avgScale;
-    Random random=new Random();
+    Random random = new Random();
 
     public Target target;
 
@@ -42,9 +41,13 @@ public class Tear implements Sprite_Splitter {
         enemy
     }
 
-    public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Rectangle> boundaries, Target tearTarget) {
+    public Tear() {
+
+    }
+
+    public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Boss> bosses, ArrayList<Rectangle> boundaries, Target tearTarget) {
         this.target = tearTarget;
-        Music.addSFX(false,this.hashCode(),Music.sfx.tear_fire_4,Music.sfx.tear_fire_5);
+        Music.addSFX(false, this.hashCode(), Music.sfx.tear_fire_4, Music.sfx.tear_fire_5);
         this.avgScale = ((scaleX + scaleY) / 2);
         this.position = new Vecc2f(position);
         this.damage = damage;
@@ -100,11 +103,11 @@ public class Tear implements Sprite_Splitter {
 
         this.tearImage.relocate(this.position.x - this.tearImage.getBoundsInParent().getWidth() / 2, this.position.y - this.tearImage.getBoundsInParent().getHeight() / 2);
         //
-        timeline(tears, enemies, boundaries, group);
+        timeline(tears, enemies, bosses, boundaries, group);
         explodeTimelineSetup();
     }
 
-    private void explodeTimelineSetup() {
+    protected void explodeTimelineSetup() {
         explodeTimeline = new Timeline(new KeyFrame(Duration.millis(70), event -> {
             if (target == Target.enemy)
                 this.tearImage.setImage(Effects.BLUEtearCollideAnimation[explodeCounter]);//runs through the collision animation
@@ -115,7 +118,7 @@ public class Tear implements Sprite_Splitter {
         explodeTimeline.setCycleCount(Effects.BLUEtearCollideAnimation.length - 1);
     }
 
-    private void timeline(ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Rectangle> boundaries, Group group) {
+    private void timeline(ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Boss> bosses, ArrayList<Rectangle> boundaries, Group group) {
         tearTimeline = new Timeline(new KeyFrame(Duration.millis(16), event -> {
             this.travelDistance += this.velocity.magnitude();
             this.position.add(this.velocity);
@@ -131,9 +134,11 @@ public class Tear implements Sprite_Splitter {
             boundaryCheck(boundaries, group, tears);
             shadowCheck(group, tears);//when the hitbox hits the center of the shadow it will hit the floor and explode
             //
-            if (target == Target.enemy)
+            if (target == Target.enemy) {
                 enemyCheck(enemies, group, tears);//when enemy & tear hitbox overlap, the enemy will be damaged and pushed
-                //
+                bossCheck(bosses, group, tears);
+            }
+            //
             else if (target == Target.player)
                 playerCheck(group, tears);//when a player and enemy's tear overlap, the player will be damaged and pushed.
         }));
@@ -160,16 +165,26 @@ public class Tear implements Sprite_Splitter {
 
     private void enemyCheck(ArrayList<Enemy> enemies, Group group, ArrayList<Tear> tears) {//check for enemies
         try {
-            for (Enemy enemy : enemies) {
-                if (enemy != null && this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbox().getShape().getBoundsInParent()) && !(enemy.state == Enemy.states.dying)) {
+            for (int k = enemies.size() - 1; k > -1; k--) {
+                if (enemies.get(k) != null && enemies.get(k).collidesWith(this) && !(enemies.get(k).state == Enemy.states.dying)) {
+
                     //System.out.println("enemy Hit");
                     hitSomething(group, tears);
                     //
-                    enemy.applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), 10 * this.avgScale);
-                    enemy.inflictDamage(damage, group, enemies);
+                    enemies.get(k).applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), 10 * this.avgScale);
+                    enemies.get(k).inflictDamage(damage, group, enemies);
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void bossCheck(ArrayList<Boss> bosses, Group group, ArrayList<Tear> tears) {
+        for (Boss boss : bosses) {
+            if (boss != null && boss.collidesWith(this)) {
+
+            }
         }
     }
 
@@ -182,8 +197,8 @@ public class Tear implements Sprite_Splitter {
         }
     }
 
-    private void hitSomething(Group group, ArrayList<Tear> tears) {
-        Music.addSFX(false,this.hashCode(), Music.sfx.splatter_0,Music.sfx.splatter_1,Music.sfx.splatter_2,Music.sfx.splatter_3,Music.sfx.splatter_4,Music.sfx.splatter_5);
+    protected void hitSomething(Group group, ArrayList<Tear> tears) {
+        Music.addSFX(false, this.hashCode(), Music.sfx.splatter_0, Music.sfx.splatter_1, Music.sfx.splatter_2, Music.sfx.splatter_3, Music.sfx.splatter_4, Music.sfx.splatter_5);
         //
         this.tearTimeline.stop();
         group.getChildren().removeAll(this.tearHitbox.getShape(), this.shadowImage);

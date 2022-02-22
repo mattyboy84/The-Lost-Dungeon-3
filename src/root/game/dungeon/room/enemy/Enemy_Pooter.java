@@ -7,7 +7,7 @@ import root.Main;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
 import root.game.player.Player;
-import root.game.player.Tear;
+import root.game.Tear.Tear;
 import root.game.util.Vecc2f;
 import root.game.util.ViewOrder;
 
@@ -105,4 +105,12 @@ public class Enemy_Pooter extends Enemy {
         this.timeline.pause();
         removeShader();
     }
+
+    @Override
+    public boolean collidesWith(Tear tear) {
+        return tear.tearHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent());
+    }
 }
+
+//                //if (enemy != null && this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbo
+//                x().getShape().getBoundsInParent()) && !(enemy.state == Enemy.states.dying)) {

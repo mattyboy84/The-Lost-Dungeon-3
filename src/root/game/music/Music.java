@@ -66,7 +66,7 @@ public class Music implements Runnable {
     static ArrayList<Sound> MUSIC_Sounds = new ArrayList<>();
 
     private static double SFXVolume = 15;//this is a percent from 0% to 100%
-    private static double MusicVolume = 6;//this is a percent
+    private static double MusicVolume = 3;//this is a percent
 
     public static HashMap<String, Media> musicTable = new HashMap();
     public static HashMap<String, Media> sfxTable = new HashMap();
