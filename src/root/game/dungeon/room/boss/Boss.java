@@ -7,6 +7,7 @@ import javafx.scene.Group;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
 import root.game.Tear.Tear;
+import root.game.player.Player;
 import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
@@ -16,6 +17,7 @@ public abstract class Boss implements Sprite_Splitter {
     
     Group parentGroup;
     Room parentRoom;
+    Player playerTarget;
     Random random=new Random();
     //
     String bossName;
@@ -46,7 +48,8 @@ public abstract class Boss implements Sprite_Splitter {
 
     }
 
-    public void load(Group group){
+    public void load(Group group, Player player){
+        this.playerTarget=player;
         this.parentGroup=group;
         postLoader(group);
     }

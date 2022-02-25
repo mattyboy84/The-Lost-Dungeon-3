@@ -5,11 +5,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.util.Duration;
 import root.Main;
+import root.game.dungeon.room.Room;
 import root.game.player.Player;
 import root.game.util.Hitbox;
 import root.game.util.Sprite_Splitter;
@@ -30,12 +29,14 @@ public abstract class Item implements Sprite_Splitter {
     int sheetScale;
 
     Timeline forceListener;
+    Room parentRoom;
 
     public Item() {
 
     }
 
-    public Item(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
+    public Item(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Room parentRoom) {
+        this.parentRoom=parentRoom;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.sheetScale = a.get("SheetScale").getAsInt();
@@ -88,8 +89,8 @@ public abstract class Item implements Sprite_Splitter {
     }
 
     private void collisionCheck() {
-        for (int i = 0; i < Main.player.currentRoom.getBoundaries().size(); i++) {
-            if (Main.player.currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
+        for (int i = 0; i < parentRoom.getBoundaries().size(); i++) {
+            if (parentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
                 this.velocity.mult(1.5);
                 this.position.sub(this.velocity);
                 this.velocity.set(0, 0);

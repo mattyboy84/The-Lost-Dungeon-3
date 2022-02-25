@@ -15,8 +15,8 @@ public class Enemy_Spider extends Enemy {
 
     int viewDistance;
     int movedDistance;
-    int randomMove=50;
-    Vecc2f distanceMoved=new Vecc2f(0,0);
+    int randomMove = 50;
+    Vecc2f distanceMoved = new Vecc2f(0, 0);
 
     public Enemy_Spider(JsonObject enemyTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         super(enemyTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
@@ -38,9 +38,9 @@ public class Enemy_Spider extends Enemy {
                     state = states.attack1;
                 }
                 //
-                if (stateTransitionTimer > 105 && (Vecc2f.distance(this.position.x, this.position.y, Main.player.getPosition().x, Main.player.getPosition().y) < viewDistance)) {
+                if (stateTransitionTimer > 105 && (Vecc2f.distance(this.position.x, this.position.y, playerTarget.getPosition().x, playerTarget.getPosition().y) < viewDistance)) {
                     stateTransitionTimer = 0;
-                    this.velocity = new Vecc2f(Main.player.getCenterPos()).sub(this.position).limit(1);
+                    this.velocity = new Vecc2f(playerTarget.getCenterPos()).sub(this.position).limit(1);
                     this.velocity.mult(veloLimit);
                     state = states.attack2;
                 }
@@ -52,7 +52,7 @@ public class Enemy_Spider extends Enemy {
                 relocate();
                 linearImageSwapper(attack1Animation, ATTACK1imageSwapInterval);
                 //
-                if (distanceMoved.magnitude() >= (int)(this.movedDistance/4)) {
+                if (distanceMoved.magnitude() >= (int) (this.movedDistance / 4)) {
                     transitionToIdle();
                 }
             }
@@ -64,7 +64,7 @@ public class Enemy_Spider extends Enemy {
                 linearImageSwapper(attack1Animation, ATTACK1imageSwapInterval);
                 //
                 if (this.distanceMoved.magnitude() > this.movedDistance) {
-                   transitionToIdle();
+                    transitionToIdle();
                 }
 
             }
@@ -73,7 +73,7 @@ public class Enemy_Spider extends Enemy {
     }
 
     private void transitionToIdle() {
-        this.distanceMoved.set(0,0);
+        this.distanceMoved.set(0, 0);
         this.velocity.set(0, 0);
         state = states.idle;
         this.enemy.setImage(idleAnimation[0]);
@@ -117,9 +117,8 @@ public class Enemy_Spider extends Enemy {
                 this.position.sub(this.velocity);
                 this.position.set((int) this.position.x, (int) this.position.y);
                 this.velocity.set(0, 0);
-                this.enemy.relocate(this.position.x, this.position.y);
-                this.hitbox.getShape().relocate(this.position.x + this.hitbox.getxDelta(), this.position.y + this.hitbox.getyDelta());
-                this.state=states.idle;//resets to idle state - maybe add to base checker?
+                relocate();
+                this.state = states.idle;//resets to idle state - maybe add to base checker?
             }
         }
     }

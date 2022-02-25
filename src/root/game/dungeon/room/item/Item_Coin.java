@@ -10,6 +10,7 @@ import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
+import root.game.dungeon.room.Room;
 import root.game.music.Music;
 import root.game.player.Player;
 import root.game.player.Player_Overlay;
@@ -32,8 +33,8 @@ public class Item_Coin extends Item implements Item_Animation, Sprite_Splitter {
     int idlePointer = random.nextInt(idle.length-1);
     int pickupPointer = 1;
 
-    public Item_Coin(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        super(a, pos, scaleX, scaleY, screenBounds);
+    public Item_Coin(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Room parentRoom) {
+        super(a, pos, scaleX, scaleY, screenBounds,parentRoom);
 
         JsonArray array = a.getAsJsonArray("IdleAnimation");
         for (int i = 0; i < array.size(); i++) {

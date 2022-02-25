@@ -3,6 +3,7 @@ package root.game.dungeon.room.item;
 import com.google.gson.JsonObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import root.game.dungeon.room.Room;
 import root.game.player.Player;
 import root.game.player.Player_Overlay;
 import root.game.util.Vecc2f;
@@ -10,9 +11,9 @@ import root.game.util.Vecc2f;
 import java.util.ArrayList;
 
 public class Item_DoubleBomb extends Item {
-    public Item_DoubleBomb(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
+    public Item_DoubleBomb(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Room parentRoom) {
 
-        super(a, pos, scaleX, scaleY, screenBounds);
+        super(a, pos, scaleX, scaleY, screenBounds, parentRoom);
     }
 
     @Override

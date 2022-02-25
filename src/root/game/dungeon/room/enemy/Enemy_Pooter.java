@@ -37,7 +37,7 @@ public class Enemy_Pooter extends Enemy {
                 linearImageSwapper(idleAnimation, IDLEimageSwapInterval);
                 //
                 if (stateTransitionTimer > 90 + rand.nextInt(30)) {
-                    if ((Vecc2f.distance(Main.player.getCenterPos().x, Main.player.getCenterPos().y, this.centerPos.x, this.centerPos.y)) < viewDistance) {//close enough to start shooting
+                    if ((Vecc2f.distance(playerTarget.getCenterPos().x, playerTarget.getCenterPos().y, this.centerPos.x, this.centerPos.y)) < viewDistance) {//close enough to start shooting
                         changeStateIdleToAttack1();
                     }
                 }
@@ -55,13 +55,13 @@ public class Enemy_Pooter extends Enemy {
                 final int finalLength = attack1Animation.length;
                 switch (currentFrame) {
                     case 7://7th frame visually looks the best for a projectile to appear.
-                        Vecc2f tearVELO = new Vecc2f(Main.player.getCenterPos());
+                        Vecc2f tearVELO = new Vecc2f(playerTarget.getCenterPos());
                         tearVELO.sub(this.centerPos);
                         tearVELO.limit(8);
-                        parentRoom.addNewTear("direction", 1, parentGroup, this.centerPos.add(0, 20 * this.scaleY), tearVELO, this.scaleX, this.scaleY, this.veloLimit, Tear.Target.player);
+                        parentRoom.addNewTear("direction", 1, parentGroup, this.centerPos.add(0, 20 * this.scaleY), tearVELO, this.scaleX, this.scaleY, this.veloLimit, Tear.Target.player,this.playerTarget);
                         break;
                     case 0://distance check on first frame of the animation.
-                        if ((Vecc2f.distance(Main.player.getCenterPos().x, Main.player.getCenterPos().y, this.centerPos.x, this.centerPos.y)) > viewDistance) {//get closer to player - idle state
+                        if ((Vecc2f.distance(playerTarget.getCenterPos().x, playerTarget.getCenterPos().y, this.centerPos.x, this.centerPos.y)) > viewDistance) {//get closer to player - idle state
                             changeStateAttackToIdle();
                         }
                         break;

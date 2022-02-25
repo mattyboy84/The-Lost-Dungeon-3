@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
+import root.game.dungeon.room.Room;
 import root.game.music.Music;
 import root.game.player.Player;
 import root.game.player.Player_Overlay;
@@ -27,8 +28,8 @@ public class Item_Key extends Item implements Item_Animation, Sprite_Splitter {
     Timeline idleTimeline;
     int idlePointer = 0;
 
-    public Item_Key(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds) {
-        super(a, pos, scaleX, scaleY, screenBounds);
+    public Item_Key(JsonObject a, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Room parentRoom) {
+        super(a, pos, scaleX, scaleY, screenBounds, parentRoom);
         //
         JsonArray array = a.getAsJsonArray("Sparkle");
         for (int i = 0; i < array.size(); i++) {

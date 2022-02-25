@@ -276,7 +276,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             if (attacking && attackingTimer >= shootCooldown) {
                 SHOOTINGheadChanger();
                 //shoot tear
-                currentRoom.addNewTear(this.lookingDirection, damage, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY()), this.velocity, scaleX, scaleY, this.veloLimit, Tear.Target.enemy);
+                currentRoom.addNewTear(this.lookingDirection, damage, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY()), this.velocity, scaleX, scaleY, this.veloLimit, Tear.Target.enemy,this);
                 //System.out.println(new Vecc2f(this.headHitbox.getShape().getLayoutX(),this.headHitbox.getShape().getLayoutY()));
                 //
                 justShot = true;
@@ -360,7 +360,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 Music.clearSFX();
                 String oldMusic = currentRoom.getMusic();
                 roomFinder(dungeon);
-                currentRoom.load(group);
+                currentRoom.load(group,this);
                 String newMusic=currentRoom.getMusic();
                 Music.transition(oldMusic,newMusic,currentRoom);
                 //

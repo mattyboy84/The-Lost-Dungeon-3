@@ -13,6 +13,7 @@ import root.Main;
 import root.game.Tear.Tear;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
+import root.game.player.Player;
 import root.game.util.*;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     //
     int lightRadius;
     Room parentRoom;
+    Player playerTarget;
     Shading roomShading;
 
     Timeline timeline = new Timeline();
@@ -219,8 +221,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     }
 
     private void checkForPlayer() {
-        if ((hitbox.getShape().getBoundsInParent().intersects(Main.player.getBodyHitbox().getShape().getBoundsInParent()) ||
-                hitbox.getShape().getBoundsInParent().intersects(Main.player.getHeadHitbox().getShape().getBoundsInParent())) && Main.player.isVulnerable()) {
+        if ((hitbox.getShape().getBoundsInParent().intersects(playerTarget.getBodyHitbox().getShape().getBoundsInParent()) ||
+                hitbox.getShape().getBoundsInParent().intersects(playerTarget.getHeadHitbox().getShape().getBoundsInParent())) && playerTarget.isVulnerable()) {
             //
             Vecc2f originalVELO=new Vecc2f(velocity.x,velocity.y);
 
@@ -229,11 +231,11 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             enemyPushback.setMag((velocity.magnitude() < veloLimit * 0.25) ? (veloLimit) : (velocity.magnitude()));//if enemy is 'slow' the push back is adjusted
             applyForce(enemyPushback, 10);
             //
-            Main.player.inflictDamage(1);//TODO REMEMBER current default enemy damage is 1
+            playerTarget.inflictDamage(1);//TODO REMEMBER current default enemy damage is 1
             Vecc2f pushback = new Vecc2f(originalVELO.x,originalVELO.y);
             pushback.setMag((originalVELO.magnitude() < veloLimit * 0.25) ? (veloLimit) : (originalVELO.magnitude()));//if enemy is 'slow' the push back is adjusted
 
-            Main.player.applyForce(pushback,3);
+            playerTarget.applyForce(pushback,3);
         }
     }
 
@@ -376,8 +378,9 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         this.centerPos.set(this.hitbox.getCenterX(), this.hitbox.getCenterY());
     }
 
-    public void load(Group group) {
+    public void load(Group group, Player player) {
         this.parentGroup=group;
+        this.playerTarget=player;
 
         postLoading(group);
     }

@@ -8,6 +8,7 @@ import java.util.Random;
 
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
+import root.game.player.Player;
 
 
 public class Dungeon {
@@ -289,10 +290,10 @@ public class Dungeon {
         }
     }
 
-    public void loadRoom(int x, int y, Group group) {
+    public void loadRoom(int x, int y, Group group, Player player) {
         for (Room room : rooms) {
             if (room.getI() == x && room.getJ() == y) {
-                room.load(group);
+                room.load(group,player);
                 break;
             }
         }

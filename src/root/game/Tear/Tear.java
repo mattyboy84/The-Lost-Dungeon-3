@@ -11,6 +11,7 @@ import root.Main;
 import root.game.dungeon.room.boss.Boss;
 import root.game.dungeon.room.enemy.Enemy;
 import root.game.music.Music;
+import root.game.player.Player;
 import root.game.util.*;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class Tear implements Sprite_Splitter {
 
     }
 
-    public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Boss> bosses, ArrayList<Rectangle> boundaries, Target tearTarget) {
+    public Tear(String direction, int damage, Group group, Vecc2f position, Vecc2f velocity, float scaleX, float scaleY, float baseVELO, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Boss> bosses, ArrayList<Rectangle> boundaries, Target tearTarget, Player player) {
         this.target = tearTarget;
         Music.addSFX(false, this.hashCode(), Music.sfx.tear_fire_4, Music.sfx.tear_fire_5);
         this.avgScale = ((scaleX + scaleY) / 2);
@@ -103,7 +104,7 @@ public class Tear implements Sprite_Splitter {
 
         this.tearImage.relocate(this.position.x - this.tearImage.getBoundsInParent().getWidth() / 2, this.position.y - this.tearImage.getBoundsInParent().getHeight() / 2);
         //
-        timeline(tears, enemies, bosses, boundaries, group);
+        timeline(tears, enemies, bosses, boundaries, group,player);
         explodeTimelineSetup();
     }
 
@@ -118,7 +119,7 @@ public class Tear implements Sprite_Splitter {
         explodeTimeline.setCycleCount(Effects.BLUEtearCollideAnimation.length - 1);
     }
 
-    private void timeline(ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Boss> bosses, ArrayList<Rectangle> boundaries, Group group) {
+    private void timeline(ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Boss> bosses, ArrayList<Rectangle> boundaries, Group group, Player player) {
         tearTimeline = new Timeline(new KeyFrame(Duration.millis(16), event -> {
             this.travelDistance += this.velocity.magnitude();
             this.position.add(this.velocity);
@@ -140,17 +141,17 @@ public class Tear implements Sprite_Splitter {
             }
             //
             else if (target == Target.player)
-                playerCheck(group, tears);//when a player and enemy's tear overlap, the player will be damaged and pushed.
+                playerCheck(player,group, tears);//when a player and enemy's tear overlap, the player will be damaged and pushed.
         }));
         tearTimeline.setCycleCount(Timeline.INDEFINITE);
         tearTimeline.play();
     }
 
-    private void playerCheck(Group group, ArrayList<Tear> tears) {
-        if (this.tearHitbox.getShape().getBoundsInParent().intersects(Main.player.getHeadHitbox().getShape().getBoundsInParent()) ||
-                this.tearHitbox.getShape().getBoundsInParent().intersects(Main.player.getBodyHitbox().getShape().getBoundsInParent()) && Main.player.isVulnerable()) {//overlap & vulnerable
-            Main.player.inflictDamage(this.damage);
-            Main.player.applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), (int) (10 * this.avgScale));
+    private void playerCheck(Player player, Group group, ArrayList<Tear> tears) {
+        if (this.tearHitbox.getShape().getBoundsInParent().intersects(player.getHeadHitbox().getShape().getBoundsInParent()) ||
+                this.tearHitbox.getShape().getBoundsInParent().intersects(player.getBodyHitbox().getShape().getBoundsInParent()) && player.isVulnerable()) {//overlap & vulnerable
+            player.inflictDamage(this.damage);
+            player.applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), (int) (10 * this.avgScale));
             //
             System.out.println("Player hit by Enemy tear");
             hitSomething(group, tears);

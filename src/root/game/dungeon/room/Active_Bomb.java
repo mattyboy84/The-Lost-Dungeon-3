@@ -45,10 +45,13 @@ public class Active_Bomb implements Sprite_Splitter {
     Timeline forceListener;
     Random random = new Random();
 
+    Room parentRoom;
+
     //ColorAdjust blackout = new ColorAdjust();
 
 
-    public Active_Bomb(String bombTemplate, Vecc2f centerPos, float scaleX, float scaleY, int fuse) {
+    public Active_Bomb(String bombTemplate, Vecc2f centerPos, float scaleX, float scaleY, int fuse, Room parentRoom) {
+        this.parentRoom=parentRoom;
         this.fuse = fuse;
         this.template = new JsonParser().parse(String.valueOf(templateGetter("src\\resources\\gfx\\items\\pick ups\\" + bombTemplate + ".json"))).getAsJsonObject();
         //
@@ -83,8 +86,8 @@ public class Active_Bomb implements Sprite_Splitter {
             }
             relocate();
             //
-            for (int i = 0; i < Main.player.currentRoom.getBoundaries().size(); i++) {
-                if (Main.player.currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
+            for (int i = 0; i < parentRoom.getBoundaries().size(); i++) {
+                if (parentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
                     this.position.sub(this.velocity);
                     this.velocity.mult((float) 0.8);
                 }

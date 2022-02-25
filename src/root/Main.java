@@ -35,7 +35,7 @@ public class Main extends Application {
     Scene menuScene = new Scene(menuGroup, screenWidth, screenHeight);
     //
     Dungeon dungeon = new Dungeon();
-    public static Player player = new Player();
+    public Player player = new Player();
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -69,10 +69,9 @@ public class Main extends Application {
             Thread.sleep(100);
         }
         //
-        //
         //newGame.setOnMouseClicked(mouseEvent -> {
         //    if (mouseEvent.getButton() == MouseButton.PRIMARY && Player.loaded) {
-        dungeon.loadRoom(dungeon.startX, dungeon.startY, group);
+        dungeon.loadRoom(dungeon.startX, dungeon.startY, group,player);
         player.currentRoom.openDoors(group);
         player.load(group);
         //

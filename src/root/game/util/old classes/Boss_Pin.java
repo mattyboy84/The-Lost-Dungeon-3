@@ -95,7 +95,7 @@ public class Boss_Pin extends Boss implements Sprite_Splitter {
                     break;
                 case 80:
                     this.parentRoom.addNewArc_Tear(damage,this.bodyPosition,
-                            Main.player.getCenterPos(),this.parentGroup,Tear.Target.player);
+                            playerTarget.getCenterPos(),this.parentGroup,Tear.Target.player,playerTarget);
                     this.state=states.Idle;
                     this.attack1.stop();
                     this.mainline.play();

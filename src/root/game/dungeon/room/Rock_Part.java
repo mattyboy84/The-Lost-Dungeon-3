@@ -17,7 +17,7 @@ public class Rock_Part implements Sprite_Splitter {
     boolean markedDelete;
 
     public Rock_Part(String name, int positionX, int positionY, int width, int height, float sheetScale, float scaleX, float scaleY, int i, int j, int borderX, int borderY,int startX,int startY) {
-        this.position = new Vecc2f((positionX + (103 * scaleX * j)), (positionY + (103 *scaleY* i)));
+        this.position = new Vecc2f((positionX + (103 * j))*scaleX, (positionY + (103 *i))*scaleY);
         this.position.add((borderX*scaleX), (borderY*scaleY));
         this.part = new ImageView(imageGetter("file:src\\resources\\gfx\\grid\\" + name + ".png", startX, startY, width, height, scaleX, scaleY, sheetScale));
         this.hitbox = new Hitbox("Rectangle", (int) Math.ceil(((width * 0.8))), (int) Math.ceil(((height * 0.8))), sheetScale, scaleX, scaleY, (int) Math.ceil((width * 0.1)), (int) Math.ceil((height * 0.1)));
