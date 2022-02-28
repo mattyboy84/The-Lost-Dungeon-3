@@ -3,10 +3,10 @@ package root.game.Tear;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import root.game.dungeon.room.boss.Boss;
 import root.game.dungeon.room.enemy.Enemy;
+import root.game.util.Effects;
 import root.game.util.Hitbox;
 import root.game.util.Vecc2f;
 import root.game.util.ViewOrder;
@@ -26,7 +26,8 @@ public class Arc_Tear extends Tear {
     Vecc2f mouthOffset = new Vecc2f(10, -10);
 
 
-    public Arc_Tear(int damage, Vecc2f startPos, Vecc2f endPos, float scaleX, float scaleY, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Boss> bosses, Target tearTarget, Group parentGroup) {
+    public Arc_Tear(int damage, Vecc2f startPos, Vecc2f endPos, float scaleX, float scaleY, ArrayList<Tear> tears, ArrayList<Enemy> enemies, ArrayList<Boss> bosses, Group parentGroup) {
+        super();
         this.avgScale = ((scaleX + scaleY) / 2);
         this.parentGroup = parentGroup;
         float scale = 2.5f;
@@ -37,7 +38,6 @@ public class Arc_Tear extends Tear {
         this.tearImage.setImage(imageGetter("file:src\\resources\\gfx" +
                         "\\tears.png", 128, 64,
                 32, 32, scaleX, scaleY, scale));
-        this.target = tearTarget;
         this.hitY = endPos.y;
 
 
@@ -87,5 +87,10 @@ public class Arc_Tear extends Tear {
         }));
         tearTimeline.setCycleCount(Timeline.INDEFINITE);
         tearTimeline.play();
+    }
+
+    @Override
+    public void tearColourEffect(int explodeCounter) {
+        this.tearImage.setImage(Effects.REDtearCollideAnimation[explodeCounter]);
     }
 }

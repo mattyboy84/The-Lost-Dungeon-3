@@ -19,6 +19,7 @@ public class Enemy_Pooter extends Enemy {
         super(enemyTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
 
         setVeloLimit(2f);
+        this.tearSize=4;
 
         timelineSetup();
     }
@@ -58,7 +59,7 @@ public class Enemy_Pooter extends Enemy {
                         Vecc2f tearVELO = new Vecc2f(playerTarget.getCenterPos());
                         tearVELO.sub(this.centerPos);
                         tearVELO.limit(8);
-                        parentRoom.addNewTear("direction", 1, parentGroup, this.centerPos.add(0, 20 * this.scaleY), tearVELO, this.scaleX, this.scaleY, this.veloLimit, Tear.Target.player,this.playerTarget);
+                        parentRoom.addNewEnemyTear(1,tearSize,parentGroup, this.centerPos.add(0, 20 * this.scaleY), tearVELO, this.scaleX, this.scaleY, this.veloLimit);
                         break;
                     case 0://distance check on first frame of the animation.
                         if ((Vecc2f.distance(playerTarget.getCenterPos().x, playerTarget.getCenterPos().y, this.centerPos.x, this.centerPos.y)) > viewDistance) {//get closer to player - idle state
@@ -111,6 +112,3 @@ public class Enemy_Pooter extends Enemy {
         return tear.tearHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent());
     }
 }
-
-//                //if (enemy != null && this.tearHitbox.getShape().getBoundsInParent().intersects(enemy.getHitbo
-//                x().getShape().getBoundsInParent()) && !(enemy.state == Enemy.states.dying)) {

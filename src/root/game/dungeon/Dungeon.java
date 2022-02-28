@@ -107,11 +107,8 @@ public class Dungeon {
 
                     right = roomChecker(i, j, 0, +1);
 
-                    if (i == startX && j == startY) {
-                        rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading,true));
-                    } else {
-                        rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading,false));
-                    }
+
+                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading, (i == startX && j == startY)));
 
 
                     rooms.get(rooms.size() - 1).start();
@@ -159,40 +156,6 @@ public class Dungeon {
     }
 
     public static void displayMap(int[][] map) {
-        System.out.println("I down, J across");
-        StringBuilder a = new StringBuilder();
-        a.append("   ");
-        for (int i = 0; i < map.length; i++) {
-            a.append(i);
-            if (i < 10) {
-                a.append("  ");
-            } else {
-                a.append(" ");
-            }
-        }
-        System.out.println(a);
-
-        for (int i = 0; i < map.length; i++) {
-            if (i < 10) {
-                System.out.print(i + "  ");
-            } else {
-                System.out.print(i + " ");
-            }
-            for (int j = 0; j < map[0].length; j++) {
-                System.out.print(map[i][j] + "  ");
-            }
-            System.out.println("");
-            //System.out.print(i + " ");
-        }
-        System.out.print("-");//start with 1 to account for I column
-        //
-        for (int i = 0; i < map.length; i++) {//3 for every unit in map,
-            System.out.print("---");
-        }
-    }
-
-
-    public static void displayMap(float[][] map) {
         System.out.println("I down, J across");
         StringBuilder a = new StringBuilder();
         a.append("   ");
@@ -293,7 +256,7 @@ public class Dungeon {
     public void loadRoom(int x, int y, Group group, Player player) {
         for (Room room : rooms) {
             if (room.getI() == x && room.getJ() == y) {
-                room.load(group,player);
+                room.load(group, player);
                 break;
             }
         }

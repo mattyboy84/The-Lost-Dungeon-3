@@ -58,13 +58,11 @@ public class Props implements Sprite_Splitter {
         group.getChildren().add(this.prop);
         this.prop.setViewOrder(ViewOrder.props_layer.getViewOrder());
         this.prop.relocate(position.x, position.y);
-        //System.out.println(this.position);
     }
 
     public void unload(Group group) {
         group.getChildren().remove(this.prop);
     }
-
 
     public Vecc2f getPosition() {
         return position;

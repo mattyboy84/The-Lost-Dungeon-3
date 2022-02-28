@@ -5,9 +5,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import root.game.dungeon.room.Room;
-
 import java.io.File;
-import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -44,20 +42,6 @@ public class Music implements Runnable {
             return this.sound;
         }
     }
-    /*
-    public enum music {
-        explosion_strong1("the caves"),
-        explosion_strong2("library"),
-        explosion_strong3("basic boss fight");
-
-        private String sound;
-
-        music(String a) {
-            this.sound = a;
-        }
-    }
-    */
-    //
 
     static Random random = new Random();
     private Thread t;
@@ -228,7 +212,7 @@ public class Music implements Runnable {
         }
     }
 
-    public static class Sound {
+    protected static class Sound {
 
         private MediaPlayer mediaSound;
         private MediaPlayer mediaLayer;

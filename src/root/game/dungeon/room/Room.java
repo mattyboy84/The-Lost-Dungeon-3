@@ -7,10 +7,10 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
-import root.Main;
 import root.game.Tear.Arc_Tear;
+import root.game.Tear.Tear_Enemy;
+import root.game.Tear.Tear_Player;
 import root.game.dungeon.room.boss.Boss;
-import root.game.dungeon.room.boss.Boss_Pin;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
@@ -216,7 +216,7 @@ public class Room implements Runnable {
                 case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
                 case "pooter" -> enemies.add(new Enemy_Pooter(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
                 case "spider" -> enemies.add(new Enemy_Spider(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
-                case "gaper" -> enemies.add(new Enemy_Gaper(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+                case "gaper" -> enemies.add(new Enemy_Gaper(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this,enemyArray.get(k).getAsJsonObject().get("Rotate").getAsInt()));
 
             }
         }
@@ -342,12 +342,16 @@ public class Room implements Runnable {
         addBombSub(group, bombTemplate, centerPos, 3);
     }
 
-    public void addNewTear(String direction, int damage, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY, float veloLimit, Tear.Target tearTarget,Player targetPlayer) {
-        tears.add(new Tear(direction, damage, group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, bosses, getAllBoundaries(), tearTarget, targetPlayer));
+   //public void addNewArcTear(int damage, Vecc2f startPos, Vecc2f endPos, Group parentGroup, Player playerTarget) {
+   //    tears.add(new Arc_Tear(damage, startPos, endPos, scaleX, scaleY, tears, enemies, bosses, parentGroup));
+   //}
+
+    public void addNewPlayerTear(String lookingDirection, int damage,int tearSize, Group group, Vecc2f pos, Vecc2f velocity, float scaleX, float scaleY, float veloLimit) {
+        tears.add(new Tear_Player(lookingDirection, damage, tearSize,group, pos, velocity, scaleX, scaleY, veloLimit, tears, enemies, bosses, getAllBoundaries()));
     }
 
-    public void addNewArc_Tear(int damage, Vecc2f startPos, Vecc2f endPos, Group parentGroup, Tear.Target tearTarget, Player playerTarget) {
-        tears.add(new Arc_Tear(damage, startPos, endPos, scaleX, scaleY, tears, enemies, bosses, tearTarget, parentGroup));
+    public void addNewEnemyTear(int damage, int tearSize, Group group,Vecc2f position,Vecc2f velocity,float scaleX,float scaleY,float veloLimit) {
+        tears.add(new Tear_Enemy(damage, tearSize,group, position, velocity, scaleX, scaleY, veloLimit, tears, getAllBoundaries(),playerTarget));
     }
 
     public void explosionDamageAroundPoint(float x, float y, int radius, Group group) {
@@ -518,6 +522,12 @@ public class Room implements Runnable {
     public void checkDoors(Group group) {
         if (enemies.size() == 0) {
             openDoors(group);
+        }
+    }
+
+    public void pause() {
+        for (int k = 0; k <enemies.size() ; k++) {
+            enemies.get(k).timeline.pause();
         }
     }
 }

@@ -8,7 +8,6 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
-import root.Main;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
 import root.game.Tear.Tear;
@@ -94,8 +93,8 @@ public class Boss_Pin extends Boss implements Sprite_Splitter {
                     this.body.setImage(body_images[1]);
                     break;
                 case 80:
-                    this.parentRoom.addNewArc_Tear(damage,this.bodyPosition,
-                            playerTarget.getCenterPos(),this.parentGroup,Tear.Target.player,playerTarget);
+                    //this.parentRoom.addNewArcTear(damage,this.bodyPosition,
+                    //        playerTarget.getCenterPos(),this.parentGroup,playerTarget);
                     this.state=states.Idle;
                     this.attack1.stop();
                     this.mainline.play();

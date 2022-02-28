@@ -26,6 +26,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     int gutNumber = 0;
     int bloodNumber = 0;
+    int tearSize;
 
     Vecc2f startPosition;
     Vecc2f position;
@@ -63,7 +64,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Player playerTarget;
     Shading roomShading;
 
-    Timeline timeline = new Timeline();
+    public Timeline timeline = new Timeline();
     Timeline deathTimeline;
     //
     int imageSwapIntervalCounter = 0;

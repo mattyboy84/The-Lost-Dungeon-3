@@ -31,7 +31,7 @@ public class Rock_Part implements Sprite_Splitter {
         //this.hitbox.getShape().toFront();
         //
         this.part.relocate(this.position.x, this.position.y);
-        this.part.setViewOrder(ViewOrder.props_layer.getViewOrder());
+        this.part.setViewOrder(ViewOrder.props_above_layer.getViewOrder());
     }
 
     public void unload(Group group) {

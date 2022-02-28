@@ -176,9 +176,11 @@ public class Vecc2f {
         return target;
     }
 
-    public void mult(float n) {
+    public Vecc2f mult(float n) {
         this.x = this.x * n;
         this.y = this.y * n;
+
+        return new Vecc2f(x, y);
     }
 
     public void mult(double n) {
@@ -340,10 +342,12 @@ public class Vecc2f {
         return "Vec2f[" + x + ", " + y + "]";
     }
 
-    public void fromAngle(double v) {
+    public Vecc2f fromAngle(double v) {
         float a = magnitude();
         this.x = (float) Math.cos(Math.toRadians(v)) * a;
         this.y = (float) Math.sin(Math.toRadians(v)) * a;
+
+        return new Vecc2f(x, y);
     }
 
     public float toAngle() {

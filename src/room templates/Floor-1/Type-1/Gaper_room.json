@@ -30,8 +30,30 @@
     {
       "enemy": "gaper",
       "type": "classic",
+      "Rotate": 0,
       "PositionX": 419,
       "PositionY": 283
+    },
+    {
+      "enemy": "gaper",
+      "type": "classic",
+      "Rotate": 0,
+      "PositionX": 1398,
+      "PositionY": 283
+    },
+    {
+      "enemy": "gaper",
+      "type": "classic",
+      "Rotate": 180,
+      "PositionX": 419,
+      "PositionY": 695
+    },
+    {
+      "enemy": "gaper",
+      "type": "classic",
+      "Rotate": 180,
+      "PositionX": 1398,
+      "PositionY": 695
     }
   ],
   "bosses": [],

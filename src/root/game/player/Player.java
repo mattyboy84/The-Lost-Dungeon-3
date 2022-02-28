@@ -22,7 +22,7 @@ import java.util.Random;
 public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public static boolean loaded = false;
-    Random random=new Random();
+    Random random = new Random();
     //
     int animateCounter;
     //
@@ -86,6 +86,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     int lightRadius = 110;
     float[][] shader;
     int damage = 5;
+    int tearSize = 5;
     //
     float veloLimit;//default is 7 multiplied by screen scale
     //
@@ -276,7 +277,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             if (attacking && attackingTimer >= shootCooldown) {
                 SHOOTINGheadChanger();
                 //shoot tear
-                currentRoom.addNewTear(this.lookingDirection, damage, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY()), this.velocity, scaleX, scaleY, this.veloLimit, Tear.Target.enemy,this);
+                currentRoom.addNewPlayerTear(this.lookingDirection, damage, tearSize, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY() + (15 * scaleY)), this.velocity, scaleX, scaleY, this.veloLimit);
                 //System.out.println(new Vecc2f(this.headHitbox.getShape().getLayoutX(),this.headHitbox.getShape().getLayoutY()));
                 //
                 justShot = true;
@@ -360,9 +361,9 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 Music.clearSFX();
                 String oldMusic = currentRoom.getMusic();
                 roomFinder(dungeon);
-                currentRoom.load(group,this);
-                String newMusic=currentRoom.getMusic();
-                Music.transition(oldMusic,newMusic,currentRoom);
+                currentRoom.load(group, this);
+                String newMusic = currentRoom.getMusic();
+                Music.transition(oldMusic, newMusic, currentRoom);
                 //
                 System.out.println("changing room to: " + currentRoom.room);
                 //
@@ -395,7 +396,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public void updateScore(int diff) {
         this.score += diff;
-        this.score=Math.max(this.score,0);//stops score from going below 0
+        this.score = Math.max(this.score, 0);//stops score from going below 0
         overlay.updateScore(score);
     }
 
@@ -442,7 +443,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             if (currentRoom.doors.get(i).getDoorBlock().getBoundsInParent().intersects(this.bodyHitbox.getShape().getBoundsInParent()) && (currentRoom.doors.get(i).state == Door.State.locked)) {
                 System.out.println("opening locked door");//unlock door
                 currentRoom.doors.get(i).forceOpen(group);
-                Music.addSFX(false,Integer.MAX_VALUE, Music.sfx.lock_break_0, Music.sfx.lock_break_1);
+                Music.addSFX(false, Integer.MAX_VALUE, Music.sfx.lock_break_0, Music.sfx.lock_break_1);
                 updateKeys(-1);
             }
         }
@@ -592,7 +593,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     }
 
     public void applyForce(Vecc2f direction, int magnitude) {
-        direction.add(0.1,0.1);
+        direction.add(0.1, 0.1);
         System.out.println(direction);
         direction.mult(magnitude);
         this.acceleration.set(0, 0);
@@ -744,10 +745,14 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     }
 
     public void inflictDamage(int damage) {
-        vulnerableTimer = 0;
-        Music.addSFX(false, random.nextInt(Integer.MAX_VALUE),Music.sfx.hurt_grunt_0,Music.sfx.hurt_grunt_1,Music.sfx.hurt_grunt_2);
-        //will choose 1 of 3 hurt sound effects
-        this.changeHealthBy(-damage);
+
+        if (vulnerableTimer > vulnerableDuration) {
+            vulnerableTimer = 0;
+            Music.addSFX(false, random.nextInt(Integer.MAX_VALUE), Music.sfx.hurt_grunt_0, Music.sfx.hurt_grunt_1, Music.sfx.hurt_grunt_2);
+
+            //will choose 1 of 3 hurt sound effects
+            this.changeHealthBy(-damage);
+        }
 
     }
 
