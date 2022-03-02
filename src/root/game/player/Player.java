@@ -10,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-import root.game.Tear.Tear;
 import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.Door;
 import root.game.dungeon.room.Room;
@@ -37,6 +36,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Image[] heads = new Image[6];
     Image[] LR_body = new Image[10];
     Image[] UD_body = new Image[10];
+    Image[] deathImages = new Image[3];
     //
     ImageView head = new ImageView();
     ImageView body = new ImageView();
@@ -102,9 +102,18 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Dungeon dungeon;
     String threadName;
     private Thread t;
-    Circle c;
-
+    //Circle c;
     Group group;
+
+    enum states {
+        idle,
+        moving,
+        hurt,
+        dying,
+        transitioning
+    }
+
+    states state = null;
 
     public void Generate(String costume, int startX, int startY, float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, Dungeon dungeon, String threadName, Group group) {
         this.group = group;
@@ -160,10 +169,13 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         //
         readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) Math.round(64));
         //
+        prepareDeathImages(file, sheetScale);
+        //
         roomFinder(dungeon);
         //
         this.body.setImage(UD_body[2]);//default is 2
         this.head.setImage(heads[0]);
+        this.state = states.idle;
         //
         bodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
         nextXFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
@@ -184,7 +196,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             this.headHitbox.getShape().setCacheHint(CacheHint.QUALITY);
         }
         //
-        c = new Circle(1);
+        //c = new Circle(1);
         //
         updateItems();
 
@@ -209,9 +221,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     private void playerController(Dungeon dungeon) {
         controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
-
-            //System.out.println(currentRoom.tears.size());
-
             currentRoom.shading.removeActiveSource(hashCode());
             //timers
             vulnerableTimer++;
@@ -223,96 +232,144 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             //
             this.direction.set(velocity.x, velocity.y);
             this.direction.limit(1);
-            accDecider();
-            this.acceleration.limit(2 * avgScale);
-            this.velocity.add(this.acceleration);
             //
-            this.velocity.mult((float) 0.9);
-            //
+            //System.out.println("State: " + this.state + " Acc: " + this.acceleration + " Velo:" + this.velocity);
             //
             this.attacking = this.northLOOKING || this.eastLOOKING || this.westLOOKING || this.southLOOKING;
-            //
-            //
-            if (this.velocity.magnitude() < 0.2) {
-                moving = false;
-                this.velocity.set(0, 0);
-                //this.position.set((int) this.position.x, (int) this.position.y);
-                if (!colliding()) {
-                    this.position.set((int) this.position.x, (int) this.position.y);
-                }
-                this.body.setImage(UD_body[2]);
-                if (!justShot) {
-                    this.head.setImage(heads[0]);
-                }
-                this.movingDirection = "south";
-                relocate();
-            }
-            relocate();
-
             this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.9) : (veloLimit));
-
-            //
-            this.position.add(this.velocity);
-            this.centerPos.set(this.bodyHitbox.getCenterX(), ((this.bodyHitbox.getCenterY() + this.headHitbox.getCenterY()) / 2));
-            //
-            boundaryChecker(group);
-            //
-            itemCollisionChecker();
             //
             if (!this.northLOOKING && !this.southLOOKING && !this.eastLOOKING && !this.westLOOKING) {
                 lookingDirection = null;
             }
-            if (!justShot) {
-                MOVINGheadChanger();
-                LOOKINGheadChanger();
-            } else {
-                shotTimer++;
-                if (shotTimer >= (int) (shootCooldown / 3)) {
-                    justShot = false;
-                }
-            }
             //
-            attackingDecider();
-            //
-            if (attacking && attackingTimer >= shootCooldown) {
-                SHOOTINGheadChanger();
-                //shoot tear
-                currentRoom.addNewPlayerTear(this.lookingDirection, damage, tearSize, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY() + (15 * scaleY)), this.velocity, scaleX, scaleY, this.veloLimit);
-                //System.out.println(new Vecc2f(this.headHitbox.getShape().getLayoutX(),this.headHitbox.getShape().getLayoutY()));
-                //
-                justShot = true;
-                shotTimer = 0;
-                attackingTimer = 0;
-            }
-            //
-            if (moving && animationTimer >= 6) {
-                playerAnimator();
-                animationTimer = 0;
-            }
-            //
-            if (doorTriggerTimer >= 6) {
-                doorTriggerTimer = 0;
-                doorTriggerChecker(dungeon);
-            }
-            if (scoreTimer >= 60 && start) {//waits until initial movement then starts the UI
-                scoreTimer = 1;
-                updateScore(-1);
-                updateTime();
-            }
+            switch (state) {
+                case idle:
+                    //
+                    startToMove();
+                    relocate();
+                    //
+                    if (!justShot) {
+                        MOVINGheadChanger();//changes head image to looking direction
+                        LOOKINGheadChanger();//priority to change head to attacking direction
+                    } else {
+                        shotTimer++;
+                        if (shotTimer >= (shootCooldown / 3)) {
+                            justShot = false;
+                        }
+                    }
+                    //
+                    attackingDecider();//decides the looking direction in order to shoot - gives preference to north/south axis
+                    //
+                    playerAttackChecker();
+                    //
+                    if (moving) {
+                        this.state = states.moving;
+                    }
+                    break;
+                case moving:
+                    //
+                    startToMove();
+                    relocate();
+                    //
+                    if (!justShot) {
+                        MOVINGheadChanger();//changes head image to looking direction
+                        LOOKINGheadChanger();//priority to change head to attacking direction
+                    } else {
+                        shotTimer++;
+                        if (shotTimer >= (shootCooldown / 3)) {
+                            justShot = false;
+                        }
+                    }
+                    //
+                    attackingDecider();//decides the looking direction in order to shoot - gives preference to north/south axis
+                    //
+                    playerAttackChecker();
+                    //
+                    playerAnimator();//if moving, body will animate every x frames
+                    //
+                    transitionToIdle();
+                    break;
+                case hurt:
 
+                    break;
+                case dying:
 
-            //System.out.println(movingDirection);
+                    break;
+                case transitioning:
 
+                    break;
+            }
             //
-            c.relocate(this.position.x, this.position.y);
+            centerPos.set(this.bodyHitbox.getCenterX(), ((this.bodyHitbox.getCenterY() + this.headHitbox.getCenterY()) / 2));
+            doorTriggerChecker();//looks for door triggers to transfer rooms
+            boundaryChecker(group);
+            itemCollisionChecker();
             //
-            //System.out.println("Center: " + this.headHitbox.getShape().getBoundsInParent().getCenterX()+" "+ this.headHitbox.getShape().getBoundsInParent().getCenterY());
-
-            currentRoom.shading.addActiveSource((float) (headHitbox.getCenterX()),
-                    (float) (headHitbox.getCenterY()), shader, hashCode());
+            currentRoom.shading.addActiveSource((float) (headHitbox.getCenterX()), (float) (headHitbox.getCenterY()), shader, hashCode());
         }));
         controller.setCycleCount(Timeline.INDEFINITE);
         controller.play();
+    }
+
+    private void startToMove() {
+        accDecider();
+        this.acceleration.limit(2 * avgScale);
+        this.velocity.add(this.acceleration);
+        //
+        this.velocity.mult((float) 0.9);
+        this.position.add(this.velocity);
+    }
+
+    private void transitionToIdle() {
+        if (this.velocity.magnitude() < 0.2) {
+            this.moving = false;
+            this.velocity.set(0, 0);
+            //
+            if (!colliding()) {
+                this.position.set((int) this.position.x, (int) this.position.y);
+            }
+            this.body.setImage(UD_body[2]);
+            if (!justShot) {
+                this.head.setImage(heads[0]);
+            }
+            this.movingDirection = "south";
+            relocate();
+            this.state = states.idle;
+        }
+    }
+
+    private void playerAttackChecker() {
+        if (attacking && attackingTimer >= shootCooldown) {
+            SHOOTINGheadChanger();
+            //shoot tear
+            currentRoom.addNewPlayerTear(this.lookingDirection, damage, tearSize, group, new Vecc2f(this.headHitbox.getShape().getLayoutX(), this.headHitbox.getShape().getLayoutY() + (15 * scaleY)), this.velocity, scaleX, scaleY, this.veloLimit);
+            //
+            justShot = true;
+            shotTimer = 0;
+            attackingTimer = 0;
+        }
+    }
+
+    private void playerAnimator() {
+        if (animationTimer >= 6) {
+            playerAnimatorSub();
+            animationTimer = 0;
+        }
+    }
+
+    private void doorTriggerChecker() {
+        if (doorTriggerTimer >= 6) {
+            doorTriggerTimer = 0;
+            doorTriggerCheckerSub(dungeon);
+        }
+    }
+
+    private void uiStarter() {
+        if (scoreTimer >= 60 && start) {//waits until initial movement then starts the UI
+            scoreTimer = 1;
+            updateScore(-1);
+            updateTime();
+        }
     }
 
     public void placeBomb(Group group, String bombTemplate, Vecc2f centerPos) {
@@ -341,7 +398,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         }
     }
 
-    private void doorTriggerChecker(Dungeon dungeon) {//"LOAD" "UNLOAD" "MAP"
+    private void doorTriggerCheckerSub(Dungeon dungeon) {//"LOAD" "UNLOAD" "MAP"
         for (int i = 0; i < currentRoom.doors.size(); i++) {
             if (currentRoom.doors.get(i).getDoorTrigger().getBoundsInParent().intersects(this.bodyHitbox.getShape().getBoundsInParent())) {
                 this.position.set(currentRoom.doors.get(i).relocatePos);
@@ -518,6 +575,12 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         }
     }
 
+    private void prepareDeathImages(String file, int sheetScale) {//three death images used in the death animation
+        deathImages[0] = imageGetter(file, 0, 128, 64, 64, scaleX, scaleY, sheetScale);
+        deathImages[1] = imageGetter(file, 128, 192, 64, 64, scaleX, scaleY, sheetScale);
+        deathImages[2] = imageGetter(file, 192, 128, 64, 64, scaleX, scaleY, sheetScale);
+    }
+
     private void readImageINTOArray(String file, int sheetScale, float scaleX, float scaleY, Image[] ARRAY, int startX, int startY) {
         for (int i = 0; i < ARRAY.length; i++) {
             ARRAY[i] = imageGetter(file, startX, startY, 32, 32, scaleX, scaleY, sheetScale);
@@ -530,7 +593,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         }
     }
 
-    private void playerAnimator() {
+    private void playerAnimatorSub() {
         float angle = this.direction.toAngle() + 90;
         angle = (angle > 360) ? (angle - 360) : (angle);
         if (angle > 45 && angle < 135) {//right
@@ -611,7 +674,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     }
 
     public void load(Group group) {
-        group.getChildren().addAll(this.headHitbox.getShape(), this.nextXFrameBodyHitbox.getShape(), this.nextYFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head, this.c);
+        group.getChildren().addAll(this.headHitbox.getShape(), this.nextXFrameBodyHitbox.getShape(), this.nextYFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head/*, this.c*/);
         //
         this.headHitbox.getShape().setViewOrder(ViewOrder.player_layer.getViewOrder());
         this.bodyHitbox.getShape().setViewOrder(ViewOrder.player_layer.getViewOrder());
