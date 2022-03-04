@@ -188,6 +188,13 @@ public class Vecc2f {
         this.y = (float) (this.y * n);
     }
 
+    public Vecc2f mult(Vecc2f multVec) {
+        this.x *= multVec.x;
+        this.y *= multVec.y;
+
+        return new Vecc2f(x, y);
+    }
+
     public void div(float divideBy) {
         this.x = (this.x / divideBy);
         this.y = (this.y / divideBy);

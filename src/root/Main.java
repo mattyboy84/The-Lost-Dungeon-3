@@ -94,7 +94,7 @@ public class Main extends Application {
                 case LEFT -> player.setWestLOOKING(true);
                 case DOWN -> player.setSouthLOOKING(true);
                 case RIGHT -> player.setEastLOOKING(true);
-                case E -> player.placeBomb(group, "bomb", player.centerPos);
+                case E -> player.placeBomb(group, "bomb", player.getCenterPos());
                 case F -> stage.setFullScreen(!stage.isFullScreen());
                 case J -> player.currentRoom.forceOpenDoors(group);
                 case M -> player.getOverlay().revealMap();
@@ -103,10 +103,7 @@ public class Main extends Application {
                 case V -> player.changeHealthBy(-1);
                 case B -> player.changeMaxHealthBy(2, group);
                 case N -> player.changeMaxHealthBy(-2, group);
-                case I -> player.getOverlay().miniMap.updateMinimap(9, 9);
-                case K -> Music.addMusic("the caves",false,64);
-                case T -> player.currentRoom.pause();
-
+                case T -> player.inflictDamage(1);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {

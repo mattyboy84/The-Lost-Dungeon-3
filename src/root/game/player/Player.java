@@ -1,5 +1,9 @@
 package root.game.player;
 
+import animatefx.animation.Bounce;
+import animatefx.animation.RotateInDownLeft;
+import animatefx.animation.RotateOutDownRight;
+import animatefx.animation.RubberBand;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.NodeOrientation;
@@ -8,7 +12,8 @@ import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Circle;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
 import javafx.util.Duration;
 import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.Door;
@@ -25,7 +30,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     //
     int animateCounter;
     //
-    int shootCooldown = 45;
+    int shootCooldown = 40;
     //
     float avgScale;
     String movingDirection = "south";
@@ -40,8 +45,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     //
     ImageView head = new ImageView();
     ImageView body = new ImageView();
-    //
-    int width, height;
+    ImageView fullIsaac = new ImageView();
     //
     public int coinNumber = 5, keyNumber = 1, bombNumber = 3;
     int score = 100;
@@ -51,6 +55,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Vecc2f VECscale = new Vecc2f();
     Vecc2f bodyOffset, headOffset;
     Vecc2f bodyDelta, headDelta;
+    Vecc2f fullIsaacOffset = new Vecc2f(20, 20);
     Hitbox headHitbox;
     Hitbox bodyHitbox;
     Hitbox nextXFrameBodyHitbox;
@@ -60,7 +65,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Vecc2f position = new Vecc2f();
     Vecc2f velocity = new Vecc2f();
     Vecc2f acceleration = new Vecc2f();
-    Vecc2f force = new Vecc2f(0, 0);
     public static Vecc2f centerPos = new Vecc2f();
     //
     Vecc2f xSpeed = new Vecc2f((float) 0.2, 0);
@@ -78,12 +82,13 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     int scoreTimer;
     int bombTimer;
     int vulnerableTimer;
+    int stateTransitionTimer;
     final int vulnerableDuration = 60;
     //
     public Room currentRoom;
     Player_Overlay overlay;
     //
-    int lightRadius = 110;
+    int lightRadius = 100;//default is 100
     float[][] shader;
     int damage = 5;
     int tearSize = 5;
@@ -95,14 +100,11 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     //
     Timeline controller;
     //
-
-    Circle center = new Circle(1);
     Rectangle2D screenBounds;
     int sheetScale;
     Dungeon dungeon;
     String threadName;
     private Thread t;
-    //Circle c;
     Group group;
 
     enum states {
@@ -146,30 +148,22 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         veloLimit = 7 * avgScale;
         VECscale.set(scaleX, scaleY);
         //
-        bodyOffset = new Vecc2f(0 * scaleX, 0 * scaleY);
-        headOffset = new Vecc2f(0 * scaleX, -10 * scaleY);
-        bodyDelta = new Vecc2f(8 * scaleX, 13 * scaleY);
-        headDelta = new Vecc2f(16 * scaleX, 4 * scaleY);
-        bodyOffset.mult(sheetScale);
-        headOffset.mult(sheetScale);
-        bodyDelta.mult(sheetScale);
-        headDelta.mult(sheetScale);
-        //
-        this.width = (32);
-        this.height = (32);
+        bodyOffset = new Vecc2f(0, 0).mult(VECscale).mult(sheetScale);
+        headOffset = new Vecc2f(0, -10).mult(VECscale).mult(sheetScale);
+        bodyDelta = new Vecc2f(8, 13).mult(VECscale).mult(sheetScale);
+        headDelta = new Vecc2f(16, 4).mult(VECscale).mult(sheetScale);
+        fullIsaacOffset = new Vecc2f(-16, -32).mult(VECscale).mult(sheetScale);
         //
         String file = "file:src\\resources\\gfx\\characters\\costumes\\" + this.costume + ".png";
         for (int i = 0; i < this.heads.length; i++) {//head images
             this.heads[i] = imageGetter(file, 32 * i, 0, 32, 32, scaleX, scaleY, sheetScale);
         }
-
-
         //
-        readImageINTOArray(file, sheetScale, scaleX, scaleY, UD_body, (int) Math.round(192), 0);
+        readImageINTOArray(file, sheetScale, scaleX, scaleY, UD_body, (int) Math.round(192), 0);//prepares the Up & Down body animation
         //
-        readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) Math.round(64));
+        readImageINTOArray(file, sheetScale, scaleX, scaleY, LR_body, 0, (int) Math.round(64));//prepares the Left & Right body animation
         //
-        prepareDeathImages(file, sheetScale);
+        prepareDeathImages(file, sheetScale);//prepares the Isaac death animation
         //
         roomFinder(dungeon);
         //
@@ -181,8 +175,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         nextXFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
         nextYFrameBodyHitbox = new Hitbox("Rectangle", 16, 11, sheetScale, scaleX, scaleY, 8, 13);
 
-
-        //int radius = (int) (13 * sheetScale * (scaleX + scaleY) / 2);
         headHitbox = new Hitbox("Circle", 12, 12, sheetScale, scaleX, scaleY, 16, 4);
         //caching
         {
@@ -196,14 +188,12 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             this.headHitbox.getShape().setCacheHint(CacheHint.QUALITY);
         }
         //
-        //c = new Circle(1);
-        //
         updateItems();
 
         try {
             playerController(dungeon);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         //
         loaded = true;
@@ -223,6 +213,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         controller = new Timeline(new KeyFrame(Duration.millis(16), event -> {
             currentRoom.shading.removeActiveSource(hashCode());
             //timers
+            stateTransitionTimer++;
             vulnerableTimer++;
             animationTimer++;
             doorTriggerTimer++;
@@ -233,7 +224,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             this.direction.set(velocity.x, velocity.y);
             this.direction.limit(1);
             //
-            //System.out.println("State: " + this.state + " Acc: " + this.acceleration + " Velo:" + this.velocity);
+            System.out.println("State: " + this.state + " Acc: " + this.acceleration + " Velo:" + this.velocity);
             //
             this.attacking = this.northLOOKING || this.eastLOOKING || this.westLOOKING || this.southLOOKING;
             this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.9) : (veloLimit));
@@ -262,8 +253,9 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                     //
                     playerAttackChecker();
                     //
-                    if (moving) {
+                    if (this.velocity.magnitude() > 0.2) {
                         this.state = states.moving;
+                        stateTransitionTimer = 0;
                     }
                     break;
                 case moving:
@@ -287,10 +279,25 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                     //
                     playerAnimator();//if moving, body will animate every x frames
                     //
-                    transitionToIdle();
+                    transitionToIdle();//checks if state should be changed to Idle
                     break;
                 case hurt:
 
+                    startToMove();//enables moving in this state
+                    relocate();
+
+                    if (stateTransitionTimer >= 45) {
+                        this.fullIsaac.setVisible(false);
+                        this.head.setVisible(true);
+                        this.body.setVisible(true);
+                        //
+                        if (this.velocity.magnitude() > 0.2) {
+                            this.state = states.moving;
+                            stateTransitionTimer = 0;
+                        } else {
+                            transitionToIdle();
+                        }
+                    }
                     break;
                 case dying:
 
@@ -335,6 +342,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             this.movingDirection = "south";
             relocate();
             this.state = states.idle;
+            stateTransitionTimer = 0;
         }
     }
 
@@ -435,6 +443,39 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         this.health += change;
         this.health = Math.min(Math.max(this.health, MIN_Health), TOTAL_Health);//keep health between min & max
         overlay.updateHearts(this.health);
+        if (health == MIN_Health) {
+            transitionToDying();
+        } else if (change < 0) {//player is being 'hurt'
+            transitionToHurt();//changes the state to 'Hurt'
+        }
+    }
+
+    private void transitionToDying() {
+        this.state = states.dying;
+        //
+        this.fullIsaac.setImage(deathImages[0]);
+        this.head.setVisible(false);
+        this.body.setVisible(false);
+        this.fullIsaac.setVisible(true);
+
+        RubberBand a = new RubberBand(this.fullIsaac);//uses the AnimateFX Lib
+        a.play();
+        a.setOnFinished(event -> {//at the end of the Rubberband - Isaac will rotate 90 degrees (falling to the floor)
+            this.fullIsaac.setImage(deathImages[1]);
+            Timeline rotateIsaac = new Timeline(new KeyFrame(Duration.millis(6), eventSub -> {
+                this.fullIsaac.getTransforms().add(new Rotate(1, this.fullIsaac.getBoundsInParent().getWidth()/2,(this.fullIsaac.getBoundsInParent().getHeight()/2)));
+            }));
+            rotateIsaac.setCycleCount(90);
+            rotateIsaac.play();
+            //
+            rotateIsaac.setOnFinished(event1 -> {//when Isaac has fallen to the fllor it will change to the 'curled up' position and corrects for offset. Isaac is now defeated.
+                this.fullIsaac.getTransforms().clear();
+                this.position.sub(-(10*sheetScale*scaleX),(19*sheetScale*scaleY));
+                relocate();
+                this.fullIsaac.setImage(deathImages[2]);
+            });
+        });
+        stateTransitionTimer = 0;
     }
 
     public void changeMaxHealthBy(int change, Group group) {
@@ -671,10 +712,13 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         this.bodyHitbox.getShape().relocate(position.x + bodyDelta.x, position.y + bodyDelta.y);
         this.nextXFrameBodyHitbox.getShape().relocate(bodyHitbox.getShape().getLayoutX() + this.velocity.x, bodyHitbox.getShape().getLayoutY() + this.velocity.y);
         this.nextYFrameBodyHitbox.getShape().relocate(bodyHitbox.getShape().getLayoutX(), bodyHitbox.getShape().getLayoutY() + this.velocity.y);
+        this.fullIsaac.relocate(position.x + fullIsaacOffset.x, position.y + fullIsaacOffset.y);
     }
 
     public void load(Group group) {
         group.getChildren().addAll(this.headHitbox.getShape(), this.nextXFrameBodyHitbox.getShape(), this.nextYFrameBodyHitbox.getShape(), this.bodyHitbox.getShape(), this.body, this.head/*, this.c*/);
+        group.getChildren().add(this.fullIsaac);
+        this.fullIsaac.setVisible(false);
         //
         this.headHitbox.getShape().setViewOrder(ViewOrder.player_layer.getViewOrder());
         this.bodyHitbox.getShape().setViewOrder(ViewOrder.player_layer.getViewOrder());
@@ -683,9 +727,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         //
         this.body.setViewOrder(ViewOrder.player_layer.getViewOrder());
         this.head.setViewOrder(ViewOrder.player_layer.getViewOrder());
-        //
-        group.getChildren().add(center);//TODO remember this
-        center.setViewOrder(ViewOrder.player_layer.getViewOrder());
+        this.fullIsaac.setViewOrder(ViewOrder.player_layer.getViewOrder());
         //
         this.body.setVisible(true);
         this.head.setVisible(true);
@@ -809,14 +851,22 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public void inflictDamage(int damage) {
 
-        if (vulnerableTimer > vulnerableDuration) {
+        if ((vulnerableTimer > vulnerableDuration) && (state.equals(states.idle) || state.equals(states.moving))) {//can only be 'hurt' while idle or moving
             vulnerableTimer = 0;
             Music.addSFX(false, random.nextInt(Integer.MAX_VALUE), Music.sfx.hurt_grunt_0, Music.sfx.hurt_grunt_1, Music.sfx.hurt_grunt_2);
-
             //will choose 1 of 3 hurt sound effects
             this.changeHealthBy(-damage);
-        }
 
+        }
+    }
+
+    private void transitionToHurt() {
+        this.fullIsaac.setImage(deathImages[0]);
+        this.fullIsaac.setVisible(true);
+        this.head.setVisible(false);
+        this.body.setVisible(false);
+        this.state = states.hurt;
+        stateTransitionTimer = 0;
     }
 
     public Vecc2f getCenterPos() {
