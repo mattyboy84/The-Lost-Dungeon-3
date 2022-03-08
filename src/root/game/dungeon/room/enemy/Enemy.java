@@ -145,8 +145,9 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             enemy = new ImageView(idleAnimation[0]);
         //
         try{//attempts to get the light radius if there is one.
-            lightRadius = enemyTemplate.get("light").getAsJsonObject().get("Radius").getAsInt();
+            lightRadius = enemyTemplate.get("Light").getAsJsonObject().get("Radius").getAsInt();
             shader = setupShader(lightRadius);
+            System.out.println("enemy created " + lightRadius);
         }catch (Exception ignored){}
         //DEATH Animation - setups one the animation if there is one.
         try {

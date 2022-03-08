@@ -1,5 +1,7 @@
 package root;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -13,6 +15,10 @@ import root.game.music.Music;
 import root.game.player.Player;
 import root.game.util.Effects;
 import root.game.util.Vecc2f;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
 public class Main extends Application {
 
@@ -58,7 +64,6 @@ public class Main extends Application {
         //
         Music musics = new Music();
         musics.start();
-        //Music.SFXVolume=Music.SFXVolume*0;//'Override' TODO Remember this
         //
         dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
         Dungeon.displayMap(dungeon.map);
@@ -84,6 +89,7 @@ public class Main extends Application {
                 System.out.println("load game");
             }
         });
+
         scene.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case W -> player.setNorthMOVING(true);
@@ -104,6 +110,7 @@ public class Main extends Application {
                 case B -> player.changeMaxHealthBy(2, group);
                 case N -> player.changeMaxHealthBy(-2, group);
                 case T -> player.inflictDamage(1);
+                case L -> player.currentRoom.newRealTimeEnemy("classic","pooter",new Vecc2f(600,500),group);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
@@ -128,6 +135,24 @@ public class Main extends Application {
         stage.setFullScreen(true);
         stage.show();
     }
+
+    private StringBuilder templateGetterSub(String file2) {
+        StringBuilder json = new StringBuilder();
+        try {
+            File file = new File(file2);
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            String st;
+            while ((st = br.readLine()) != null) {
+                json.append(st);
+            }
+        } catch (Exception e) {
+            System.out.println("Cannot find room template - Room");
+        }
+        return json;
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

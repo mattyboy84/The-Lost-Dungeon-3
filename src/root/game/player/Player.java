@@ -55,7 +55,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     Vecc2f VECscale = new Vecc2f();
     Vecc2f bodyOffset, headOffset;
     Vecc2f bodyDelta, headDelta;
-    Vecc2f fullIsaacOffset = new Vecc2f(20, 20);
+    Vecc2f fullIsaacOffset;
     Hitbox headHitbox;
     Hitbox bodyHitbox;
     Hitbox nextXFrameBodyHitbox;
@@ -69,7 +69,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     //
     Vecc2f xSpeed = new Vecc2f((float) 0.2, 0);
     Vecc2f ySpeed = new Vecc2f((float) 0, (float) 0.2);
-    boolean moving;
     boolean attacking;
     boolean collide = false;
     boolean justShot = false;
@@ -112,6 +111,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         moving,
         hurt,
         dying,
+        death,
         transitioning
     }
 
@@ -188,7 +188,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             this.headHitbox.getShape().setCacheHint(CacheHint.QUALITY);
         }
         //
-        updateItems();
+        updateItems(0);
 
         try {
             playerController(dungeon);
@@ -224,7 +224,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             this.direction.set(velocity.x, velocity.y);
             this.direction.limit(1);
             //
-            System.out.println("State: " + this.state + " Acc: " + this.acceleration + " Velo:" + this.velocity);
+            //System.out.println("State: " + this.state + " Acc: " + this.acceleration + " Velo:" + this.velocity);
             //
             this.attacking = this.northLOOKING || this.eastLOOKING || this.westLOOKING || this.southLOOKING;
             this.velocity.limit((this.velocity.magnitude() > veloLimit * 1.5) ? (this.velocity.magnitude() * 0.9) : (veloLimit));
@@ -301,6 +301,29 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                     break;
                 case dying:
 
+                    RubberBand a = new RubberBand(this.fullIsaac);//uses the AnimateFX Lib
+                    a.play();
+                    a.setOnFinished(endOfBandEvent -> {//at the end of the Rubberband - Isaac will rotate 90 degrees (falling to the floor)
+                        this.fullIsaac.setImage(deathImages[1]);
+                        Timeline rotateIsaac = new Timeline(new KeyFrame(Duration.millis(6), rotateIsaacEvent -> {
+                            this.fullIsaac.getTransforms().add(new Rotate(1, this.fullIsaac.getBoundsInParent().getWidth() / 2, (this.fullIsaac.getBoundsInParent().getHeight() / 2)));
+                        }));
+                        rotateIsaac.setCycleCount(90);
+                        rotateIsaac.play();
+                        //
+                        rotateIsaac.setOnFinished(event1 -> {//when Isaac has fallen to the floor it will change to the 'curled up' position and corrects for offset. Isaac is now defeated.
+                            this.fullIsaac.getTransforms().clear();
+                            this.position.sub(-(10 * sheetScale * scaleX), (19 * sheetScale * scaleY));
+                            relocate();
+                            this.fullIsaac.setImage(deathImages[2]);
+                        });
+                    });
+                    stateTransitionTimer = 0;
+                    //
+                    this.state=states.death;
+                    break;
+                case death:
+                    //TODO At this point, the game could add the current score to a database, provide an option to re-try or close the game.
                     break;
                 case transitioning:
 
@@ -311,6 +334,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             doorTriggerChecker();//looks for door triggers to transfer rooms
             boundaryChecker(group);
             itemCollisionChecker();
+            uiStarter();
             //
             currentRoom.shading.addActiveSource((float) (headHitbox.getCenterX()), (float) (headHitbox.getCenterY()), shader, hashCode());
         }));
@@ -329,7 +353,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     private void transitionToIdle() {
         if (this.velocity.magnitude() < 0.2) {
-            this.moving = false;
             this.velocity.set(0, 0);
             //
             if (!colliding()) {
@@ -343,6 +366,25 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             relocate();
             this.state = states.idle;
             stateTransitionTimer = 0;
+        }
+    }
+
+    private void transitionToHurt() {
+        this.fullIsaac.setImage(deathImages[0]);
+        this.fullIsaac.setVisible(true);
+        this.head.setVisible(false);
+        this.body.setVisible(false);
+        this.state = states.hurt;
+        stateTransitionTimer = 0;
+    }
+
+    public void inflictDamage(int damage) {
+        if ((vulnerableTimer > vulnerableDuration) && (state.equals(states.idle) || state.equals(states.moving))) {//can only be 'hurt' while idle or moving
+            vulnerableTimer = 0;
+            Music.addSFX(false, random.nextInt(Integer.MAX_VALUE), Music.sfx.hurt_grunt_0, Music.sfx.hurt_grunt_1, Music.sfx.hurt_grunt_2);
+            //will choose 1 of 3 hurt sound effects
+            this.changeHealthBy(-damage);
+
         }
     }
 
@@ -457,25 +499,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         this.head.setVisible(false);
         this.body.setVisible(false);
         this.fullIsaac.setVisible(true);
-
-        RubberBand a = new RubberBand(this.fullIsaac);//uses the AnimateFX Lib
-        a.play();
-        a.setOnFinished(event -> {//at the end of the Rubberband - Isaac will rotate 90 degrees (falling to the floor)
-            this.fullIsaac.setImage(deathImages[1]);
-            Timeline rotateIsaac = new Timeline(new KeyFrame(Duration.millis(6), eventSub -> {
-                this.fullIsaac.getTransforms().add(new Rotate(1, this.fullIsaac.getBoundsInParent().getWidth()/2,(this.fullIsaac.getBoundsInParent().getHeight()/2)));
-            }));
-            rotateIsaac.setCycleCount(90);
-            rotateIsaac.play();
-            //
-            rotateIsaac.setOnFinished(event1 -> {//when Isaac has fallen to the fllor it will change to the 'curled up' position and corrects for offset. Isaac is now defeated.
-                this.fullIsaac.getTransforms().clear();
-                this.position.sub(-(10*sheetScale*scaleX),(19*sheetScale*scaleY));
-                relocate();
-                this.fullIsaac.setImage(deathImages[2]);
-            });
-        });
-        stateTransitionTimer = 0;
     }
 
     public void changeMaxHealthBy(int change, Group group) {
@@ -498,10 +521,10 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         overlay.updateScore(score);
     }
 
-    private void updateItems() {
-        updateCoins(0);
-        updateKeys(0);
-        updateBombs(0);
+    private void updateItems(int startPoint) {
+        updateCoins(startPoint);
+        updateKeys(startPoint);
+        updateBombs(startPoint);
     }
 
     public void updateCoins(int diff) {
@@ -546,7 +569,8 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             }
         }
         for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
-            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.getShape().getBoundsInParent())) {
+            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.getShape().getBoundsInParent())
+                    || currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextYFrameBodyHitbox.getShape().getBoundsInParent())) {
                 collide = true;
                 this.position.sub(this.velocity);
                 this.velocity.mult((float) 0.8);
@@ -556,18 +580,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
             } else {
                 collide = false;
             }
-            if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextYFrameBodyHitbox.getShape().getBoundsInParent())) {
-                collide = true;
-                this.position.sub(this.velocity);
-                this.velocity.mult((float) 0.8);
-                //this.velocity.set(this.velocity.x,this.velocity.y*0.8);
-                this.acceleration.mult((float) 0.8);
-                //
-            } else {
-                collide = false;
-            }
         }
-        //collide = false;
     }
 
     private void attackingDecider() {
@@ -610,9 +623,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         //
         if (!northMOVING && !westMOVING && !eastMOVING && !southMOVING) {
             this.acceleration.set(0, 0);
-        }
-        if (this.velocity.magnitude() > 0.2) {
-            this.moving = true;
         }
     }
 
@@ -847,26 +857,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public Player_Overlay getOverlay() {
         return overlay;
-    }
-
-    public void inflictDamage(int damage) {
-
-        if ((vulnerableTimer > vulnerableDuration) && (state.equals(states.idle) || state.equals(states.moving))) {//can only be 'hurt' while idle or moving
-            vulnerableTimer = 0;
-            Music.addSFX(false, random.nextInt(Integer.MAX_VALUE), Music.sfx.hurt_grunt_0, Music.sfx.hurt_grunt_1, Music.sfx.hurt_grunt_2);
-            //will choose 1 of 3 hurt sound effects
-            this.changeHealthBy(-damage);
-
-        }
-    }
-
-    private void transitionToHurt() {
-        this.fullIsaac.setImage(deathImages[0]);
-        this.fullIsaac.setVisible(true);
-        this.head.setVisible(false);
-        this.body.setVisible(false);
-        this.state = states.hurt;
-        stateTransitionTimer = 0;
     }
 
     public Vecc2f getCenterPos() {

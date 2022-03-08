@@ -28,13 +28,8 @@
   "items": [
     {
       "item": "double-key",
-      "PositionX": 0,
-      "PositionY": 618
-    },
-    {
-      "item": "coin",
       "PositionX": 400,
-      "PositionY": 400
+      "PositionY": 618
     }
   ],
   "enemies": [

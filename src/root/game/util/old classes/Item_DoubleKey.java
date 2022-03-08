@@ -84,6 +84,7 @@ public class Item_DoubleKey extends Item implements Sprite_Splitter {
             this.sparkle.setViewOrder(ViewOrder.items_layer.getViewOrder());
             this.idleTimeline.play();
         } catch (Exception ignored) {
+
         }
     }
 
@@ -93,6 +94,7 @@ public class Item_DoubleKey extends Item implements Sprite_Splitter {
             group.getChildren().remove(this.sparkle);
             this.idleTimeline.pause();
         } catch (Exception ignored) {
+
         }
     }
 }

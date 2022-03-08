@@ -223,7 +223,7 @@ public class Active_Bomb implements Sprite_Splitter {
             });
         }
 
-        //at end of timelines when bomb detonates call back to damage to damage/ destroy stuff
+        //at end of timelines when bomb detonates call back to damage / destroy stuff
     }
 
     public void applyForce(Vecc2f dir, int magnitude) {
@@ -258,4 +258,9 @@ public class Active_Bomb implements Sprite_Splitter {
             deleteObject(group, bombs);
         }
     }
+
+    public Hitbox getHitbox() {
+        return hitbox;
+    }
+
 }

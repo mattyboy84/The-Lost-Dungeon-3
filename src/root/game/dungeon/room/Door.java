@@ -48,9 +48,9 @@ public class Door implements Sprite_Splitter {
 
     public Door(String direction, int rotation, int directionType, int type, float scaleX, float scaleY, Rectangle2D screenBounds, Background background) {
         //String file = "file:src\\resources\\gfx\\grid\\" + this.name + ".png";
-        String a = types[directionType];
+        String doorFileName = types[directionType];
         if (type != 1) {
-            a = types[type];
+            doorFileName = types[type];
         }
         //
         this.height = 48;
@@ -58,23 +58,23 @@ public class Door implements Sprite_Splitter {
         //
         this.direction = direction;
 
-        int chance = (type == 1 && (((!a.equals("door_01_normaldoor")) && (!a.equals("door_10_bossroomdoor")))) ? 30 : 0);
+        int chance = (type == 1 && (((!doorFileName.equals("door_01_normaldoor")) && (!doorFileName.equals("door_10_bossroomdoor")))) ? 30 : 0);
         //30 percent chance that a door in a normal room that leads to a special room is locked
         this.state = ((random.nextInt(100)) < chance) ? (State.locked) : (State.closed);
         //
-        String file = "file:src\\resources\\gfx\\grid\\" + a + ".png";
+        String file = "file:src\\resources\\gfx\\grid\\" + doorFileName + ".png";
         //System.out.println(directionType);
 
         this.triggerHeight *= ((scaleX + scaleY) / 2);
         this.triggerWidth *= ((scaleX + scaleY) / 2);
         this.blockHeight *= ((scaleX + scaleY) / 2);
 
-        this.doorFrame = imageGetter(file, 0, 0, scaleX, scaleY);
-        this.doorShadow = imageGetter(file, 1, 0, scaleX, scaleY);
-        this.doorPartLeft = imageGetter(file, 0, 1, scaleX, scaleY);
-        this.doorPartRight = imageGetter(file, 1, 1, scaleX, scaleY);
-        this.doorPartRightLocked = imageGetter(file, 1, 2, scaleX, scaleY);
-        this.brokenDoorFrame = imageGetter(file, 0, 2, scaleX, scaleY).getImage();
+        this.doorFrame = new ImageView(imageGetter(file, 0, 0, width, height, scaleX, scaleY, 4));
+        this.doorShadow = new ImageView(imageGetter(file, 64, 0, width, height, scaleX, scaleY, 4));
+        this.doorPartLeft = new ImageView(imageGetter(file, 0, 48, width, height, scaleX, scaleY, 4));
+        this.doorPartRight = new ImageView(imageGetter(file, 64, 48, width, height, scaleX, scaleY, 4));
+        this.doorPartRightLocked = new ImageView(imageGetter(file, 64, 96, width, height, scaleX, scaleY, 4));
+        this.brokenDoorFrame = (imageGetter(file, 0, 96, width, height, scaleX, scaleY, 4));
 
         //x, y, width, height
         switch (direction) {
@@ -130,7 +130,7 @@ public class Door implements Sprite_Splitter {
         this.state = State.closed;
         this.width = 64;
         this.height = 64;
-        this.trapDoor = imageGetter("file:src\\resources\\gfx\\grid\\door_11_trapdoor.png", 0, 0, scaleX, scaleY);
+        this.trapDoor = new ImageView(imageGetter("file:src\\resources\\gfx\\grid\\door_11_trapdoor.png", 0, 0, 64,64,scaleX, scaleY,4));
         this.position = new Vecc2f(screenBounds.getWidth() / 2 - ((this.width * spriteScaleX * scaleX) / 2), screenBounds.getHeight() / 2 - ((this.height * spriteScaleY * scaleY) / 2));
         this.doorTrigger = new Rectangle(this.position.x + (16 * spriteScaleX * scaleX), this.position.y + (16 * spriteScaleY * scaleY), (32 * spriteScaleX * scaleX), (32 * spriteScaleY * scaleY));
     }
@@ -141,9 +141,9 @@ public class Door implements Sprite_Splitter {
 
     }
 
-    private ImageView imageGetter(String file, int i, int i1, float scaleX, float scaleY) {
-        return new ImageView(imageGetter(file, i * width, i1 * height, width, height, scaleX * spriteScaleX, scaleY * spriteScaleY, 1));
-    }
+    //private ImageView imageGetter(String file, int i, int i1, float scaleX, float scaleY) {//TODO Merge with sprite_splitter
+    //    return new ImageView(imageGetter(file, i * width, i1 * height, width, height, scaleX * spriteScaleX, scaleY * spriteScaleY, 1));
+    //}
 
     public void load(Group group) {
         switch (state) {

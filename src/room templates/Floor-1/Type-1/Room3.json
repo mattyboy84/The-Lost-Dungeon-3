@@ -27,17 +27,17 @@
   },
   "items": [
     {
-      "item": "coin",
+      "item": "key",
       "PositionX": 1288,
       "PositionY": 0
     },
     {
-      "item": "coin",
+      "item": "bomb",
       "PositionX": 1391,
       "PositionY": 0
     },
     {
-      "item": "coin",
+      "item": "key",
       "PositionX": 1391,
       "PositionY": 103
     }
