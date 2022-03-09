@@ -29,7 +29,7 @@
   "enemies": [],
   "bosses": [
     {
-      "boss": "pin",
+      "boss": "fistula",
       "type": "classic",
       "PositionX": 500,
       "PositionY": 500

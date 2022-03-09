@@ -1,0 +1,60 @@
+{
+  "boss": "fistula",
+  "type": "classic",
+  "filePath": "boss_025_fistula",
+  "Health": 50,
+  "SheetScale": 3,
+  "GutNumber": 14,
+  "image": {
+    "startX": 0,
+    "startY": 0,
+    "width": 80,
+    "height": 80
+  },
+  "Hitbox": {
+    "Type": "Circle",
+    "Radius": 33,
+    "xDelta": 5,
+    "yDelta": 5
+  },
+  "child": {
+    "boss": "fistula",
+    "type": "classic",
+    "filePath": "boss_025_fistula",
+    "Health": 25,
+    "SheetScale": 3,
+    "GutNumber": 6,
+    "image": {
+      "startX": 96,
+      "startY": 0,
+      "width": 64,
+      "height": 64
+    },
+    "Hitbox": {
+      "Type": "Circle",
+      "Radius": 18,
+      "xDelta": 12,
+      "yDelta": 12
+    },
+    "child": {
+      "boss": "fistula",
+      "type": "classic",
+      "filePath": "boss_025_fistula",
+      "Health": 16,
+      "SheetScale": 3,
+      "GutNumber": 3,
+      "image": {
+        "startX": 96,
+        "startY": 64,
+        "width": 64,
+        "height": 64
+      },
+      "Hitbox": {
+        "Type": "Circle",
+        "Radius": 12,
+        "xDelta": 20,
+        "yDelta": 20
+      }
+    }
+  }
+}

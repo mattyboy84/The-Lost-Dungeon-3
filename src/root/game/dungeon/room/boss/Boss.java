@@ -20,6 +20,8 @@ public abstract class Boss implements Sprite_Splitter {
     Player playerTarget;
     Random random=new Random();
     //
+    int gutNumber;
+    //
     String bossName;
     String bossType;
     String filepath;
@@ -33,18 +35,7 @@ public abstract class Boss implements Sprite_Splitter {
     Timeline attack2;
     int attack2Cycle=0;
 
-    public Boss(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
-        this.parentRoom=parentRoom;
-        System.out.println("Boss created: " + bossTemplate.get("boss").getAsString());
-        this.bossName=bossTemplate.get("boss").getAsString();
-        this.bossType=bossTemplate.get("type").getAsString();
-        this.filepath=bossTemplate.get("filePath").getAsString();
-        this.maxHealth=bossTemplate.get("Health").getAsInt();
-        this.health=maxHealth;
-        this.sheetScale=bossTemplate.get("SheetScale").getAsFloat();
-        this.scaleX=scaleX;
-        this.scaleY=scaleY;
-        this.damage=bossTemplate.get("damage").getAsInt();
+    public Boss() {
 
     }
 
@@ -54,11 +45,12 @@ public abstract class Boss implements Sprite_Splitter {
         postLoader(group);
     }
 
-    protected abstract void postLoader(Group group);
-
     public void unload(Group group){
         postUnLoader(group);
     }
+
+
+    protected abstract void postLoader(Group group);
 
     protected abstract void postUnLoader(Group group);
 

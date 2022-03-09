@@ -136,23 +136,6 @@ public class Main extends Application {
         stage.show();
     }
 
-    private StringBuilder templateGetterSub(String file2) {
-        StringBuilder json = new StringBuilder();
-        try {
-            File file = new File(file2);
-
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
-            String st;
-            while ((st = br.readLine()) != null) {
-                json.append(st);
-            }
-        } catch (Exception e) {
-            System.out.println("Cannot find room template - Room");
-        }
-        return json;
-    }
-
     public static void main(String[] args) {
         launch(args);
     }

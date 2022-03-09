@@ -39,7 +39,8 @@ public class Boss_Pin extends Boss implements Sprite_Splitter {
 
 
     public Boss_Pin(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
-        super(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
+        //super(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
+        super();
         this.state = states.Idle;
         String completePath = "file:src\\resources\\gfx\\bosses\\" + this.bossType + "\\" + this.filepath + ".png";
         //3 head segments

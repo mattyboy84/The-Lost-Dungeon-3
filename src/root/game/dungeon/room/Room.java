@@ -10,6 +10,7 @@ import javafx.scene.shape.Rectangle;
 import root.game.Tear.Tear_Enemy;
 import root.game.Tear.Tear_Player;
 import root.game.dungeon.room.boss.Boss;
+import root.game.dungeon.room.boss.Boss_Fistula;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.item.*;
@@ -221,6 +222,7 @@ public class Room implements Runnable {
             Vecc2f pos = new Vecc2f(bossArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), bossArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
             switch (bossArray.get(k).getAsJsonObject().get("boss").getAsString()) {
                 //case "pin" -> bosses.add(new Boss_Pin(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+                case "fistula" -> bosses.add(new Boss_Fistula(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
             }
         }
     }
