@@ -25,6 +25,7 @@ public class Boss_Fistula extends Boss {
 
     public Boss_Fistula(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         super(bossTemplate,pos,scaleX,scaleY,screenBounds,shading,parentRoom);
+        this.sheetScale = bossTemplate.get("SheetScale").getAsInt();
         healthBarSetup();
         //
         this.veloLimit= bossTemplate.get("velocity").getAsFloat();
@@ -33,7 +34,6 @@ public class Boss_Fistula extends Boss {
         this.velocity.mult((this.scaleX + this.scaleY / 2));
         this.maxHealth = bossTemplate.get("Health").getAsInt();
         this.health = maxHealth;
-        this.sheetScale = bossTemplate.get("SheetScale").getAsInt();
         this.gutNumber = bossTemplate.get("GutNumber").getAsInt();
         this.bossType = bossTemplate.get("type").getAsString();
         this.filepath = bossTemplate.get("filePath").getAsString();
