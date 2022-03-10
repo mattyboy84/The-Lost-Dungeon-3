@@ -225,12 +225,13 @@ public class Vecc2f {
         return (float) Math.sqrt((this.x * this.x) + (this.y * this.y));
     }
 
-    public void setMag(float magnitude) {
+    public Vecc2f setMag(float magnitude) {
 
         float constA = magnitude / magnitude();
         this.x = this.x * constA;
         this.y = this.y * constA;
 
+        return new Vecc2f(x,y);
     }
 
     public void setMag(double magnitude) {

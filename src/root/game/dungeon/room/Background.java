@@ -132,6 +132,23 @@ public class Background implements Sprite_Splitter {
     }
     public void extendRight(Rectangle2D screenBounds) {
         rightUp = new Rectangle(screenBounds.getWidth() - this.borderX, 0, screenBounds.getWidth(), screenBounds.getHeight() / 2 + doorOffsetY);
+    }
 
+    public ArrayList<Rectangle> get_TOP_BOTTOM_boundaries(){
+        ArrayList<Rectangle> a = new ArrayList<>();
+        a.add(topLeft);
+        a.add(topRight);
+        a.add(bottomLeft);
+        a.add(bottomRight);
+        return a;
+    }
+
+    public ArrayList<Rectangle> get_LEFT_RIGHT_boundaries(){
+        ArrayList<Rectangle> a = new ArrayList<>();
+        a.add(leftUp);
+        a.add(leftDown);
+        a.add(rightUp);
+        a.add(rightDown);
+        return a;
     }
 }

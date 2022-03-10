@@ -50,6 +50,10 @@ public class Hitbox {
         this.yDelta = (int) Math.ceil(yDelta * sheetScale * scaleX);
     }
 
+    public void relocate(Vecc2f position) {
+        this.shape.relocate(position.x + this.xDelta, position.y+ this.yDelta);
+    }
+
     public int getCenterX() {
         return (int) shape.getBoundsInParent().getCenterX();
     }
@@ -82,28 +86,12 @@ public class Hitbox {
         this.height = height;
     }
 
-    public int getRadius() {
-        return radius;
-    }
-
-    public void setRadius(int radius) {
-        this.radius = radius;
-    }
-
     public int getxDelta() {
         return xDelta;
     }
 
-    public void setxDelta(int xDelta) {
-        this.xDelta = xDelta;
-    }
-
     public int getyDelta() {
         return yDelta;
-    }
-
-    public void setyDelta(int yDelta) {
-        this.yDelta = yDelta;
     }
 
     public Shape getShape() {

@@ -5,6 +5,7 @@
   "Health": 50,
   "SheetScale": 3,
   "GutNumber": 14,
+  "velocity": 3.5,
   "image": {
     "startX": 0,
     "startY": 0,
@@ -24,6 +25,7 @@
     "Health": 25,
     "SheetScale": 3,
     "GutNumber": 6,
+    "velocity": 4,
     "image": {
       "startX": 96,
       "startY": 0,
@@ -43,6 +45,7 @@
       "Health": 16,
       "SheetScale": 3,
       "GutNumber": 3,
+      "velocity": 4.5,
       "image": {
         "startX": 96,
         "startY": 64,

@@ -42,18 +42,18 @@ public class Tear implements Sprite_Splitter {
 
     }
 
-    public Tear(float scaleX, float scaleY, Vecc2f position, int damage, Vecc2f velocity,int veloDELTA, int tearSize) {
+    public Tear(float scaleX, float scaleY, Vecc2f position, int damage, Vecc2f velocity, int veloDELTA, int tearSize) {
         Music.addSFX(false, this.hashCode(), Music.sfx.tear_fire_4, Music.sfx.tear_fire_5);
         this.avgScale = ((scaleX + scaleY) / 2);
-        this.scaleX=scaleX;
-        this.scaleY=scaleY;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
         this.position = new Vecc2f(position);
         this.damage = damage;
         this.shadowPosition = new Vecc2f(position);
         this.shadowPosition.add(0, 30 * (scaleY));//scaled 30 pixels under the tear to start
         this.velocity = new Vecc2f(velocity.x / veloDELTA, velocity.y / veloDELTA);
         this.flyDistance *= scaleY;
-        this.tearSize= Math.min(tearSize, 12);
+        this.tearSize = Math.min(tearSize, 12);
         //
     }
 
@@ -83,7 +83,7 @@ public class Tear implements Sprite_Splitter {
 
     public void bombChecker(ArrayList<Active_Bomb> bombs, Group group, ArrayList<Tear> tears) {//bombs can be 'pushed' by the players tear
         for (int i = bombs.size() - 1; i > -1; i--) {
-            if (this.tearHitbox.getShape().getBoundsInParent().intersects(bombs.get(i).getHitbox().getShape().getBoundsInParent()) && group.getChildren().contains(bombs.get(i).getHitbox().getShape())){
+            if (this.tearHitbox.getShape().getBoundsInParent().intersects(bombs.get(i).getHitbox().getShape().getBoundsInParent()) && group.getChildren().contains(bombs.get(i).getHitbox().getShape())) {
                 bombs.get(i).applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), (int) (10 * this.avgScale));
                 //
                 System.out.println("Bomb hit by a player's tear");
@@ -150,9 +150,13 @@ public class Tear implements Sprite_Splitter {
     }
 
     public void bossCheck(ArrayList<Boss> bosses, Group group, ArrayList<Tear> tears) {
-        for (Boss boss : bosses) {
-            if (boss != null && boss.collidesWith(this)) {
+        for (int k = bosses.size() - 1; k > -1; k--) {
+            if (bosses.get(k) != null && bosses.get(k).collidesWith(this)) {
+                hitSomething(group,tears);
 
+                bosses.get(k).applyForce(new Vecc2f(this.velocity.x, this.velocity.y).limit(1), (float) (0.3 * this.avgScale));
+                bosses.get(k).inflictDamage(damage, group, bosses);
+                //
             }
         }
     }

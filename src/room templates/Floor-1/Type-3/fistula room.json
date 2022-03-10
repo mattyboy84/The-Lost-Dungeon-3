@@ -31,8 +31,8 @@
     {
       "boss": "fistula",
       "type": "classic",
-      "PositionX": 500,
-      "PositionY": 500
+      "PositionX": 960,
+      "PositionY": 540
     }
   ],
   "Rocks": {

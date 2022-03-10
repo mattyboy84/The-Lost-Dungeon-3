@@ -15,6 +15,8 @@ import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 import root.game.util.ViewOrder;
 
+import java.util.ArrayList;
+
 public class Boss_Pin extends Boss implements Sprite_Splitter {
 
     ImageView segment_head=new ImageView();
@@ -146,6 +148,36 @@ public class Boss_Pin extends Boss implements Sprite_Splitter {
     private void transitionToAttack2() {
         this.mainline.stop();
         attack2Cycle = 0;
+    }
+
+    @Override
+    public void checkBoundaries() {
+        
+    }
+
+    @Override
+    protected void checkForPlayer() {
+
+    }
+
+    @Override
+    protected void bossSpecificMovement() {
+
+    }
+
+    @Override
+    protected void velocityLimit() {
+
+    }
+
+    @Override
+    public void applyForce(Vecc2f dir, float magnitude) {
+
+    }
+
+    @Override
+    public void inflictDamage(int damage, Group group, ArrayList<Boss> bosses) {
+
     }
 
     @Override

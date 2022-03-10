@@ -474,7 +474,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 //
                 System.out.println("changing room to: " + currentRoom.room);
                 //
-                if (currentRoom.enemies.size() == 0) {
+                if (currentRoom.enemies.size() == 0 && currentRoom.bosses.size()==0) {
                     currentRoom.openDoors(group);
                 }
             }
