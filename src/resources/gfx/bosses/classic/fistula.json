@@ -18,6 +18,7 @@
     "xDelta": 5,
     "yDelta": 5
   },
+  "childNum": 2,
   "child": {
     "boss": "fistula",
     "type": "classic",
@@ -38,6 +39,7 @@
       "xDelta": 12,
       "yDelta": 12
     },
+    "childNum": 2,
     "child": {
       "boss": "fistula",
       "type": "classic",
@@ -57,7 +59,8 @@
         "Radius": 12,
         "xDelta": 20,
         "yDelta": 20
-      }
+      },
+      "childNum": 0
     }
   }
 }

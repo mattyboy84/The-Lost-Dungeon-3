@@ -420,16 +420,15 @@ public class Room implements Runnable {
     }
 
     public void newRealTimeEnemy(String type, String enemyName, Vecc2f pos, Group group) {
-        JsonObject enemytemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\" + type + "\\" + enemyName + ".json"))).getAsJsonObject();
-        newRealtimeEnemySub(enemyName, enemytemplate, pos, group, 0);
+        newRealTimeEnemy(type, enemyName, pos, group, 0);
     }
 
     public void newRealTimeEnemy(String type, String enemyName, Vecc2f pos, Group group, int rotate) {
         JsonObject enemytemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\monsters\\" + type + "\\" + enemyName + ".json"))).getAsJsonObject();
-        newRealtimeEnemySub(enemyName, enemytemplate, pos, group, rotate);
+        newRealTimeEnemySub(enemyName, enemytemplate, pos, group, rotate);
     }
 
-    private void newRealtimeEnemySub(String enemyName, JsonObject enemytemplate, Vecc2f pos, Group group, int optionalRotate) {
+    private void newRealTimeEnemySub(String enemyName, JsonObject enemytemplate, Vecc2f pos, Group group, int optionalRotate) {
         switch (enemyName) {
             case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
             case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
@@ -440,6 +439,17 @@ public class Room implements Runnable {
         enemies.get(enemies.size() - 1).load(group, this.playerTarget);
     }
 
+    public void newRealTimeBoss(String type, String bossName, Vecc2f pos, Group group) {
+        JsonObject bossTemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\bosses\\" + type + "\\" + bossName + ".json"))).getAsJsonObject();
+        newRealtimeBossSub(bossName, bossTemplate, pos, group);
+    }
+
+    public void newRealtimeBossSub(String bossName, JsonObject bossTemplate, Vecc2f pos, Group group) {
+        switch (bossName) {
+            case "fistula" -> bosses.add(new Boss_Fistula(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+        }
+        bosses.get(bosses.size() - 1).load(group, this.playerTarget);
+    }
 
     public ArrayList<Rectangle> getBoundaries() {//provides an arraylist of obstacles.
         ArrayList<Rectangle> a = new ArrayList<>(background.getBoundaries());
@@ -539,7 +549,7 @@ public class Room implements Runnable {
     }
 
     public void checkDoors(Group group) {
-        if (enemies.size() == 0) {
+        if (enemies.size() == 0 && bosses.size() == 0) {
             openDoors(group);
         }
     }

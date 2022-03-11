@@ -8,6 +8,7 @@ import javafx.scene.shape.Rectangle;
 import root.game.Tear.Tear;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
+import root.game.dungeon.room.enemy.Enemy;
 import root.game.util.Hitbox;
 import root.game.util.Vecc2f;
 import root.game.util.ViewOrder;
@@ -16,27 +17,35 @@ import java.util.ArrayList;
 
 public class Boss_Fistula extends Boss {
 
-    Hitbox hitbox;
+    //Hitbox hitbox;
     ImageView boss;
     Vecc2f position;
     Vecc2f velocity;
-    Vecc2f centerPos=new Vecc2f(0,0);
+    Vecc2f centerPos = new Vecc2f(0, 0);
     float veloLimit;
+    boolean hasChild = false;
+    int childNum;
 
     public Boss_Fistula(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
-        super(bossTemplate,pos,scaleX,scaleY,screenBounds,shading,parentRoom);
+        super(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
         this.sheetScale = bossTemplate.get("SheetScale").getAsInt();
         healthBarSetup();
         //
-        this.veloLimit= bossTemplate.get("velocity").getAsFloat();
+        this.veloLimit = bossTemplate.get("velocity").getAsFloat();
         this.position = new Vecc2f(this.startingTemplatePosition);
         this.velocity = new Vecc2f().random2D(1).setMag(veloLimit);
         this.velocity.mult((this.scaleX + this.scaleY / 2));
         this.maxHealth = bossTemplate.get("Health").getAsInt();
-        this.health = maxHealth;
+        this.health = bossTemplate.get("Health").getAsInt();
         this.gutNumber = bossTemplate.get("GutNumber").getAsInt();
         this.bossType = bossTemplate.get("type").getAsString();
         this.filepath = bossTemplate.get("filePath").getAsString();
+        try {
+            JsonObject a = bossTemplate.get("child").getAsJsonObject();
+            hasChild = true;
+        } catch (Exception ignored) {
+        }
+        childNum = bossTemplate.get("childNum").getAsInt();
         String file = "file:src\\resources\\gfx\\bosses\\" + this.bossType + "\\" + this.filepath + ".png";
         //
         int startX = bossTemplate.get("image").getAsJsonObject().get("startX").getAsInt();
@@ -63,7 +72,7 @@ public class Boss_Fistula extends Boss {
 
     @Override
     protected void updateCenterPos() {
-        this.centerPos.set(this.hitbox.getCenterX(),this.hitbox.getCenterY());
+        this.centerPos.set(this.hitbox.getCenterX(), this.hitbox.getCenterY());
     }
 
     @Override
@@ -88,12 +97,12 @@ public class Boss_Fistula extends Boss {
 
     @Override
     protected void checkForPlayer() {
-        if ((hitbox.getShape().getBoundsInParent().intersects(playerTarget.getBodyHitbox().getShape().getBoundsInParent()) ||
-                hitbox.getShape().getBoundsInParent().intersects(playerTarget.getHeadHitbox().getShape().getBoundsInParent())) && playerTarget.isVulnerable()) {
+        if ((this.hitbox.getShape().getBoundsInParent().intersects(playerTarget.getBodyHitbox().getShape().getBoundsInParent()) ||
+                this.hitbox.getShape().getBoundsInParent().intersects(playerTarget.getHeadHitbox().getShape().getBoundsInParent())) && playerTarget.isVulnerable()) {
             //
-            Vecc2f dir = new Vecc2f(this.centerPos).sub(playerTarget.getCenterPos());
+            Vecc2f dir = new Vecc2f(this.hitbox.getCenterX(), this.hitbox.getCenterY()).sub(playerTarget.getCenterPos());
 
-            Vecc2f originalVELO=new Vecc2f(velocity.x,velocity.y);
+            Vecc2f originalVELO = new Vecc2f(velocity.x, velocity.y);
 
             Vecc2f enemyPushback = new Vecc2f(velocity.x, velocity.y);
             enemyPushback.mult(-1);
@@ -102,11 +111,11 @@ public class Boss_Fistula extends Boss {
             applyForce(enemyPushback, 0.3f);
             //
             playerTarget.inflictDamage(1);//TODO REMEMBER current default enemy damage is 1
-            Vecc2f pushback = new Vecc2f(originalVELO.x,originalVELO.y);
+            Vecc2f pushback = new Vecc2f(originalVELO.x, originalVELO.y);
             pushback.setMag((originalVELO.magnitude() < veloLimit * 0.25) ? (veloLimit) : (originalVELO.magnitude()));//if enemy is 'slow' the push back is adjusted
-            pushback.fromAngle(dir.toAngle()-180);
+            pushback.fromAngle(dir.toAngle() - 180);
 
-            playerTarget.applyForce(pushback,6);
+            playerTarget.applyForce(pushback, 6);
         }
     }
 
@@ -122,8 +131,26 @@ public class Boss_Fistula extends Boss {
     }
 
     @Override
-    public void inflictDamage(int damage, Group group, ArrayList<Boss> bosses) {
+    public void inflictDamageSub(int damage, Group group, ArrayList<Boss> bosses) {
+        this.health -= damage;
+        this.health = Math.max(this.health, 0);
+        //
+        this.healthIndicator.setWidth((healthIndicatorDimensions.x * scaleX * healthBarScale) * (this.health / this.maxHealth));
+        if (this.health <= 0) {
+            if (hasChild) {
+                for (int i = 0; i < childNum; i++) {
+                    parentRoom.newRealtimeBossSub("fistula", this.template.get("child").getAsJsonObject(), this.centerPos, group);
+                }
+            }
+            beginRemoval(group, bosses);
+        }
+    }
 
+    private void beginRemoval(Group group, ArrayList<Boss> bosses) {
+        unload(group);
+        bosses.remove(this);
+        parentRoom.checkDoors(group);
+        debrisCheck(group);
     }
 
     @Override

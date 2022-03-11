@@ -51,7 +51,7 @@ public class Hitbox {
     }
 
     public void relocate(Vecc2f position) {
-        this.shape.relocate(position.x + this.xDelta, position.y+ this.yDelta);
+        this.shape.relocate(position.x + this.xDelta, position.y + this.yDelta);
     }
 
     public int getCenterX() {
@@ -71,7 +71,10 @@ public class Hitbox {
     }
 
     public int getWidth() {
-        return width;
+        if (this.type.equals("Circle")) {
+            return radius;
+        } else
+            return width;
     }
 
     public void setWidth(int width) {
@@ -79,7 +82,10 @@ public class Hitbox {
     }
 
     public int getHeight() {
-        return height;
+        if (this.type.equals("Circle")) {
+            return radius;
+        } else
+            return height;
     }
 
     public void setHeight(int height) {
