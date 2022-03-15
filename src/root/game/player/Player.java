@@ -708,7 +708,6 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
 
     public void applyForce(Vecc2f direction, int magnitude) {
         direction.add(0.1, 0.1);
-        System.out.println(direction);
         direction.mult(magnitude);
         this.acceleration.set(0, 0);
         this.velocity.add(direction);

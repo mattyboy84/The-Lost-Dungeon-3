@@ -8,7 +8,6 @@ import javafx.scene.shape.Rectangle;
 import root.game.Tear.Tear;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
-import root.game.dungeon.room.enemy.Enemy;
 import root.game.util.Hitbox;
 import root.game.util.Vecc2f;
 import root.game.util.ViewOrder;
@@ -17,30 +16,29 @@ import java.util.ArrayList;
 
 public class Boss_Fistula extends Boss {
 
-    //Hitbox hitbox;
-    ImageView boss;
-    Vecc2f position;
-    Vecc2f velocity;
-    Vecc2f centerPos = new Vecc2f(0, 0);
-    float veloLimit;
     boolean hasChild = false;
     int childNum;
+
+    float rotation=random.nextFloat();
+    ArrayList<Rectangle> UP_DOWN = parentRoom.getTopBottomBounds();
+    ArrayList<Rectangle> LEFT_RIGHT = parentRoom.getLeftRightBounds();
 
     public Boss_Fistula(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         super(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, parentRoom);
         this.sheetScale = bossTemplate.get("SheetScale").getAsInt();
         healthBarSetup();
         //
-        this.veloLimit = bossTemplate.get("velocity").getAsFloat();
+        setVeloLimit(bossTemplate.get("velocity").getAsFloat());
+        //
         this.position = new Vecc2f(this.startingTemplatePosition);
         this.velocity = new Vecc2f().random2D(1).setMag(veloLimit);
-        this.velocity.mult((this.scaleX + this.scaleY / 2));
         this.maxHealth = bossTemplate.get("Health").getAsInt();
-        this.health = bossTemplate.get("Health").getAsInt();
+        this.health = maxHealth;
         this.gutNumber = bossTemplate.get("GutNumber").getAsInt();
         this.bossType = bossTemplate.get("type").getAsString();
         this.filepath = bossTemplate.get("filePath").getAsString();
         try {
+            //if there isn't a child it will jump to catch and skip setting 'hasChild' to true
             JsonObject a = bossTemplate.get("child").getAsJsonObject();
             hasChild = true;
         } catch (Exception ignored) {
@@ -64,8 +62,10 @@ public class Boss_Fistula extends Boss {
     @Override
     protected void bossSpecificMovement() {
         this.position.add(this.velocity);
-        this.boss.relocate(this.position.x, this.position.y);
-        this.hitbox.relocate(this.position);
+        relocate();
+        //
+        this.boss.setRotate(this.boss.getRotate()+this.rotation);
+        this.hitbox.getShape().setRotate(this.boss.getRotate());
 
         this.velocity.setMag(this.veloLimit);
     }
@@ -77,12 +77,10 @@ public class Boss_Fistula extends Boss {
 
     @Override
     public void checkBoundaries() {
-        ArrayList<Rectangle> UP_DOWN = parentRoom.background.get_TOP_BOTTOM_boundaries();
-        ArrayList<Rectangle> LEFT_RIGHT = parentRoom.background.get_LEFT_RIGHT_boundaries();
-        //
         for (Rectangle rectangle : UP_DOWN) {
             if (this.hitbox.getShape().getBoundsInParent().intersects(rectangle.getBoundsInParent())) {
                 this.velocity.y *= -1;
+                relocate(); relocate();
                 break;
             }
         }
@@ -90,6 +88,7 @@ public class Boss_Fistula extends Boss {
         for (Rectangle rectangle : LEFT_RIGHT) {
             if (this.hitbox.getShape().getBoundsInParent().intersects(rectangle.getBoundsInParent())) {
                 this.velocity.x *= -1;
+                relocate(); relocate();
                 break;
             }
         }
@@ -132,25 +131,26 @@ public class Boss_Fistula extends Boss {
 
     @Override
     public void inflictDamageSub(int damage, Group group, ArrayList<Boss> bosses) {
-        this.health -= damage;
-        this.health = Math.max(this.health, 0);
-        //
-        this.healthIndicator.setWidth((healthIndicatorDimensions.x * scaleX * healthBarScale) * (this.health / this.maxHealth));
         if (this.health <= 0) {
             if (hasChild) {
                 for (int i = 0; i < childNum; i++) {
-                    parentRoom.newRealtimeBossSub("fistula", this.template.get("child").getAsJsonObject(), this.centerPos, group);
+                    Vecc2f b = new Vecc2f(this.centerPos);
+                    b.add(0, i + 1);//the boss positions NaN when the seperationSetter runs on bosses with the same start position
+                    parentRoom.newRealtimeBossSub("fistula", this.template.get("child").getAsJsonObject(), b, group);
                 }
             }
             beginRemoval(group, bosses);
         }
     }
 
-    private void beginRemoval(Group group, ArrayList<Boss> bosses) {
-        unload(group);
-        bosses.remove(this);
-        parentRoom.checkDoors(group);
-        debrisCheck(group);
+    @Override
+    public boolean collidesWith(Tear tear) {
+        return tear.tearHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent());
+    }
+
+    private void relocate() {
+        this.boss.relocate(this.position.x, this.position.y);
+        this.hitbox.relocate(this.position);
     }
 
     @Override
@@ -170,10 +170,5 @@ public class Boss_Fistula extends Boss {
     protected void postUnLoader(Group group) {
         group.getChildren().removeAll(this.boss, this.hitbox.getShape());
         this.mainline.pause();
-    }
-
-    @Override
-    public boolean collidesWith(Tear tear) {
-        return tear.tearHitbox.getShape().getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent());
     }
 }

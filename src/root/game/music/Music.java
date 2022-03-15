@@ -30,7 +30,11 @@ public class Music implements Runnable {
         key_pickup("key pickup guantlet 4"),
         lock_break_0("lock break 0"),
         lock_break_1("lock break 1"),
-        penny_pickup_1("penny pickup 1");
+        penny_pickup_1("penny pickup 1"),
+        enemy_appear_smoke_1("enemyappearsmoke01"),
+        enemy_appear_smoke_2("enemyappearsmoke02"),
+        enemy_appear_smoke_3("enemyappearsmoke03"),
+        enemy_appear_smoke_4("enemyappearsmoke04");
 
         private final String sound;
 
@@ -166,6 +170,11 @@ public class Music implements Runnable {
         prepareSFX("v2", "splatter 3");
         prepareSFX("v2", "splatter 4");
         prepareSFX("v2", "splatter 5");
+
+        prepareSFX("v2", "enemyappearsmoke01");
+        prepareSFX("v2", "enemyappearsmoke02");
+        prepareSFX("v2", "enemyappearsmoke03");
+        prepareSFX("v2", "enemyappearsmoke04");
 
         prepareSFX("feedback", "key pickup guantlet 4");
         prepareSFX("feedback", "lock break 0");

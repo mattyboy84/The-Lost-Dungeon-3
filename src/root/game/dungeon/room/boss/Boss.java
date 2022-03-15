@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -24,7 +25,6 @@ import java.util.Random;
 public abstract class Boss implements Sprite_Splitter {
 
     Group parentGroup;
-    Room parentRoom;
     Player playerTarget;
     Random random = new Random();
     //
@@ -34,15 +34,17 @@ public abstract class Boss implements Sprite_Splitter {
     String bossType;
     String filepath;
 
+    ImageView boss;
+    Vecc2f position;
+
     float sheetScale;
     Hitbox hitbox;
-
+    float veloLimit;
+    Vecc2f velocity;
+    public Vecc2f centerPos = new Vecc2f(0, 0);
     int damage;
     Timeline mainline;
-    Timeline attack1;
-    int attack1Cycle = 0;
-    Timeline attack2;
-    int attack2Cycle = 0;
+    //
     int stateTransitionTimer;
     //super setup variables
     JsonObject template;
@@ -50,14 +52,19 @@ public abstract class Boss implements Sprite_Splitter {
     float scaleX, scaleY;
     Rectangle2D screenBounds;
     Shading shadingLayer;
-    Room ParentRoom;
+    Room parentRoom;
     //health bar
     float maxHealth, health;
     ImageView healthBarImage;
-    Rectangle healthIndicator;
-    Vecc2f healthIndicatorDimensions = new Vecc2f(107, 8);
-    Vecc2f healthIndicatorOffset = new Vecc2f(22, 11);
+    ImageView healthIndicator;
+
+    Vecc2f healthIndicatorDimensions = new Vecc2f(112, 10);
+    Vecc2f healthIndicatorOffset = new Vecc2f(19, 10);
+
     int healthBarScale = 5;
+    //image swapping
+    int imageSwapIntervalCounter = 0;
+    int imageCounter = 0;
 
     public Boss(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         this.template = bossTemplate;
@@ -70,10 +77,8 @@ public abstract class Boss implements Sprite_Splitter {
     }
 
     public void healthBarSetup() {
-        this.healthBarImage = new ImageView(imageGetter("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png", 0, 32, 150, 32, this.scaleX, this.scaleY, this.sheetScale + 2));
-        this.healthIndicator = new Rectangle(healthIndicatorDimensions.x * scaleX * healthBarScale, healthIndicatorDimensions.y * scaleY * healthBarScale);
-        this.healthIndicator.setFill(Color.rgb(178, 34, 34));
-        // healthBarImage = new ImageView("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png");
+        this.healthBarImage = new ImageView(imageGetter("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png", 0, 32, 150, 32, this.scaleX, this.scaleY, healthBarScale));
+        this.healthIndicator = new ImageView(imageGetter("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png", (int) (healthIndicatorOffset.x), (int) (healthIndicatorOffset.y), (int) (healthIndicatorDimensions.x), (int) (healthIndicatorDimensions.y), this.scaleX, this.scaleY, healthBarScale));
     }
 
     public void timelineSetup() {
@@ -86,7 +91,7 @@ public abstract class Boss implements Sprite_Splitter {
             //
             velocityLimit();
             //
-            //seperationSetter();
+            seperationSetter();
             //
             bossSpecificMovement();//will be overridden for each enemy
             //
@@ -98,6 +103,13 @@ public abstract class Boss implements Sprite_Splitter {
         mainline.setCycleCount(Timeline.INDEFINITE);
     }
 
+    protected void beginRemoval(Group group, ArrayList<Boss> bosses) {
+        unload(group);
+        bosses.remove(this);
+        parentRoom.checkDoors(group);
+        debrisCheck(group);
+    }
+
     protected void debrisCheck(Group group) {
         for (int i = 0; i < gutNumber; i++) {
             int x = (int) (this.hitbox.getCenterX() + (((random.nextFloat() * 4) - 2) * random.nextInt(this.hitbox.getWidth())));
@@ -106,6 +118,57 @@ public abstract class Boss implements Sprite_Splitter {
         }
     }
 
+    public void seperationSetter() {
+        Vecc2f seperation = seperation(this.centerPos, this.velocity);
+        applyForce(seperation.limit(1), 0.8f);
+    }
+
+    public Vecc2f seperation(Vecc2f position, Vecc2f velocity) {
+        Vecc2f steering = new Vecc2f();
+        int total = 0;
+        //
+        for (Boss boss : parentRoom.bosses) {
+            total = getTotal(position, steering, total, boss.centerPos);
+        }
+        if (total > 0) {
+            steering.div(total);
+            steering.setMag(12);
+            steering.sub(velocity);
+            steering.limit((float) 0.5);
+        }
+        steering.mult((float) 2);
+        return steering;
+    }
+
+    private int getTotal(Vecc2f position, Vecc2f steering, int total, Vecc2f position2) {
+        float d;
+        d = (position.distance(position2));
+        if ((d < (100 * ((scaleX + scaleY) / 2))) && position != position2) {
+            Vecc2f difference = new Vecc2f().sub(position, position2);
+            difference.div(d * d);
+            steering.add(difference);
+            total++;
+        }
+        return total;
+    }
+
+    public int linearImageSwapper(Image[] images, int swapInterval) {
+        return linearImageSwapper(this.boss, images, swapInterval);
+    }
+
+    public int linearImageSwapper(ImageView bossImage, Image[] images, int swapInterval) {
+        if (++imageSwapIntervalCounter >= swapInterval) {
+            bossImage.setImage(images[imageCounter]);
+            imageCounter++;
+            if (imageCounter > images.length - 1) {
+                imageCounter = 0;
+            }
+
+            imageSwapIntervalCounter = 0;
+            return imageCounter;
+        }
+        return -1;
+    }
 
     public void load(Group group, Player player) {
         this.playerTarget = player;
@@ -127,10 +190,11 @@ public abstract class Boss implements Sprite_Splitter {
 
     public void unload(Group group) {
         //
-        group.getChildren().removeAll(this.healthBarImage, this.healthIndicator);
+        group.getChildren().removeAll(this.healthBarImage/*, this.healthIndicator*/);
         //
         postUnLoader(group);
     }
+    protected abstract void bossSpecificMovement();
 
     protected abstract void updateCenterPos();
 
@@ -138,14 +202,25 @@ public abstract class Boss implements Sprite_Splitter {
 
     protected abstract void checkForPlayer();
 
-    protected abstract void bossSpecificMovement();
-
     protected abstract void velocityLimit();
 
     public abstract void applyForce(Vecc2f dir, float magnitude);
 
+    public void setVeloLimit(float veloLimit) {
+        this.veloLimit = veloLimit * ((this.scaleX + this.scaleY) / 2);
+    }
+
     public void inflictDamage(int damage, Group group, ArrayList<Boss> bosses) {
-        for (Boss boss : bosses) {//for multiple bosses - if will hide all healthbars then reveal the health bar of the just hit boss.
+        this.health -= damage;
+        this.health = Math.max(this.health, 0);
+        try {
+            this.healthIndicator.setImage(imageGetter("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png", (int) (healthIndicatorOffset.x), (int) (healthIndicatorOffset.y),
+                    (int) ((healthIndicatorDimensions.x) * (this.health / this.maxHealth)), (int) (healthIndicatorDimensions.y), this.scaleX, this.scaleY, healthBarScale));
+        } catch (IllegalArgumentException e) {//when health is 0 - image width set to 0
+            this.healthIndicator.setImage(imageGetter("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png", 1,1,1,1,1,1,1));
+        }
+        //
+        for (Boss boss : bosses) {//for multiple bosses - it will hide all healthbars then reveal the health bar of the just hit boss.
             boss.hideHealth();
         }
         this.unHideHealth();
@@ -154,11 +229,11 @@ public abstract class Boss implements Sprite_Splitter {
 
     protected abstract void inflictDamageSub(int damage, Group group, ArrayList<Boss> bosses);
 
+    public abstract boolean collidesWith(Tear tear);
+
     protected abstract void postLoader(Group group);
 
     protected abstract void postUnLoader(Group group);
-
-    public abstract boolean collidesWith(Tear tear);
 
     protected void hideHealth() {
         this.healthBarImage.setVisible(false);

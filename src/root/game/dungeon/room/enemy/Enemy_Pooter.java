@@ -53,7 +53,6 @@ public class Enemy_Pooter extends Enemy {
                 this.velocity.mult(0.95);
                 //
                 int currentFrame = (linearImageSwapper(attack1Animation, ATTACK1imageSwapInterval));
-                final int finalLength = attack1Animation.length;
                 switch (currentFrame) {
                     case 7://7th frame visually looks the best for a projectile to appear.
                         Vecc2f tearVELO = new Vecc2f(playerTarget.getCenterPos());

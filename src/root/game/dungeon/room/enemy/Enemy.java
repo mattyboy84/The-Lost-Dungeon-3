@@ -31,11 +31,11 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     Vecc2f startPosition;
     Vecc2f position;
     public Vecc2f centerPos = new Vecc2f();
-    Vecc2f velocity = new Vecc2f(0,0);
+    Vecc2f velocity = new Vecc2f(0, 0);
     Vecc2f acceleration = new Vecc2f();
     float veloLimit;
     float avgScale;
-    float scaleX,scaleY;
+    float scaleX, scaleY;
     float[][] activeShader;
     float[][] shader;
     float[][] emptyShader = new float[0][0];
@@ -93,8 +93,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         this.state = states.idle;
         //
         this.uniqueID = rand.nextInt(Integer.MAX_VALUE);
-        this.scaleX=scaleX;
-        this.scaleY=scaleY;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
         this.avgScale = ((scaleX + scaleY) / 2);
         this.startPosition = new Vecc2f(pos.x * scaleX, pos.y * scaleY);
         this.position = new Vecc2f(this.startPosition.x, this.startPosition.y);
@@ -142,13 +142,14 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         } catch (Exception ignored) {
         }
         //
-            enemy = new ImageView(idleAnimation[0]);
+        enemy = new ImageView(idleAnimation[0]);
         //
-        try{//attempts to get the light radius if there is one.
+        try {//attempts to get the light radius if there is one.
             lightRadius = enemyTemplate.get("Light").getAsJsonObject().get("Radius").getAsInt();
             shader = setupShader(lightRadius);
             System.out.println("enemy created " + lightRadius);
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         //DEATH Animation - setups one the animation if there is one.
         try {
             JsonObject deathObject = enemyTemplate.get("DeathAnimation").getAsJsonObject();
@@ -226,7 +227,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         if ((hitbox.getShape().getBoundsInParent().intersects(playerTarget.getBodyHitbox().getShape().getBoundsInParent()) ||
                 hitbox.getShape().getBoundsInParent().intersects(playerTarget.getHeadHitbox().getShape().getBoundsInParent())) && playerTarget.isVulnerable()) {
             //
-            Vecc2f originalVELO=new Vecc2f(velocity.x,velocity.y);
+            Vecc2f originalVELO = new Vecc2f(velocity.x, velocity.y);
 
             Vecc2f enemyPushback = new Vecc2f(velocity.x, velocity.y);
             enemyPushback.mult(-1);
@@ -234,10 +235,10 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
             applyForce(enemyPushback, 10);
             //
             playerTarget.inflictDamage(1);//TODO REMEMBER current default enemy damage is 1
-            Vecc2f pushback = new Vecc2f(originalVELO.x,originalVELO.y);
+            Vecc2f pushback = new Vecc2f(originalVELO.x, originalVELO.y);
             pushback.setMag((originalVELO.magnitude() < veloLimit * 0.25) ? (veloLimit) : (originalVELO.magnitude()));//if enemy is 'slow' the push back is adjusted
 
-            playerTarget.applyForce(pushback,3);
+            playerTarget.applyForce(pushback, 3);
         }
     }
 
@@ -266,7 +267,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     private int getTotal(Vecc2f position, Vecc2f steering, int total, Vecc2f position2) {
         float d;
         d = (position.distance(position2));
-        if ((d < 100) && position != position2) {
+        if ((d < (100 * ((scaleX + scaleY) / 2))) && position != position2) {
             Vecc2f difference = new Vecc2f().sub(position, position2);
             difference.div(d * d);
             steering.add(difference);
@@ -319,7 +320,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         for (int i = 0; i < gutNumber; i++) {
             int x = this.hitbox.getCenterX() + (((rand.nextInt(2) * 2) - 1) * rand.nextInt(this.hitbox.width));
             int y = this.hitbox.getCenterY() + (((rand.nextInt(2) * 2) - 1) * rand.nextInt(this.hitbox.height));
-            parentRoom.newRealTimeProp(group, x, y, Effects.enemyGuts[rand.nextInt(Effects.enemyGuts.length - 1)], 0.5 + (2 * rand.nextFloat()));
+            parentRoom.newRealTimeProp(group, x, y, Effects.enemyGuts[rand.nextInt(Effects.enemyGuts.length - 1)], 0.4 + (2 * rand.nextFloat()));
         }
     }
 
@@ -330,13 +331,15 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
      *@return the return statement return the current frame for if something needs to be done at that frame
      */
     public int linearImageSwapper(Image[] images, int swapInterval) {
-        if (++imageSwapIntervalCounter >= swapInterval) {
+        return linearImageSwapper(this.enemy, images, swapInterval);
+    }
 
-            this.enemy.setImage(images[imageCounter]);
+    public int linearImageSwapper(ImageView bossImage, Image[] images, int swapInterval) {
+        if (++imageSwapIntervalCounter >= swapInterval) {
+            bossImage.setImage(images[imageCounter]);
             imageCounter++;
             if (imageCounter > images.length - 1) {
                 imageCounter = 0;
-                //return true;
             }
 
             imageSwapIntervalCounter = 0;
@@ -381,8 +384,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     }
 
     public void load(Group group, Player player) {
-        this.parentGroup=group;
-        this.playerTarget=player;
+        this.parentGroup = group;
+        this.playerTarget = player;
 
         postLoading(group);
     }
@@ -396,7 +399,7 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     protected abstract void postUnLoading(Group group);
 
-    public abstract  boolean collidesWith(Tear tear);
+    public abstract boolean collidesWith(Tear tear);
 
     public Hitbox getHitbox() {
         return hitbox;
@@ -404,6 +407,11 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     public void setHitbox(Hitbox hitbox) {
         this.hitbox = hitbox;
+    }
+
+    public Vecc2f getCenterPos() {
+        updateCenterPos();
+        return centerPos;
     }
 
     public Vecc2f getPosition() {

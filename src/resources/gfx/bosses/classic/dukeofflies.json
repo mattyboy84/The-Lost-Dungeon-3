@@ -1,0 +1,72 @@
+{
+  "boss": "dukeofflies",
+  "type": "classic",
+  "filePath": "boss_007_dukeofflies",
+  "Health": 120,
+  "SheetScale": 3,
+  "GutNumber": 14,
+  "velocity": 5,
+  "idleAnimation": {
+    "Width": 80,
+    "Height": 64,
+    "SwapInterval": 0,
+    "Images": [
+      {
+        "x": 0,
+        "y": 0
+      }
+    ]
+  },
+  "faceImages": {
+    "Width": 80,
+    "Height": 64,
+    "SwapInterval": 25,
+    "Images": [
+      {
+        "x": 0,
+        "y": 0
+      },
+      {
+        "x": 0,
+        "y": 80
+      },
+      {
+        "x": 64,
+        "y": 80
+      },
+      {
+        "x": 64,
+        "y": 0
+      }
+    ]
+  },
+  "backImages": {
+    "Width": 80,
+    "Height": 64,
+    "SwapInterval": 25,
+    "Images": [
+      {
+        "x": 160,
+        "y": 0
+      },
+      {
+        "x": 160,
+        "y": 80
+      },
+      {
+        "x": 224,
+        "y": 80
+      },
+      {
+        "x": 224,
+        "y": 0
+      }
+    ]
+  },
+  "Hitbox": {
+    "Type": "Circle",
+    "Radius": 28,
+    "xDelta": 41,
+    "yDelta": 30
+  }
+}

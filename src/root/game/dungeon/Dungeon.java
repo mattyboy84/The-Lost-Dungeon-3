@@ -2,14 +2,11 @@ package root.game.dungeon;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-
 import java.util.ArrayList;
 import java.util.Random;
-
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
 import root.game.player.Player;
-
 
 public class Dungeon {
 

@@ -10,6 +10,7 @@ import javafx.scene.shape.Rectangle;
 import root.game.Tear.Tear_Enemy;
 import root.game.Tear.Tear_Player;
 import root.game.dungeon.room.boss.Boss;
+import root.game.dungeon.room.boss.Boss_DukeOfFlies;
 import root.game.dungeon.room.boss.Boss_Fistula;
 import root.game.dungeon.room.enemy.*;
 import root.game.dungeon.Shading;
@@ -22,6 +23,7 @@ import root.game.util.Vecc2f;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -52,12 +54,13 @@ public class Room implements Runnable {
     Background_items backgroundItems;
     public ArrayList<Door> doors = new ArrayList<>();
     public ArrayList<Enemy> enemies = new ArrayList<>();
-    public ArrayList<Boss> bosses = new ArrayList<Boss>();
+    public ArrayList<Boss> bosses = new ArrayList<>();
     public ArrayList<Item> items = new ArrayList<>();
     public ArrayList<Rock> rocks = new ArrayList<>();
     //
     ArrayList<Active_Bomb> bombs = new ArrayList<>();
-    public ArrayList<Tear> tears = new ArrayList<Tear>();
+    public ArrayList<Tear> tears = new ArrayList<>();
+    public ArrayList<Smoke> smokeClouds = new ArrayList<>();
     //
     String music = null;
     //
@@ -66,7 +69,6 @@ public class Room implements Runnable {
     Door trapDoor;
     //
     String parentThreadName;
-    //ShadingThread shadingThread;
 
     public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName, Shading shading, boolean startRoom) {
         //
@@ -223,13 +225,14 @@ public class Room implements Runnable {
             switch (bossArray.get(k).getAsJsonObject().get("boss").getAsString()) {
                 //case "pin" -> bosses.add(new Boss_Pin(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
                 case "fistula" -> bosses.add(new Boss_Fistula(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+                case "dukeofflies" -> bosses.add(new Boss_DukeOfFlies(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
             }
         }
     }
 
     private StringBuilder roomTemplateGetter(String file1) {
         File directPath = new File(file1);
-        String[] contents = directPath.list();
+        String[] contents = directPath.list((dir, name) -> !name.contains("!"));//TODO a '!' in template title will exclude the template from randomly being chosen
         String room = null;
 
         if (contents != null) {
@@ -324,6 +327,9 @@ public class Room implements Runnable {
         for (int k = tears.size() - 1; k > -1; k--) {//doing to back-to-front avoids concurrent errors from terminating while in a loop
             tears.get(k).destroy(group, tears);
         }
+        for (int k = smokeClouds.size() - 1; k > -1; k--) {//smokes are short lives - self terminate & delete when leaving a room
+            smokeClouds.get(k).unload(group);//leads to the destroy method
+        }
     }
 
     public void addBombSub(Group group, String bombTemplate, Vecc2f centerPos, int fuse) {
@@ -379,7 +385,7 @@ public class Room implements Runnable {
             }
             rocks.removeIf(rock -> rock.markedDelete);
         }
-        {//
+        {//enemies
             for (int k = enemies.size() - 1; k >= 0; k--) {//Reverse - to avoid concurrent exceptions
                 if ((Vecc2f.distance(x, y, enemies.get(k).centerPos.x, enemies.get(k).centerPos.y) < (radius * 0.8))) {
                     //
@@ -387,7 +393,21 @@ public class Room implements Runnable {
                     dir.limit(1);
                     enemies.get(k).applyForce(dir, 30);
                     //
-                    enemies.get(k).inflictDamage(50, group, enemies);//TODO Remember bomb default damage is 5
+                    enemies.get(k).inflictDamage(5, group, enemies);//TODO Remember bomb default damage is 5
+
+                }
+            }
+        }
+        //
+        {//bosses
+            for (int k = bosses.size() - 1; k >= 0; k--) {//Reverse - to avoid concurrent exceptions
+                if ((Vecc2f.distance(x, y, bosses.get(k).centerPos.x, bosses.get(k).centerPos.y) < (radius * 0.8))) {
+                    //
+                    Vecc2f dir = new Vecc2f(bosses.get(k).centerPos).sub(new Vecc2f(x, y));
+                    dir.limit(1);
+                    bosses.get(k).applyForce(dir, 10);
+                    //
+                    bosses.get(k).inflictDamage(5, group, bosses);//TODO Remember bomb default damage is 5
 
                 }
             }
@@ -437,6 +457,8 @@ public class Room implements Runnable {
             case "gaper" -> enemies.add(new Enemy_Gaper(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this, optionalRotate));
         }
         enemies.get(enemies.size() - 1).load(group, this.playerTarget);
+        smokeClouds.add(new Smoke(enemies.get(enemies.size() - 1).getCenterPos(), group, smokeClouds, scaleX, scaleY, this));
+        Music.addSFX(false, 15, Music.sfx.enemy_appear_smoke_1, Music.sfx.enemy_appear_smoke_2, Music.sfx.enemy_appear_smoke_3, Music.sfx.enemy_appear_smoke_4);
     }
 
     public void newRealTimeBoss(String type, String bossName, Vecc2f pos, Group group) {
@@ -472,6 +494,30 @@ public class Room implements Runnable {
         for (Door door : doors) {
             a.add(door.getDoorTrigger());
         }
+        return a;
+    }
+
+    public ArrayList<Rectangle> getTopBottomBounds() {
+        ArrayList<Rectangle> a = new ArrayList(background.get_TOP_BOTTOM_boundaries());
+        //
+        for (Door door : doors) {
+            if (door.direction.equalsIgnoreCase("up") || door.direction.equalsIgnoreCase("down")){
+                a.add(door.getDoorBlock());
+            }
+        }
+        //
+        return a;
+    }
+
+    public ArrayList<Rectangle> getLeftRightBounds() {
+        ArrayList<Rectangle> a = new ArrayList(background.get_LEFT_RIGHT_boundaries());
+        //
+        for (Door door : doors) {
+            if (door.direction.equalsIgnoreCase("left") || door.direction.equalsIgnoreCase("right")){
+                a.add(door.getDoorBlock());
+            }
+        }
+        //
         return a;
     }
 

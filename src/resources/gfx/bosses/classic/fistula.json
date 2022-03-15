@@ -18,7 +18,7 @@
     "xDelta": 5,
     "yDelta": 5
   },
-  "childNum": 2,
+  "childNum": 4,
   "child": {
     "boss": "fistula",
     "type": "classic",

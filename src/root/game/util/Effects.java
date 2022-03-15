@@ -19,6 +19,7 @@ public class Effects implements Runnable, Sprite_Splitter {
     public static Image[] bloodPool_large;
     public static Image[] enemyGuts;
     public static Image[] tiny_enemyGuts;
+    public static Image[] poof;
 
     @Override
     public void run() {
@@ -31,6 +32,8 @@ public class Effects implements Runnable, Sprite_Splitter {
         bloodPool_large = perepareEffect("file:src\\resources\\gfx\\effects\\effect_016_bloodpool.png", scaleX, scaleY, 2, 160, 0, 96, 96, 6, 448);
         enemyGuts = perepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 3, 0, 0, 16, 16, 12, 64);
         tiny_enemyGuts = perepareEffect("file:src\\resources\\gfx\\effects\\effect_030_bloodgibs.png", scaleX, scaleY, 3, 0, 48, 4, 4, 12, 32);
+        poof = perepareEffect("file:src\\resources\\gfx\\effects\\effect_009_poof01.png", scaleX, scaleY, 1, 0,0, 64, 64, 8, 256);
+
     }
 
     private Image[] perepareEffect(String file, float scaleX, float scaleY, int sheetScale, int x, int y, int width, int height, int size, int xReset) {
