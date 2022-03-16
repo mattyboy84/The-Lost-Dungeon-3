@@ -6,18 +6,7 @@
   "SheetScale": 3,
   "GutNumber": 14,
   "velocity": 5,
-  "idleAnimation": {
-    "Width": 80,
-    "Height": 64,
-    "SwapInterval": 0,
-    "Images": [
-      {
-        "x": 0,
-        "y": 0
-      }
-    ]
-  },
-  "faceImages": {
+  "attack1Animation": {
     "Width": 80,
     "Height": 64,
     "SwapInterval": 25,
@@ -65,8 +54,8 @@
   },
   "Hitbox": {
     "Type": "Circle",
-    "Radius": 28,
-    "xDelta": 41,
-    "yDelta": 30
+    "Radius": 26,
+    "xDelta": 14,
+    "yDelta": 4
   }
 }

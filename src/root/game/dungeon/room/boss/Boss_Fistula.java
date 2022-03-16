@@ -34,9 +34,6 @@ public class Boss_Fistula extends Boss {
         this.velocity = new Vecc2f().random2D(1).setMag(veloLimit);
         this.maxHealth = bossTemplate.get("Health").getAsInt();
         this.health = maxHealth;
-        this.gutNumber = bossTemplate.get("GutNumber").getAsInt();
-        this.bossType = bossTemplate.get("type").getAsString();
-        this.filepath = bossTemplate.get("filePath").getAsString();
         try {
             //if there isn't a child it will jump to catch and skip setting 'hasChild' to true
             JsonObject a = bossTemplate.get("child").getAsJsonObject();
@@ -91,30 +88,6 @@ public class Boss_Fistula extends Boss {
                 relocate(); relocate();
                 break;
             }
-        }
-    }
-
-    @Override
-    protected void checkForPlayer() {
-        if ((this.hitbox.getShape().getBoundsInParent().intersects(playerTarget.getBodyHitbox().getShape().getBoundsInParent()) ||
-                this.hitbox.getShape().getBoundsInParent().intersects(playerTarget.getHeadHitbox().getShape().getBoundsInParent())) && playerTarget.isVulnerable()) {
-            //
-            Vecc2f dir = new Vecc2f(this.hitbox.getCenterX(), this.hitbox.getCenterY()).sub(playerTarget.getCenterPos());
-
-            Vecc2f originalVELO = new Vecc2f(velocity.x, velocity.y);
-
-            Vecc2f enemyPushback = new Vecc2f(velocity.x, velocity.y);
-            enemyPushback.mult(-1);
-            enemyPushback.setMag((velocity.magnitude() < veloLimit * 0.25) ? (veloLimit) : (velocity.magnitude()));//if enemy is 'slow' the push back is adjusted
-            enemyPushback.fromAngle(dir.toAngle());
-            applyForce(enemyPushback, 0.3f);
-            //
-            playerTarget.inflictDamage(1);//TODO REMEMBER current default enemy damage is 1
-            Vecc2f pushback = new Vecc2f(originalVELO.x, originalVELO.y);
-            pushback.setMag((originalVELO.magnitude() < veloLimit * 0.25) ? (veloLimit) : (originalVELO.magnitude()));//if enemy is 'slow' the push back is adjusted
-            pushback.fromAngle(dir.toAngle() - 180);
-
-            playerTarget.applyForce(pushback, 6);
         }
     }
 

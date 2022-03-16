@@ -40,7 +40,7 @@ public abstract class Boss implements Sprite_Splitter {
     float sheetScale;
     Hitbox hitbox;
     float veloLimit;
-    Vecc2f velocity;
+    Vecc2f velocity = new Vecc2f(0, 0);
     public Vecc2f centerPos = new Vecc2f(0, 0);
     int damage;
     Timeline mainline;
@@ -68,12 +68,19 @@ public abstract class Boss implements Sprite_Splitter {
 
     public Boss(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         this.template = bossTemplate;
-        this.startingTemplatePosition = pos;
+        this.bossType = bossTemplate.get("type").getAsString();
+        this.filepath = bossTemplate.get("filePath").getAsString();
+        this.startingTemplatePosition = new Vecc2f(pos.x * scaleX, pos.y * scaleY);
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.screenBounds = screenBounds;
         this.shadingLayer = shading;
         this.parentRoom = parentRoom;
+        try {
+            this.gutNumber = bossTemplate.get("GutNumber").getAsInt();
+        } catch (Exception e) {//'guts' are not necessary in the template
+            this.gutNumber = 0;
+        }
     }
 
     public void healthBarSetup() {
@@ -194,13 +201,35 @@ public abstract class Boss implements Sprite_Splitter {
         //
         postUnLoader(group);
     }
+
     protected abstract void bossSpecificMovement();
 
     protected abstract void updateCenterPos();
 
     public abstract void checkBoundaries();
 
-    protected abstract void checkForPlayer();
+    protected void checkForPlayer() {
+        if ((this.hitbox.getShape().getBoundsInParent().intersects(playerTarget.getBodyHitbox().getShape().getBoundsInParent()) ||
+                this.hitbox.getShape().getBoundsInParent().intersects(playerTarget.getHeadHitbox().getShape().getBoundsInParent())) && playerTarget.isVulnerable()) {
+            //
+            Vecc2f dir = new Vecc2f(this.hitbox.getCenterX(), this.hitbox.getCenterY()).sub(playerTarget.getCenterPos());
+
+            Vecc2f originalVELO = new Vecc2f(velocity.x, velocity.y);
+
+            Vecc2f enemyPushback = new Vecc2f(velocity.x, velocity.y);
+            enemyPushback.mult(-1);
+            enemyPushback.setMag((velocity.magnitude() < veloLimit * 0.25) ? (veloLimit) : (velocity.magnitude()));//if enemy is 'slow' the push back is adjusted
+            enemyPushback.fromAngle(dir.toAngle());
+            applyForce(enemyPushback, 0.3f);
+            //
+            playerTarget.inflictDamage(1);//TODO REMEMBER current default enemy damage is 1
+            Vecc2f pushback = new Vecc2f(originalVELO.x, originalVELO.y);
+            pushback.setMag((originalVELO.magnitude() < veloLimit * 0.25) ? (veloLimit) : (originalVELO.magnitude()));//if enemy is 'slow' the push back is adjusted
+            pushback.fromAngle(dir.toAngle() - 180);
+
+            playerTarget.applyForce(pushback, 6);
+        }
+    }
 
     protected abstract void velocityLimit();
 
@@ -217,7 +246,7 @@ public abstract class Boss implements Sprite_Splitter {
             this.healthIndicator.setImage(imageGetter("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png", (int) (healthIndicatorOffset.x), (int) (healthIndicatorOffset.y),
                     (int) ((healthIndicatorDimensions.x) * (this.health / this.maxHealth)), (int) (healthIndicatorDimensions.y), this.scaleX, this.scaleY, healthBarScale));
         } catch (IllegalArgumentException e) {//when health is 0 - image width set to 0
-            this.healthIndicator.setImage(imageGetter("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png", 1,1,1,1,1,1,1));
+            this.healthIndicator.setImage(imageGetter("file:src\\resources\\gfx\\ui\\ui_bosshealthbar.png", 1, 1, 1, 1, 1, 1, 1));
         }
         //
         for (Boss boss : bosses) {//for multiple bosses - it will hide all healthbars then reveal the health bar of the just hit boss.
