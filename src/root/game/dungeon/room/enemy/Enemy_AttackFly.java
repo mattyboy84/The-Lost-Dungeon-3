@@ -22,8 +22,10 @@ public class Enemy_AttackFly extends Enemy {
 
     public void enemySpecificMovement() {//will run every frame
         state=states.attack1;
-        Vecc2f dir = new Vecc2f(Player.centerPos);
+
+        Vecc2f dir = new Vecc2f(playerTarget.getCenterPos());
         dir.sub(this.centerPos);
+
         dir.limit(0.5);
         velocity.add(dir);
         this.position.add(this.velocity);

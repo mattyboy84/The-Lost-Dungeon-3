@@ -1,5 +1,6 @@
 package root.game.dungeon.room.boss;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -19,9 +20,25 @@ public class Boss_DukeOfFlies extends Boss {
 
     int ATTACK1imageSwapInterval;
     Image[] attack1Animation;
-    Image[] backOfBossImages;
+    //
 
+    Image[] backOfBossImages;
+    JsonObject[] spawnEnemies;
     ImageView backOfBoss;
+    //
+    Vecc2f pushBack = new Vecc2f(0, 0);
+    Vecc2f acceleration = new Vecc2f(0, 0);
+    //
+    ArrayList<Rectangle> UP_DOWN = parentRoom.getTopBottomBounds();
+    ArrayList<Rectangle> LEFT_RIGHT = parentRoom.getLeftRightBounds();
+    boolean cooldown = false;
+
+    enum states {
+        idle,
+        attack1
+    }
+
+    states state;
 
     public Boss_DukeOfFlies(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room room) {
         super(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, room);
@@ -37,21 +54,78 @@ public class Boss_DukeOfFlies extends Boss {
         this.position = new Vecc2f(this.startingTemplatePosition);//start pos is scaled in super()
         this.hitbox = new Hitbox(bossTemplate.get("Hitbox").getAsJsonObject(), (int) sheetScale, scaleX, scaleY);
         //attack 1 animation - boss' face images
-        this.attack1Animation =prepareImages(bossTemplate, "attack1Animation", file);
+        this.attack1Animation = prepareImages(bossTemplate, "attack1Animation", file);
         ATTACK1imageSwapInterval = bossTemplate.get("attack1Animation").getAsJsonObject().get("SwapInterval").getAsInt();
-        this.boss = new ImageView(attack1Animation[0]);
-        this.position.sub(this.boss.getBoundsInParent().getWidth()/2,this.boss.getBoundsInParent().getHeight()/2);//center the boss image
+        this.boss = new ImageView(attack1Animation[3]);
+        //
+        this.position.sub(this.boss.getBoundsInParent().getWidth() / 2, this.boss.getBoundsInParent().getHeight() / 2);//center the boss image
         //back of the boss' mouth images
         this.backOfBossImages = prepareImages(bossTemplate, "backImages", file);
-        this.backOfBoss = new ImageView(backOfBossImages[0]);
-
-
+        this.backOfBoss = new ImageView(backOfBossImages[3]);
+        //gets the templates of enemies that the boss will spawn during attacks
+        JsonArray ARRspawnEnemies = bossTemplate.get("spawnEnemies").getAsJsonArray();
+        this.spawnEnemies = new JsonObject[ARRspawnEnemies.size()];
+        for (int i = 0; i < ARRspawnEnemies.size(); i++) {
+            spawnEnemies[i] = ARRspawnEnemies.get(i).getAsJsonObject();
+        }
+        this.state = states.idle;
         timelineSetup();
     }
 
     @Override
     protected void bossSpecificMovement() {
+        //
+        pushBack.random2D(20 + random.nextInt(1));
+        this.acceleration.mult((float) 0.8);
+        this.acceleration.add(pushBack);
+        this.velocity.add(this.acceleration);
+        this.position.add(this.velocity);
+        this.velocity.setMag(this.veloLimit / 2);
+        this.velocity.mult(0.6);
+        //
+        //
+        switch (state) {
+            case idle -> {
+                if (!cooldown && stateTransitionTimer > 30) {
+                    this.boss.setImage(attack1Animation[3]);
+                    this.backOfBoss.setImage(backOfBossImages[3]);
+                    cooldown = true;
+                }
+                if (stateTransitionTimer > (200 + random.nextInt(30))) {
+                    transitionToAttack();
+                }
+            }
+            case attack1 -> {
+                linearImageSwapper(this.boss, this.attack1Animation, this.ATTACK1imageSwapInterval, 0);
+                if (linearImageSwapper(this.backOfBoss, this.backOfBossImages, this.ATTACK1imageSwapInterval, 1) == 3) {
 
+                    for (int i = 0; i < 1; i++) {
+                        parentRoom.newRealTimeEnemySub("fly", spawnEnemies[0], this.centerPos.add(new Vecc2f(0, i)), parentGroup, 0);
+                    }
+                    //
+                    for (int i = 0; i < 2; i++) {
+                        if (random.nextFloat() > 0.5) {
+                            parentRoom.newRealTimeEnemySub("attack fly", spawnEnemies[1], this.centerPos.add(new Vecc2f(1, i)), parentGroup, 0);
+                        }
+                    }
+
+                    transitionToIdle();
+                }
+            }
+        }
+        relocate();
+    }
+
+    private void transitionToIdle() {
+        //this.boss.setImage(att);
+        stateTransitionTimer = 0;
+        this.state = states.idle;
+    }
+
+    private void transitionToAttack() {
+        stateTransitionTimer = 0;
+        this.state = states.attack1;
+        cooldown = false;
     }
 
     @Override
@@ -61,12 +135,23 @@ public class Boss_DukeOfFlies extends Boss {
 
     @Override
     public void checkBoundaries() {
-        for (Rectangle boundary : this.parentRoom.getAllBoundaries()) {
-            if (boundary.getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
-                this.position.sub(this.velocity);
-                this.position.set((int) this.position.x, (int) this.position.y);
-                this.velocity.set(0, 0);
+        for (Rectangle rectangle : UP_DOWN) {
+            if (this.hitbox.getShape().getBoundsInParent().intersects(rectangle.getBoundsInParent())) {
+                this.velocity.y *= -1;
+                this.velocity.mult(3);
                 relocate();
+                //relocate();
+                break;
+            }
+        }
+        //
+        for (Rectangle rectangle : LEFT_RIGHT) {
+            if (this.hitbox.getShape().getBoundsInParent().intersects(rectangle.getBoundsInParent())) {
+                this.velocity.x *= -1;
+                this.velocity.mult(3);
+                relocate();
+                //relocate();
+                break;
             }
         }
     }
@@ -104,7 +189,7 @@ public class Boss_DukeOfFlies extends Boss {
     @Override
     protected void inflictDamageSub(int damage, Group group, ArrayList<Boss> bosses) {
         if (this.health <= 0) {
-            beginRemoval(group,bosses);
+            beginRemoval(group, bosses);
         }
     }
 

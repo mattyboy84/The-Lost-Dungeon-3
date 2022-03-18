@@ -13,6 +13,7 @@ import root.Main;
 import root.game.Tear.Tear;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
+import root.game.dungeon.room.boss.Boss;
 import root.game.player.Player;
 import root.game.util.*;
 
@@ -190,9 +191,11 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
 
     public void checkBoundaries() {
         //System.out.println(boundaries.size());
-        for (Rectangle boundary : this.parentRoom.getAllBoundaries()) {
+        for (Rectangle boundary : this.parentRoom.getBoundaries()) {//excludes rock hitboxes
             if (boundary.getBoundsInParent().intersects(this.hitbox.getShape().getBoundsInParent())) {
+                this.velocity.mult(3);
                 this.position.sub(this.velocity);
+                this.velocity.div(4);
                 this.position.set((int) this.position.x, (int) this.position.y);
                 this.velocity.set(0, 0);
                 this.enemy.relocate(this.position.x, this.position.y);
@@ -243,8 +246,8 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
     }
 
     public void seperationSetter() {
-        Vecc2f seperation = seperation(this.position, this.velocity);
-        applyForce(seperation.limit(1), 0.4f);
+        Vecc2f seperation = seperation(this.centerPos, this.velocity);
+        applyForce(seperation.limit(1), 0.6f);
     }
 
     public Vecc2f seperation(Vecc2f position, Vecc2f velocity) {
@@ -252,7 +255,10 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         int total = 0;
         //
         for (Enemy enemy : parentRoom.enemies) {
-            total = getTotal(position, steering, total, enemy.position);
+            total = getTotal(position, steering, total, enemy.centerPos);
+        }
+        for (Boss boss : parentRoom.bosses) {
+            total += getTotal(position, steering, total, boss.centerPos);
         }
         if (total > 0) {
             steering.div(total);
@@ -373,6 +379,10 @@ public abstract class Enemy implements Sprite_Splitter, Entity_Shader {
         if (this.lightRadius > 0) {
             this.roomShading.removeActiveSource(this.uniqueID);
         }
+    }
+
+    public void goTo(Vecc2f goToPosition){
+
     }
 
     public void setVeloLimit(float i) {

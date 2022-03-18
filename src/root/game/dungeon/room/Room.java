@@ -448,7 +448,7 @@ public class Room implements Runnable {
         newRealTimeEnemySub(enemyName, enemytemplate, pos, group, rotate);
     }
 
-    private void newRealTimeEnemySub(String enemyName, JsonObject enemytemplate, Vecc2f pos, Group group, int optionalRotate) {
+    public void newRealTimeEnemySub(String enemyName, JsonObject enemytemplate, Vecc2f pos, Group group, int optionalRotate) {
         switch (enemyName) {
             case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
             case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
@@ -480,11 +480,6 @@ public class Room implements Runnable {
                 a.add(door.getDoorBlock());
             }
         }
-        for (Rock rock : rocks) {//each rock gets its parts hitboxes.
-            for (int k = 0; k < rock.rock_parts.size(); k++) {
-                a.add((Rectangle) rock.rock_parts.get(k).hitbox.getShape());
-            }
-        }
 
         return a;
     }
@@ -493,6 +488,12 @@ public class Room implements Runnable {
         ArrayList<Rectangle> a = new ArrayList<>(getBoundaries());
         for (Door door : doors) {
             a.add(door.getDoorTrigger());
+        }
+        //
+        for (Rock rock : rocks) {//each rock gets its parts hitboxes.
+            for (int k = 0; k < rock.rock_parts.size(); k++) {
+                a.add((Rectangle) rock.rock_parts.get(k).hitbox.getShape());
+            }
         }
         return a;
     }

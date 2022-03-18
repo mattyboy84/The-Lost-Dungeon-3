@@ -63,8 +63,12 @@ public abstract class Boss implements Sprite_Splitter {
 
     int healthBarScale = 5;
     //image swapping
-    int imageSwapIntervalCounter = 0;
-    int imageCounter = 0;
+    //int imageSwapIntervalCounter = 0;
+    //int imageCounter = 0;
+
+    int[] imageSwapIntervalCounter = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};//10
+    int[] imageCounter = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};//10
+
 
     public Boss(JsonObject bossTemplate, Vecc2f pos, float scaleX, float scaleY, Rectangle2D screenBounds, Shading shading, Room parentRoom) {
         this.template = bossTemplate;
@@ -127,7 +131,7 @@ public abstract class Boss implements Sprite_Splitter {
 
     public void seperationSetter() {
         Vecc2f seperation = seperation(this.centerPos, this.velocity);
-        applyForce(seperation.limit(1), 0.8f);
+        applyForce(seperation.limit(1), 0.6f);
     }
 
     public Vecc2f seperation(Vecc2f position, Vecc2f velocity) {
@@ -136,6 +140,9 @@ public abstract class Boss implements Sprite_Splitter {
         //
         for (Boss boss : parentRoom.bosses) {
             total = getTotal(position, steering, total, boss.centerPos);
+        }
+        for (Enemy enemy : parentRoom.enemies) {
+            total += getTotal(position, steering, total, enemy.centerPos);
         }
         if (total > 0) {
             steering.div(total);
@@ -159,20 +166,20 @@ public abstract class Boss implements Sprite_Splitter {
         return total;
     }
 
-    public int linearImageSwapper(Image[] images, int swapInterval) {
-        return linearImageSwapper(this.boss, images, swapInterval);
-    }
-
-    public int linearImageSwapper(ImageView bossImage, Image[] images, int swapInterval) {
-        if (++imageSwapIntervalCounter >= swapInterval) {
-            bossImage.setImage(images[imageCounter]);
-            imageCounter++;
-            if (imageCounter > images.length - 1) {
-                imageCounter = 0;
+    public int linearImageSwapper(ImageView bossImage, Image[] images, int swapInterval, int ARRAY_LOCATION) {
+        try {
+            if (++imageSwapIntervalCounter[ARRAY_LOCATION] >= swapInterval) {
+                bossImage.setImage(images[imageCounter[ARRAY_LOCATION]]);
+                imageCounter[ARRAY_LOCATION]++;
+                if (imageCounter[ARRAY_LOCATION] > images.length - 1) {
+                    imageCounter[ARRAY_LOCATION] = 0;
+                }
+                imageSwapIntervalCounter[ARRAY_LOCATION] = 0;
+                return imageCounter[ARRAY_LOCATION];
             }
-
-            imageSwapIntervalCounter = 0;
-            return imageCounter;
+            return -1;
+        } catch (Exception e) {
+            System.out.println("The ARRAY LOCATION provided( " + ARRAY_LOCATION + " )must be within the array with a size of: " + imageCounter.length);
         }
         return -1;
     }
@@ -197,7 +204,7 @@ public abstract class Boss implements Sprite_Splitter {
 
     public void unload(Group group) {
         //
-        group.getChildren().removeAll(this.healthBarImage/*, this.healthIndicator*/);
+        group.getChildren().removeAll(this.healthBarImage, this.healthIndicator);
         //
         postUnLoader(group);
     }

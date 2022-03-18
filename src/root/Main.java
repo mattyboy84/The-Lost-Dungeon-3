@@ -110,7 +110,7 @@ public class Main extends Application {
                 case B -> player.changeMaxHealthBy(2, group);
                 case N -> player.changeMaxHealthBy(-2, group);
                 case T -> player.inflictDamage(1);
-                case L -> player.currentRoom.newRealTimeEnemy("classic","pooter",new Vecc2f(600,500),group);
+                case L -> player.currentRoom.newRealTimeEnemy("classic","attack fly",new Vecc2f(600,500),group);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {

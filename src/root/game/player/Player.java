@@ -30,7 +30,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
     //
     int animateCounter;
     //
-    int shootCooldown = 40;
+    int shootCooldown = 36;
     //
     float avgScale;
     String movingDirection = "south";
