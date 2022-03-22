@@ -87,11 +87,11 @@ public class Vecc2f {
      * @return the square of the distance between the two
      * sets of specified coordinates.
      */
-    public static float distanceSq(float x1, float y1, float x2, float y2) {
-        x1 -= x2;
-        y1 -= y2;
-        return (x1 * x1 + y1 * y1);
-    }
+    //public static float distanceSq(float x1, float y1, float x2, float y2) {
+    //    x1 -= x2;
+    //    y1 -= y2;
+    //    return (x1 * x1 + y1 * y1);
+    //}
 
     /**
      * Returns the distance between two points.
@@ -198,6 +198,11 @@ public class Vecc2f {
     public void div(float divideBy) {
         this.x = (this.x / divideBy);
         this.y = (this.y / divideBy);
+    }
+
+    public void div(float divideByX,float divideByY) {
+        this.x = (this.x / divideByX);
+        this.y = (this.y / divideByY);
     }
 
     public void div(double divideBy) {

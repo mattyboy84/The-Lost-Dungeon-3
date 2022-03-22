@@ -19,9 +19,9 @@ public class Door implements Sprite_Splitter {
     //
     ImageView doorFrame, doorShadow, doorPartLeft, doorPartRight, doorPartRightLocked, trapDoor;
     Image brokenDoorFrame;
+    Image openTrapDoor;
     //
-    int spriteScaleX = 4;
-    int spriteScaleY = 4;
+    float sheetScale;
     //
     int height;
     int width;
@@ -38,7 +38,7 @@ public class Door implements Sprite_Splitter {
     public String direction;
     Random random = new Random();
 
-    public enum State {
+        public enum State {
         open,
         closed,
         locked
@@ -126,13 +126,16 @@ public class Door implements Sprite_Splitter {
         //
     }
 
-    public Door(float scaleX, float scaleY, Rectangle2D screenBounds) {
+    public Door(float scaleX, float scaleY, float sheetScale, Rectangle2D screenBounds) {//creates a Trap door
         this.state = State.closed;
         this.width = 64;
         this.height = 64;
-        this.trapDoor = new ImageView(imageGetter("file:src\\resources\\gfx\\grid\\door_11_trapdoor.png", 0, 0, 64,64,scaleX, scaleY,4));
-        this.position = new Vecc2f(screenBounds.getWidth() / 2 - ((this.width * spriteScaleX * scaleX) / 2), screenBounds.getHeight() / 2 - ((this.height * spriteScaleY * scaleY) / 2));
-        this.doorTrigger = new Rectangle(this.position.x + (16 * spriteScaleX * scaleX), this.position.y + (16 * spriteScaleY * scaleY), (32 * spriteScaleX * scaleX), (32 * spriteScaleY * scaleY));
+        this.sheetScale = sheetScale;
+        this.openTrapDoor = (imageGetter("file:src\\resources\\gfx\\grid\\door_11_trapdoor.png", 0, 0, 64, 64, scaleX, scaleY, sheetScale));
+        this.trapDoor = new ImageView(imageGetter("file:src\\resources\\gfx\\grid\\door_11_trapdoor.png", 0, 64, 64, 64, scaleX, scaleY, sheetScale));
+        this.position = new Vecc2f(screenBounds.getWidth() / 2 - ((this.width * sheetScale * scaleX) / 2), screenBounds.getHeight() / 2 - ((this.height * sheetScale * scaleY) / 2));
+        this.doorTrigger = new Rectangle(this.position.x + (32 * sheetScale * scaleX), this.position.y + (32 * sheetScale * scaleY), (32 * sheetScale * scaleX), (32 * sheetScale * scaleY));
+        this.centerPos = new Vecc2f(doorTrigger.getBoundsInParent().getCenterX(), doorTrigger.getBoundsInParent().getCenterY());
     }
 
     public void blowUp(Group group) {
@@ -163,8 +166,8 @@ public class Door implements Sprite_Splitter {
         this.doorPartRightLocked.setViewOrder(ViewOrder.door_layer.getViewOrder());
         this.doorPartLeft.setViewOrder(ViewOrder.door_layer.getViewOrder());
         //
-        this.doorTrigger.toFront();
-        this.doorTrigger.setFill(Color.RED);
+        //this.doorTrigger.toFront();
+        //this.doorTrigger.setFill(Color.RED);
         this.doorTrigger.setViewOrder(ViewOrder.door_layer.getViewOrder());
         this.doorTrigger.setVisible(false);
         //
@@ -199,9 +202,22 @@ public class Door implements Sprite_Splitter {
         }
     }
 
+    public void openTrapDoor() {
+    this.trapDoor.setImage(openTrapDoor);
+    this.state=State.open;
+    }
+
     public void loadTrapDoor(Group group) {
         group.getChildren().addAll(this.doorTrigger, this.trapDoor);
         this.trapDoor.relocate(this.position.x, this.position.y);
+        this.doorTrigger.relocate((this.position.x + (this.trapDoor.getBoundsInParent().getWidth() / 4)), (this.position.y + (this.trapDoor.getBoundsInParent().getHeight() / 4)));
+        this.doorTrigger.setVisible(false);
+        this.trapDoor.setViewOrder(ViewOrder.door_layer.getViewOrder());
+        this.doorTrigger.setViewOrder(ViewOrder.door_layer.getViewOrder());
+    }
+
+    public void unloadTrapDoor(Group group) {
+        group.getChildren().removeAll(this.doorTrigger, this.trapDoor);
     }
 
     public void open(Group group) {
@@ -306,5 +322,9 @@ public class Door implements Sprite_Splitter {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public ImageView getTrapDoor() {
+        return trapDoor;
     }
 }

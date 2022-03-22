@@ -4,7 +4,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import java.util.ArrayList;
 import java.util.Random;
-import root.game.dungeon.Shading;
+
+import root.Main;
 import root.game.dungeon.room.Room;
 import root.game.player.Player;
 
@@ -36,8 +37,10 @@ public class Dungeon {
     Shading shading;
 
     int borderBoundary = 1;//creates a safe zone around the dungeon. As 1, Row/Column 0 and length-1 are free of rooms
+    Main main;
 
-    public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds) {
+    public void Generate(int minRooms, int mapXWidth, int mapYWidth, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, Main main) {
+        this.main=main;
         this.mapX = mapXWidth;
         this.mapY = mapYWidth;
         //
@@ -46,7 +49,7 @@ public class Dungeon {
         this.startX = (mapX - 1) / 2;
         this.startY = (mapY - 1) / 2;
         this.minimumRooms = minRooms;
-        this.floorLevel = floorLevel + 1;
+        this.floorLevel = floorLevel;
 
         while ((finRooms < minimumRooms)) {
             mapclearer();
@@ -105,7 +108,7 @@ public class Dungeon {
                     right = roomChecker(i, j, 0, +1);
 
 
-                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading, (i == startX && j == startY)));
+                    rooms.add(new Room(i, j, map[i][j], up, down, left, right, this.floorLevel, scaleX, scaleY, screenBounds, String.valueOf(rooms.size()), this.shading, this,(i == startX && j == startY)));
 
 
                     rooms.get(rooms.size() - 1).start();
@@ -183,6 +186,7 @@ public class Dungeon {
         for (int i = 0; i < map.length; i++) {//3 for every unit in map,
             System.out.print("---");
         }
+        System.out.println();
     }
 
     private void neighbourAdder() {
@@ -378,5 +382,9 @@ public class Dungeon {
 
     public void setBorderBoundary(int borderBoundary) {
         this.borderBoundary = borderBoundary;
+    }
+
+    public void beginFloorTransition() {
+        this.main.beginFloorTransition();
     }
 }

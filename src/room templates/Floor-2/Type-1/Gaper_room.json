@@ -1,0 +1,221 @@
+{
+  "Background": {
+    "name": "03_caves",
+    "Width": 234,
+    "Height": 156,
+    "Rows": 2,
+    "Columns": 3,
+    "SheetScale": 3,
+    "BorderX": 213,
+    "BorderY": 180
+  },
+  "Underlay":{
+    "underlay": "water"
+  },
+  "Props": {
+    "Prop": true,
+    "name": "props_03_caves",
+    "Number": 16,
+    "RandNumber": 5,
+    "SheetScale": 3,
+    "Width": 26,
+    "Height": 26,
+    "Rows": 10,
+    "Columns": 5,
+    "BorderX": 213,
+    "BorderY": 180
+  },
+  "Music": {
+    "music": "the caves"
+  },
+  "items": [],
+  "enemies": [
+    {
+      "enemy": "gaper",
+      "type": "classic",
+      "Rotate": 0,
+      "PositionX": 419,
+      "PositionY": 283
+    },
+    {
+      "enemy": "gaper",
+      "type": "classic",
+      "Rotate": 0,
+      "PositionX": 1398,
+      "PositionY": 283
+    },
+    {
+      "enemy": "gaper",
+      "type": "classic",
+      "Rotate": 180,
+      "PositionX": 419,
+      "PositionY": 695
+    },
+    {
+      "enemy": "gaper",
+      "type": "classic",
+      "Rotate": 180,
+      "PositionX": 1398,
+      "PositionY": 695
+    }
+  ],
+  "bosses": [],
+  "Rocks": {
+    "name": "rocks_caves",
+    "SheetScale": 3.21875,
+    "Width": 32,
+    "Height": 32,
+    "BorderX": 213,
+    "BorderY": 180,
+    "rocksARR": [
+      {
+        "Comment": "START OF TOP LEFT SEGMENT",
+        "PositionX": 103,
+        "PositionY": 0,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 103,
+        "PositionY": 103,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 103,
+        "PositionY": 206,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 206,
+        "PositionY": 0,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 309,
+        "PositionY": 0,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 309,
+        "PositionY": 103,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 309,
+        "PositionY": 206,
+        "Type": "1x1",
+        "Comment": "END OF TOP LEFT SEGMENT"
+      },
+      {
+        "Comment": "START OF BOTTOM LEFT SEGMENT",
+        "PositionX": 103,
+        "PositionY": 412,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 103,
+        "PositionY": 515,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 103,
+        "PositionY": 618,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 206,
+        "PositionY": 618,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 309,
+        "PositionY": 412,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 309,
+        "PositionY": 515,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 309,
+        "PositionY": 618,
+        "Type": "1x1",
+        "Comment": "END OF  BOTTOM LEFT SEGMENT"
+      },
+      {
+        "Comment": "START OF TOP RIGHT SEGMENT",
+        "PositionX": 1082,
+        "PositionY": 0,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1082,
+        "PositionY": 103,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1082,
+        "PositionY": 206,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1185,
+        "PositionY": 0,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1288,
+        "PositionY": 0,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1288,
+        "PositionY": 103,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1288,
+        "PositionY": 206,
+        "Type": "1x1",
+        "Comment": "END OF TOP RIGHT SEGMENT"
+      },
+      {
+        "Comment": "START OF BOTTOM RIGHT SEGMENT",
+        "PositionX": 1082,
+        "PositionY": 412,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1082,
+        "PositionY": 515,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1082,
+        "PositionY": 618,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1185,
+        "PositionY": 618,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1288,
+        "PositionY": 412,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1288,
+        "PositionY": 515,
+        "Type": "1x1"
+      },
+      {
+        "PositionX": 1288,
+        "PositionY": 618,
+        "Type": "1x1",
+        "Comment": "END OF BOTTOM RIGHT SEGMENT"
+      }
+    ]
+  }
+}

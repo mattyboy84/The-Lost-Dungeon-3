@@ -4,7 +4,6 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -32,6 +31,8 @@ public class Player_Overlay implements Sprite_Splitter {
     ArrayList<Heart> hearts = new ArrayList<Heart>();
     public DungeonMap miniMap;
     public DungeonMap largeMap;
+    float scaleX, scaleY;
+    Rectangle2D screenBounds;
 
     String map = "minimap";
 
@@ -40,6 +41,10 @@ public class Player_Overlay implements Sprite_Splitter {
 
     public Player_Overlay(float scaleX, float scaleY, Rectangle2D screenBounds, int sheetScale, int score, int[][] map) {
         float g = ((scaleX + scaleY) / 2);
+        //
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.screenBounds = screenBounds;
 
         this.icon_coin = new ImageView(imageGetter(file, 0, 0, 16, 16, scaleX, scaleY, sheetScale));
 
@@ -91,9 +96,13 @@ public class Player_Overlay implements Sprite_Splitter {
         this.posTime = new Vecc2f(((screenBounds.getWidth() / 2)) - ((this.txtTime.getBoundsInParent().getWidth() / 2)), (this.txtScore.getBoundsInParent().getMaxY()));
         this.txtTime.setOpacity(0.4);
         //
+        createMap(map);
+
+    }
+
+    private void createMap(int[][] map) {
         miniMap = new DungeonMap("file:src\\resources\\gfx\\ui\\minimap1.png", 9, 8, 27, 160, 27, 192, 27, 224, map, scaleX, scaleY, screenBounds, 4);
         largeMap = new DungeonMap("file:src\\resources\\gfx\\ui\\minimap2.png", 18, 16, 108, 48, 108, 112, 108, 176, map, scaleX, scaleY, screenBounds, 3);
-        //largeMap.center(screenBounds);
 
     }
 
@@ -209,42 +218,54 @@ public class Player_Overlay implements Sprite_Splitter {
 
     public void updateHearts(int health) {
         int a = health;
-        switch (health%2){
+        switch (health % 2) {
             case 0://even
-                a=health/2;
-                for (int i = 0; i <a ; i++) {
+                a = health / 2;
+                for (int i = 0; i < a; i++) {
                     hearts.get(i).setHealth(2);
                 }
-                if (a<hearts.size()){
-                hearts.get(a).setHealth(0);}
+                if (a < hearts.size()) {
+                    hearts.get(a).setHealth(0);
+                }
                 break;
             case 1://odd
-                a=a-1;
-                a=a/2;
-                for (int i = 0; i <a ; i++) {
+                a = a - 1;
+                a = a / 2;
+                for (int i = 0; i < a; i++) {
                     hearts.get(i).setHealth(2);
                 }
                 hearts.get(a).setHealth(1);
-                try{
-                    hearts.get(a+1).setHealth(0);
-                }catch (Exception ignored){}
+                try {
+                    hearts.get(a + 1).setHealth(0);
+                } catch (Exception ignored) {
+                }
                 break;
         }
     }
 
     public void updateMaxHealth(int health, int maxHealth, Group group, int b) {
-        switch (b){
+        switch (b) {
             case 2://increase by 1 heart
-                if (hearts.size()<maxHealth/2){
-                hearts.add(new Heart(hearts, 0));
-                hearts.get(hearts.size()-1).load(group);}
+                if (hearts.size() < maxHealth / 2) {
+                    hearts.add(new Heart(hearts, 0));
+                    hearts.get(hearts.size() - 1).load(group);
+                }
                 break;
             case -2://decrease by 1 heart
-                hearts.get(hearts.size()-1).unload(group);
-                hearts.remove(hearts.size()-1);
+                hearts.get(hearts.size() - 1).unload(group);
+                hearts.remove(hearts.size() - 1);
                 break;
         }
         updateHearts(health);
+    }
+
+    public void transitionToNewDungeon(Group group, int[][] map) {
+        miniMap.unload(group);
+        largeMap.unload(group);
+
+        createMap(map);
+
+
     }
 
     private class Heart {
@@ -260,7 +281,7 @@ public class Player_Overlay implements Sprite_Splitter {
         int width_heart = (int) heart_EMPTY.getWidth();
 
         public Heart(ArrayList<Heart> hearts, int health) {
-            switch (health){
+            switch (health) {
                 case 2:
                     this.heart = new ImageView(heart_FULL);
                     break;
@@ -268,8 +289,8 @@ public class Player_Overlay implements Sprite_Splitter {
                     this.heart = new ImageView(heart_EMPTY);
                     break;
             }
-            this.position = new Vecc2f(((200*Main.scaleX) + ((((hearts.size()>7)?(hearts.size()-7):(hearts.size()+1)) * width_heart))),
-                    ((80*Main.scaleY)+(((hearts.size()>7)?(1):(0))*width_heart)));
+            this.position = new Vecc2f(((200 * Main.scaleX) + ((((hearts.size() > 7) ? (hearts.size() - 7) : (hearts.size() + 1)) * width_heart))),
+                    ((80 * Main.scaleY) + (((hearts.size() > 7) ? (1) : (0)) * width_heart)));
         }
 
         public void load(Group group) {

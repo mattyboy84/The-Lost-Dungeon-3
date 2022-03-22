@@ -11,6 +11,7 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import root.game.dungeon.Dungeon;
+import root.game.dungeon.room.Room;
 import root.game.music.Music;
 import root.game.player.Player;
 import root.game.util.Effects;
@@ -41,7 +42,12 @@ public class Main extends Application {
     Scene menuScene = new Scene(menuGroup, screenWidth, screenHeight);
     //
     Dungeon dungeon = new Dungeon();
+    Dungeon newDungeon = new Dungeon();
     public Player player = new Player();
+    int floor = 2;
+    int minRooms=18;
+    int mapXWidth=19;
+    int mapYHeight=19;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -57,7 +63,7 @@ public class Main extends Application {
         loadGame.relocate(450, 300);
         System.out.println("ScaleX: " + scaleX + " ScaleY: " + scaleY);
         menuGroup.getChildren().addAll(newGame, loadGame);
-        int floor = 0;
+
         //
         Effects effects = new Effects();//initialise used effects on separate thread
         effects.start();
@@ -65,7 +71,7 @@ public class Main extends Application {
         Music musics = new Music();
         musics.start();
         //
-        dungeon.Generate(18, 19, 19, floor, scaleX, scaleY, screenBounds);
+        dungeon.Generate(minRooms, mapXWidth, mapYHeight, floor, scaleX, scaleY, screenBounds, this);
         Dungeon.displayMap(dungeon.map);
         //
         player.Generate("character_001_isaac", dungeon.startX, dungeon.startY, scaleX, scaleY, screenBounds, 3, dungeon, "playerCon", group);
@@ -76,7 +82,7 @@ public class Main extends Application {
         //
         //newGame.setOnMouseClicked(mouseEvent -> {
         //    if (mouseEvent.getButton() == MouseButton.PRIMARY && Player.loaded) {
-        dungeon.loadRoom(dungeon.startX, dungeon.startY, group,player);
+        dungeon.loadRoom(dungeon.startX, dungeon.startY, group, player);
         player.currentRoom.openDoors(group);
         player.load(group);
         //
@@ -110,7 +116,7 @@ public class Main extends Application {
                 case B -> player.changeMaxHealthBy(2, group);
                 case N -> player.changeMaxHealthBy(-2, group);
                 case T -> player.inflictDamage(1);
-                case L -> player.currentRoom.newRealTimeEnemy("classic","attack fly",new Vecc2f(600,500),group);
+                case L -> player.currentRoom.newRealTimeEnemy("classic", "attack fly", new Vecc2f(600, 500), group);
             }
         });
         scene.setOnKeyReleased(keyEvent -> {
@@ -138,5 +144,22 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void beginFloorTransition() {
+        this.floor++;
+        dungeon = null;
+        System.gc();
+        Room.finishedRoom = 0;
+        Music.clearAll();
+        //
+        newDungeon.Generate(minRooms, mapXWidth, mapYHeight, floor, scaleX, scaleY, screenBounds, this);
+        Dungeon.displayMap(newDungeon.map);
+        newDungeon.loadRoom(newDungeon.startX, newDungeon.startY, group, player);
+        dungeon=newDungeon;
+
+        player.transitionToNewDungeon(newDungeon.startX, newDungeon.startY,dungeon,group);
+
+        player.currentRoom.openDoors(group);
     }
 }

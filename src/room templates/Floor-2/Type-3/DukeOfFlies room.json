@@ -1,0 +1,47 @@
+{
+  "Background": {
+    "name": "09_sheol",
+    "Width": 234,
+    "Height": 156,
+    "Rows": 2,
+    "Columns": 3,
+    "SheetScale": 3,
+    "BorderX": 213,
+    "BorderY": 180
+  },
+  "Props": {
+    "Prop": true,
+    "name": "props_09_sheol",
+    "Number": 8,
+    "RandNumber": 3,
+    "SheetScale": 3,
+    "Width": 26,
+    "Height": 26,
+    "Rows": 10,
+    "Columns": 6,
+    "BorderX": 213,
+    "BorderY": 180
+  },
+  "Music": {
+    "music": "basic boss fight"
+  },
+  "items": [],
+  "enemies": [],
+  "bosses": [
+    {
+      "boss": "dukeofflies",
+      "type": "classic",
+      "PositionX": 960,
+      "PositionY": 540
+    }
+  ],
+  "Rocks": {
+    "name": "rocks_caves",
+    "SheetScale": 3.21875,
+    "Width": 32,
+    "Height": 32,
+    "BorderX": 213,
+    "BorderY": 180,
+    "rocksARR": []
+  }
+}

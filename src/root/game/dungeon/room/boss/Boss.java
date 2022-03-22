@@ -5,12 +5,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Screen;
 import javafx.util.Duration;
 import root.game.dungeon.Shading;
 import root.game.dungeon.room.Room;
@@ -118,6 +114,7 @@ public abstract class Boss implements Sprite_Splitter {
         unload(group);
         bosses.remove(this);
         parentRoom.checkDoors(group);
+        parentRoom.checkTrapDoor(group);
         debrisCheck(group);
     }
 

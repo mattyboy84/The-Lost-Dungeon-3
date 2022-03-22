@@ -1,0 +1,78 @@
+{
+  "Background": {
+    "name": "03_caves",
+    "Width": 234,
+    "Height": 156,
+    "Rows": 2,
+    "Columns": 3,
+    "SheetScale": 3,
+    "BorderX": 213,
+    "BorderY": 180
+  },
+  "Underlay":{
+  "underlay": "water"
+   },
+  "Props": {
+    "Prop": true,
+    "name": "props_03_caves",
+    "Number": 16,
+    "RandNumber": 5,
+    "SheetScale": 3,
+    "Width": 26,
+    "Height": 26,
+    "Rows": 10,
+    "Columns": 5,
+    "BorderX": 213,
+    "BorderY": 180
+  },
+  "Music": {
+    "music": "the caves"
+  },
+  "items": [
+    {
+      "item": "key",
+      "PositionX": 1288,
+      "PositionY": 0
+    },
+    {
+      "item": "bomb",
+      "PositionX": 1391,
+      "PositionY": 0
+    },
+    {
+      "item": "key",
+      "PositionX": 1391,
+      "PositionY": 103
+    }
+  ],
+  "enemies": [
+    {
+      "enemy": "fly",
+      "type": "classic",
+      "PositionX": 800,
+      "PositionY": 500
+    },
+    {
+      "enemy": "pooter",
+      "type": "classic",
+      "PositionX": 1400,
+      "PositionY": 700
+    }
+  ],
+  "bosses": [],
+  "Rocks": {
+    "name": "rocks_caves",
+    "SheetScale": 3.21875,
+    "Width": 32,
+    "Height": 32,
+    "BorderX": 213,
+    "BorderY": 180,
+    "rocksARR": [
+      {
+        "PositionX": 0,
+        "PositionY": 0,
+        "Type": "2x2"
+      }
+    ]
+  }
+}

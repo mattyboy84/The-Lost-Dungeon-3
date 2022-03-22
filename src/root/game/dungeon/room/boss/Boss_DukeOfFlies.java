@@ -49,7 +49,7 @@ public class Boss_DukeOfFlies extends Boss {
         this.maxHealth = bossTemplate.get("Health").getAsInt();
         this.health = maxHealth;
         //
-        setVeloLimit(bossTemplate.get("velocity").getAsFloat());
+        setVeloLimit(bossTemplate.get("velocity").getAsFloat()*((scaleY+scaleX)/2));
         //
         this.position = new Vecc2f(this.startingTemplatePosition);//start pos is scaled in super()
         this.hitbox = new Hitbox(bossTemplate.get("Hitbox").getAsJsonObject(), (int) sheetScale, scaleX, scaleY);
@@ -80,7 +80,7 @@ public class Boss_DukeOfFlies extends Boss {
         this.acceleration.add(pushBack);
         this.velocity.add(this.acceleration);
         this.position.add(this.velocity);
-        this.velocity.setMag(this.veloLimit / 2);
+        this.velocity.setMag(this.veloLimit);
         this.velocity.mult(0.6);
         //
         //
@@ -104,7 +104,7 @@ public class Boss_DukeOfFlies extends Boss {
                     }
                     //
                     for (int i = 0; i < 2; i++) {
-                        if (random.nextFloat() > 0.5) {
+                        if (random.nextFloat() > 0.4) {
                             parentRoom.newRealTimeEnemySub("attack fly", spawnEnemies[1], this.centerPos.add(new Vecc2f(1, i)), parentGroup, 0);
                         }
                     }
@@ -206,6 +206,8 @@ public class Boss_DukeOfFlies extends Boss {
         this.hitbox.getShape().setViewOrder(ViewOrder.enemy_boss_layer.getViewOrder());
         //
         this.hitbox.getShape().setVisible(false);
+        //this.hitbox.getShape().setOpacity(0.4);
+        //this.hitbox.getShape().toFront();
         //
         relocate();
         this.mainline.play();

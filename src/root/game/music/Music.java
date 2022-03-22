@@ -69,12 +69,23 @@ public class Music implements Runnable {
             SFX_Sounds.get(k).check(targetCode, SFX_Sounds);
         }
     }
+    public static void clearAll() {
+        clearSFX();
+        clearMusic();
+    }
 
     public static void clearSFX() {
         for (Sound music_sound : SFX_Sounds) {
             music_sound.mediaSound.stop();
         }
         SFX_Sounds.clear();
+    }
+
+    public static void clearMusic() {
+        for (Sound music_sound : MUSIC_Sounds) {
+            music_sound.mediaSound.stop();
+        }
+        MUSIC_Sounds.clear();
     }
 
     public static void changeSFXVolume(Double newVolume) {

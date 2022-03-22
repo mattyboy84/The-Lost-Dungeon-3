@@ -23,7 +23,7 @@ public class Shading {
 
     Image shading;
     Canvas overlay;
-    String file = "file:src\\resources\\gfx\\backdrop\\shading2.0.png";
+    String file = "file:src\\resources\\gfx\\backdrop\\shading1.5.png";
     Timeline timeline;
     //
     Rectangle2D screenBounds = Screen.getPrimary().getBounds();

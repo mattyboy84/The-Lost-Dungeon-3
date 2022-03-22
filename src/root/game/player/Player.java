@@ -1,8 +1,5 @@
 package root.game.player;
 
-import animatefx.animation.Bounce;
-import animatefx.animation.RotateInDownLeft;
-import animatefx.animation.RotateOutDownRight;
 import animatefx.animation.RubberBand;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -13,7 +10,6 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Transform;
 import javafx.util.Duration;
 import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.Door;
@@ -320,7 +316,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                     });
                     stateTransitionTimer = 0;
                     //
-                    this.state=states.death;
+                    this.state = states.death;
                     break;
                 case death:
                     //TODO At this point, the game could add the current score to a database, provide an option to re-try or close the game.
@@ -474,7 +470,7 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 //
                 System.out.println("changing room to: " + currentRoom.room);
                 //
-                if (currentRoom.enemies.size() == 0 && currentRoom.bosses.size()==0) {
+                if (currentRoom.enemies.size() == 0 && currentRoom.bosses.size() == 0) {
                     currentRoom.openDoors(group);
                 }
             }
@@ -568,6 +564,14 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 updateKeys(-1);
             }
         }
+        if (currentRoom.getTrapDoor() != null) {
+            if (currentRoom.getTrapDoor().getState() == Door.State.closed && (group.getChildren().contains(currentRoom.getTrapDoor().getTrapDoor())) && Vecc2f.distance(centerPos.x, centerPos.y, currentRoom.getTrapDoor().getCenterPos().x, currentRoom.getTrapDoor().getCenterPos().y) > (350 * avgScale)) {
+                currentRoom.getTrapDoor().openTrapDoor();
+            }
+            if (currentRoom.getTrapDoor().getState() == Door.State.open && (group.getChildren().contains(currentRoom.getTrapDoor().getTrapDoor())) && (currentRoom.getTrapDoor().getDoorTrigger().getBoundsInParent().intersects(this.bodyHitbox.getShape().getBoundsInParent()))) {
+                beginFloorTransition();
+            }
+        }
         for (int i = 0; i < currentRoom.getBoundaries().size(); i++) {
             if (currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextXFrameBodyHitbox.getShape().getBoundsInParent())
                     || currentRoom.getBoundaries().get(i).getBoundsInParent().intersects(this.nextYFrameBodyHitbox.getShape().getBoundsInParent())) {
@@ -581,6 +585,11 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
                 collide = false;
             }
         }
+    }
+
+    private void beginFloorTransition() {
+        currentRoom.unload(group);
+        currentRoom.beginFloorTransition();
     }
 
     private void attackingDecider() {
@@ -748,8 +757,22 @@ public class Player implements Runnable, Entity_Shader, Sprite_Splitter {
         this.position.set(800, 400);
         relocate();
 
-
         overlay.load(group);
+    }
+
+    public void transitionToNewDungeon(int startX, int startY, Dungeon dungeon, Group group) {
+        this.roomX = startX;
+        this.roomY = startY;
+        this.dungeon = dungeon;
+        //
+        overlay.transitionToNewDungeon(group, dungeon.map);
+        overlay.miniMap.load(group);
+
+        overlay.miniMap.updateMinimap(this.roomX, this.roomY);
+        overlay.largeMap.updateLargemap(this.roomX, this.roomY, screenBounds);
+
+        //
+        roomFinder(dungeon);
     }
 
     public boolean isVulnerable() {

@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import root.game.Tear.Tear_Enemy;
 import root.game.Tear.Tear_Player;
+import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.boss.Boss;
 import root.game.dungeon.room.boss.Boss_DukeOfFlies;
 import root.game.dungeon.room.boss.Boss_Fistula;
@@ -23,7 +24,6 @@ import root.game.util.Vecc2f;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -41,6 +41,7 @@ public class Room implements Runnable {
     public Shading shading;
     public String room;
 
+    Dungeon parentDungeon;
     int i;
     int j;
     int type;
@@ -62,16 +63,19 @@ public class Room implements Runnable {
     public ArrayList<Tear> tears = new ArrayList<>();
     public ArrayList<Smoke> smokeClouds = new ArrayList<>();
     //
+    //public Underlay underlay=null;
+    //
     String music = null;
     //
     Player playerTarget;
     //
-    Door trapDoor;
+    Door trapDoor = null;
     //
     String parentThreadName;
 
-    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName, Shading shading, boolean startRoom) {
+    public Room(int i, int j, int type, int up, int down, int left, int right, int floorLevel, float scaleX, float scaleY, Rectangle2D screenBounds, String threadName, Shading shading, Dungeon dungeon, boolean startRoom) {
         //
+        this.parentDungeon=dungeon;
         this.parentThreadName = threadName;
         this.threadName = threadName;
         //
@@ -102,7 +106,7 @@ public class Room implements Runnable {
         //
         this.roomTemplate = new JsonParser().parse(String.valueOf(roomTemplateGetter("src\\room templates\\Floor-" + this.floorLevel + "\\Type-" + this.type))).getAsJsonObject();
         if (startRoom)
-            this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\room templates\\Start.json"))).getAsJsonObject();
+            this.roomTemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\room templates\\Floor-" + this.floorLevel + "\\Start.json"))).getAsJsonObject();
         //
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " Background Complete");
@@ -121,15 +125,23 @@ public class Room implements Runnable {
         try {
             bossAdder(this.roomTemplate.getAsJsonArray("bosses"), scaleX, scaleY, screenBounds, shading);
             System.out.println("Thread: " + threadName + " Bosses Complete");
-        } catch (Exception e) {
-            System.out.println(e);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        //
+        try{
+            underlayAdder(this.roomTemplate.getAsJsonObject("Underlay"),this.background.borderX,this.background.borderY,scaleX, scaleY,screenBounds);
+            System.out.println("Thread: " + threadName + " Underlay Complete");
+        } catch (NullPointerException e) {
+
+        }catch (Exception e){
+            e.printStackTrace(); //error in underlay
         }
         //
         try {
             this.music = this.roomTemplate.get("Music").getAsJsonObject().get("music").getAsString();
         } catch (Exception ignored) {
         }
-
         //213 x 180
         if (upType > 0) {
             doors.add(new Door("up", 0, this.upType, this.type, scaleX, scaleY, screenBounds, background));
@@ -152,11 +164,15 @@ public class Room implements Runnable {
             background.extendRight(screenBounds);
         }
         if (type == 3) {
-            trapDoor = new Door(scaleX, scaleY, screenBounds);
+            trapDoor = new Door(scaleX, scaleY, 4, screenBounds);
         }
         System.out.println("Thread: " + threadName + " Doors Complete");
         //
         finishedRoom += 1;
+    }
+
+    private void underlayAdder(JsonObject underlayTemplate, int borderX, int borderY, float scaleX, float scaleY, Rectangle2D screenBounds) {
+        //underlay=new Underlay(underlayTemplate,borderX,borderY,scaleX,scaleY,screenBounds);
     }
 
 
@@ -188,15 +204,14 @@ public class Room implements Runnable {
     private void itemAdder(JsonArray itemsArray, float scaleX, float scaleY, Rectangle2D screenBounds, Room parentRoom) {
         for (int k = 0; k < itemsArray.size(); k++) {
 
-            JsonObject a = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\items\\pick ups\\" + itemsArray.get(k).getAsJsonObject().get("item").getAsString() + ".json"))).getAsJsonObject();
+            JsonObject itemTemplate = new JsonParser().parse(String.valueOf(templateGetterSub("src\\resources\\gfx\\items\\pick ups\\" + itemsArray.get(k).getAsJsonObject().get("item").getAsString() + ".json"))).getAsJsonObject();
             Vecc2f pos = new Vecc2f(itemsArray.get(k).getAsJsonObject().get("PositionX").getAsInt(), itemsArray.get(k).getAsJsonObject().get("PositionY").getAsInt());
 
             switch (itemsArray.get(k).getAsJsonObject().get("item").getAsString()) {
-                //TODO might be able to combine unique items (heart & half-heart etc) into one class - depends on how different they become
-                case "coin" -> items.add(new Item_Coin(a, pos, scaleX, scaleY, screenBounds, parentRoom));
-                case "key", "double-key" -> items.add(new Item_Key(a, pos, scaleX, scaleY, screenBounds, parentRoom));
-                case "bomb", "double-bomb" -> items.add(new Item_Bomb(a, pos, scaleX, scaleY, screenBounds, parentRoom));
-                case "heart", "double-heart", "half-heart" -> items.add(new Item_Heart(a, pos, scaleX, scaleY, screenBounds, parentRoom));
+                case "coin" -> items.add(new Item_Coin(itemTemplate, pos, scaleX, scaleY, screenBounds, parentRoom));
+                case "key", "double-key" -> items.add(new Item_Key(itemTemplate, pos, scaleX, scaleY, screenBounds, parentRoom));
+                case "bomb", "double-bomb" -> items.add(new Item_Bomb(itemTemplate, pos, scaleX, scaleY, screenBounds, parentRoom));
+                case "heart", "double-heart", "half-heart" -> items.add(new Item_Heart(itemTemplate, pos, scaleX, scaleY, screenBounds, parentRoom));
             }
         }
     }
@@ -262,6 +277,11 @@ public class Room implements Runnable {
     public void load(Group group, Player player) {
         this.playerTarget = player;
         this.shading.load(group);
+        //
+        //if (this.underlay!=null){
+        //    this.underlay.load(group);
+        //}
+        //
         this.background.load(group);
         this.backgroundItems.load(group);
         //will attempt to add the music to the array
@@ -274,12 +294,10 @@ public class Room implements Runnable {
         for (Boss boss : bosses) {
             boss.load(group, player);
         }
-        /*
-        //base work for when a boss is defeated.
-        if (type==3){
+        //
+        if (bosses.size() == 0 && type == 3) {
             trapDoor.loadTrapDoor(group);
         }
-         */
         //
         for (Item item : items) {
             item.load(group);
@@ -299,6 +317,11 @@ public class Room implements Runnable {
 
     public void unload(Group group) {
         this.shading.unload(group);
+        //
+        //if (this.underlay!=null){
+        //    this.underlay.unload(group);
+        //}
+        //
         this.background.unload(group);
         this.backgroundItems.unload(group);
         //
@@ -308,6 +331,9 @@ public class Room implements Runnable {
         //
         for (Boss boss : bosses) {
             boss.unload(group);
+        }
+        if (this.trapDoor != null && group.getChildren().contains(this.trapDoor.getTrapDoor())) {
+            trapDoor.unloadTrapDoor(group);
         }
         //
         for (Item item : items) {
@@ -329,6 +355,12 @@ public class Room implements Runnable {
         }
         for (int k = smokeClouds.size() - 1; k > -1; k--) {//smokes are short lives - self terminate & delete when leaving a room
             smokeClouds.get(k).unload(group);//leads to the destroy method
+        }
+    }
+
+    public void checkTrapDoor(Group group) {
+        if (this.trapDoor!=null&& bosses.size() == 0){
+            this.trapDoor.loadTrapDoor(group);
         }
     }
 
@@ -449,12 +481,15 @@ public class Room implements Runnable {
     }
 
     public void newRealTimeEnemySub(String enemyName, JsonObject enemytemplate, Vecc2f pos, Group group, int optionalRotate) {
+        //position is unscaled so that it can be rescaled by the Enemy base class
+        Vecc2f newpos = new Vecc2f(pos);
+        newpos.div(scaleX, scaleY);
         switch (enemyName) {
-            case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
-            case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
-            case "pooter" -> enemies.add(new Enemy_Pooter(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
-            case "spider" -> enemies.add(new Enemy_Spider(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this));
-            case "gaper" -> enemies.add(new Enemy_Gaper(enemytemplate, pos, scaleX, scaleY, screenBounds, shading, this, optionalRotate));
+            case "fly" -> enemies.add(new Enemy_Fly(enemytemplate, newpos, scaleX, scaleY, screenBounds, shading, this));
+            case "attack fly" -> enemies.add(new Enemy_AttackFly(enemytemplate, newpos, scaleX, scaleY, screenBounds, shading, this));
+            case "pooter" -> enemies.add(new Enemy_Pooter(enemytemplate, newpos, scaleX, scaleY, screenBounds, shading, this));
+            case "spider" -> enemies.add(new Enemy_Spider(enemytemplate, newpos, scaleX, scaleY, screenBounds, shading, this));
+            case "gaper" -> enemies.add(new Enemy_Gaper(enemytemplate, newpos, scaleX, scaleY, screenBounds, shading, this, optionalRotate));
         }
         enemies.get(enemies.size() - 1).load(group, this.playerTarget);
         smokeClouds.add(new Smoke(enemies.get(enemies.size() - 1).getCenterPos(), group, smokeClouds, scaleX, scaleY, this));
@@ -467,8 +502,11 @@ public class Room implements Runnable {
     }
 
     public void newRealtimeBossSub(String bossName, JsonObject bossTemplate, Vecc2f pos, Group group) {
+        //position is unscaled so that it can be rescaled by the Boss
+        Vecc2f newpos = new Vecc2f(pos);
+        newpos.div(scaleX, scaleY);
         switch (bossName) {
-            case "fistula" -> bosses.add(new Boss_Fistula(bossTemplate, pos, scaleX, scaleY, screenBounds, shading, this));
+            case "fistula" -> bosses.add(new Boss_Fistula(bossTemplate, newpos, scaleX, scaleY, screenBounds, shading, this));
         }
         bosses.get(bosses.size() - 1).load(group, this.playerTarget);
     }
@@ -502,7 +540,7 @@ public class Room implements Runnable {
         ArrayList<Rectangle> a = new ArrayList(background.get_TOP_BOTTOM_boundaries());
         //
         for (Door door : doors) {
-            if (door.direction.equalsIgnoreCase("up") || door.direction.equalsIgnoreCase("down")){
+            if (door.direction.equalsIgnoreCase("up") || door.direction.equalsIgnoreCase("down")) {
                 a.add(door.getDoorBlock());
             }
         }
@@ -514,7 +552,7 @@ public class Room implements Runnable {
         ArrayList<Rectangle> a = new ArrayList(background.get_LEFT_RIGHT_boundaries());
         //
         for (Door door : doors) {
-            if (door.direction.equalsIgnoreCase("left") || door.direction.equalsIgnoreCase("right")){
+            if (door.direction.equalsIgnoreCase("left") || door.direction.equalsIgnoreCase("right")) {
                 a.add(door.getDoorBlock());
             }
         }
@@ -570,8 +608,8 @@ public class Room implements Runnable {
         return floorLevel;
     }
 
-    public void setFloorLevel(int floorLevel) {
-        this.floorLevel = floorLevel;
+    public Door getTrapDoor() {
+        return trapDoor;
     }
 
     public JsonObject getRoomTemplate() {
@@ -587,7 +625,7 @@ public class Room implements Runnable {
     }
 
     public void displayNeighbours() {
-        System.out.println("UP: " + this.upType + " Down: " + this.downType + " Left: " + this.leftType + " Right: " + this.rightType);
+        System.out.println("Up: " + this.upType + " Down: " + this.downType + " Left: " + this.leftType + " Right: " + this.rightType);
     }
 
     @Override
@@ -605,5 +643,9 @@ public class Room implements Runnable {
         for (int k = 0; k < enemies.size(); k++) {
             enemies.get(k).timeline.pause();
         }
+    }
+
+    public void beginFloorTransition() {
+        parentDungeon.beginFloorTransition();
     }
 }

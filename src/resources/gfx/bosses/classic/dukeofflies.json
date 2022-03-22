@@ -2,10 +2,10 @@
   "boss": "dukeofflies",
   "type": "classic",
   "filePath": "boss_007_dukeofflies",
-  "Health": 120,
+  "Health": 12,
   "SheetScale": 3,
   "GutNumber": 14,
-  "velocity": 5,
+  "velocity": 2.5,
   "attack1Animation": {
     "Width": 80,
     "Height": 64,
