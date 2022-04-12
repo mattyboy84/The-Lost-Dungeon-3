@@ -9,19 +9,6 @@
     "BorderX": 213,
     "BorderY": 180
   },
-  "Props": {
-    "Prop": false,
-    "name": "props_01_basement",
-    "Number": 0,
-    "RandNumber": 0,
-    "SheetScale": 3,
-    "Width": 26,
-    "Height": 26,
-    "Rows": 10,
-    "Columns": 6,
-    "BorderX": 213,
-    "BorderY": 180
-  },
   "Music": {
     "music": "library"
   },

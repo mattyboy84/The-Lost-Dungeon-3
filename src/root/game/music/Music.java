@@ -265,7 +265,7 @@ public class Music implements Runnable {
 
         private void primarySetup(boolean repeat, int hashcode, String sound, HashMap<String, Media> table, double soundVolume) {
             this.repeat = repeat;
-            this.parentHashCode = hashcode;//TODO Hash code alone may not be enough - 1 object may have multiple sounds
+            this.parentHashCode = hashcode;//TODO Hash code alone may not be enough, 1 object may have multiple sounds
             //
             this.musicName = sound;
             //System.out.println("added sound: " + musicName);

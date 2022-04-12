@@ -10,17 +10,9 @@
     "BorderY": 180
   },
   "Props": {
-    "Prop": true,
     "name": "props_09_sheol",
-    "Number": 8,
-    "RandNumber": 3,
-    "SheetScale": 3,
-    "Width": 26,
-    "Height": 26,
-    "Rows": 10,
-    "Columns": 6,
-    "BorderX": 213,
-    "BorderY": 180
+    "Number": 11,
+    "RandNumber": 5
   },
   "Music": {
     "music": "basic boss fight"

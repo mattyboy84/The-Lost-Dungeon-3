@@ -1,29 +1,18 @@
 {
   "Background": {
-    "name": "03_caves",
+    "name": "02_cellar",
     "Width": 234,
     "Height": 156,
     "Rows": 2,
-    "Columns": 3,
+    "Columns": 2,
     "SheetScale": 3,
     "BorderX": 213,
     "BorderY": 180
   },
-  "Underlay":{
-  "underlay": "water"
-   },
   "Props": {
-    "Prop": true,
     "name": "props_03_caves",
-    "Number": 16,
-    "RandNumber": 5,
-    "SheetScale": 3,
-    "Width": 26,
-    "Height": 26,
-    "Rows": 10,
-    "Columns": 5,
-    "BorderX": 213,
-    "BorderY": 180
+    "Number": 11,
+    "RandNumber": 5
   },
   "Music": {
     "music": "the caves"
@@ -61,7 +50,7 @@
   ],
   "bosses": [],
   "Rocks": {
-    "name": "rocks_caves",
+    "name": "rocks_cellar",
     "SheetScale": 3.21875,
     "Width": 32,
     "Height": 32,

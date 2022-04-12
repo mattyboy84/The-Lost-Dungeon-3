@@ -1,27 +1,30 @@
 package root;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import animatefx.animation.RubberBand;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import root.game.dungeon.Dungeon;
 import root.game.dungeon.room.Room;
 import root.game.music.Music;
 import root.game.player.Player;
 import root.game.util.Effects;
+import root.game.util.Sprite_Splitter;
 import root.game.util.Vecc2f;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
-public class Main extends Application {
+public class Main extends Application implements Sprite_Splitter {
 
     //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     static Rectangle2D screenBounds = Screen.getPrimary().getBounds();
@@ -36,21 +39,28 @@ public class Main extends Application {
     public static float scaleX = (float) screenWidth / madeWithWidth;
     public static float scaleY = (float) screenHeight / madeWithHeight;
 
+    Stage parentStage;
+
     public static Group group = new Group();
     Group menuGroup = new Group();
+    Group loadingGroup = new Group();
+    Timeline loadPlayerMove;
+    //
     Scene scene = new Scene(group, screenWidth, screenHeight);
     Scene menuScene = new Scene(menuGroup, screenWidth, screenHeight);
+    Scene loadingScene = new Scene(loadingGroup, screenWidth, screenHeight, Color.BLACK);
     //
     Dungeon dungeon = new Dungeon();
     Dungeon newDungeon = new Dungeon();
     public Player player = new Player();
-    int floor = 2;
-    int minRooms=18;
-    int mapXWidth=19;
-    int mapYHeight=19;
+    int floor = 1;
+    int minRooms = 18;
+    int mapXWidth = 19;
+    int mapYHeight = 19;
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.parentStage = stage;
 
         System.out.println(screenBounds);
         //1920 x 1080
@@ -63,6 +73,8 @@ public class Main extends Application {
         loadGame.relocate(450, 300);
         System.out.println("ScaleX: " + scaleX + " ScaleY: " + scaleY);
         menuGroup.getChildren().addAll(newGame, loadGame);
+        //
+        prepareLoadingScene();
 
         //
         Effects effects = new Effects();//initialise used effects on separate thread
@@ -142,24 +154,53 @@ public class Main extends Application {
         stage.show();
     }
 
+    private void prepareLoadingScene() {
+        String url = "file:src\\resources\\gfx\\ui\\stage\\" + "nightmares_bg_mask" + ".png";
+        //
+        addItem("file:src\\resources\\gfx\\ui\\stage\\" + "nightmares_bg_mask" + ".png", 0, 0, (float) ((menuScene.getWidth())/(new Image(url).getWidth())), (float) ((menuScene.getHeight())/(new Image(url).getHeight())), 1);
+        //
+        addItem("file:src\\resources\\gfx\\ui\\stage\\" + "playerspot" + ".png", 0, 0, scaleX, scaleY, 4);
+        //
+        addItem("file:src\\resources\\gfx\\ui\\stage\\" + "playerportrait_isaac" + ".png", 0, 0, scaleX, scaleY, 4);
+    }
+
+    private ImageView addItem(String url, int startX, int startY, float scaleX, float scaleY, int scale) {
+        ImageView prepImage = new ImageView(imageGetter(url,
+                startX,
+                startY,
+                (int) new Image(url).getWidth(),
+                (int) new Image(url).getHeight(),
+                (float) scaleX,
+                (float) scaleY,
+                scale));
+        loadingGroup.getChildren().add(prepImage);
+        prepImage.relocate((menuScene.getWidth() / 2 - (prepImage.getBoundsInParent().getWidth() / 2)), (menuScene.getHeight() - (prepImage.getBoundsInParent().getHeight())));
+
+        return prepImage;
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
 
     public void beginFloorTransition() {
+        boolean isFull = this.parentStage.isFullScreen();
+        this.parentStage.setScene(loadingScene);//prepares & swaps to the loading screen
+        this.parentStage.setFullScreen(isFull);
+        //
         this.floor++;
         dungeon = null;
         System.gc();
-        Room.finishedRoom = 0;
+        Room.finishedRoom = 0;//this static int tracks dungeon gen progress
         Music.clearAll();
         //
         newDungeon.Generate(minRooms, mapXWidth, mapYHeight, floor, scaleX, scaleY, screenBounds, this);
         Dungeon.displayMap(newDungeon.map);
         newDungeon.loadRoom(newDungeon.startX, newDungeon.startY, group, player);
-        dungeon=newDungeon;
+        dungeon = newDungeon;
 
-        player.transitionToNewDungeon(newDungeon.startX, newDungeon.startY,dungeon,group);
-
+        player.transitionToNewDungeon(newDungeon.startX, newDungeon.startY, dungeon, group);
         player.currentRoom.openDoors(group);
+        //this.parentStage.setScene(scene);
     }
 }

@@ -111,8 +111,14 @@ public class Room implements Runnable {
         this.background = new Background(this.roomTemplate.getAsJsonObject("Background"), scaleX, scaleY, screenBounds);
         System.out.println("Thread: " + threadName + " Background Complete");
         //
-        this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds);
-        System.out.println("Thread: " + threadName + " BackgroundItems Complete");
+        try {
+            this.backgroundItems.addProps(this.roomTemplate.getAsJsonObject("Props"), scaleX, scaleY, screenBounds,this.background.borderX,this.background.borderY);
+            System.out.println("Thread: " + threadName + " Props Complete");
+        }catch (NullPointerException e){
+            //prop object is not present in room template - no props in the room.
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         //
         itemAdder(this.roomTemplate.getAsJsonArray("items"), scaleX, scaleY, screenBounds, this);
         System.out.println("Thread: " + threadName + " Items Complete");
@@ -128,12 +134,11 @@ public class Room implements Runnable {
         }catch (Exception e){
             e.printStackTrace();
         }
-        //
+        //TODO add underlays
         try{
             underlayAdder(this.roomTemplate.getAsJsonObject("Underlay"),this.background.borderX,this.background.borderY,scaleX, scaleY,screenBounds);
             System.out.println("Thread: " + threadName + " Underlay Complete");
         } catch (NullPointerException e) {
-
         }catch (Exception e){
             e.printStackTrace(); //error in underlay
         }
