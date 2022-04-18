@@ -78,12 +78,9 @@ public class Props implements Sprite_Splitter {
         //
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             this.prop.setImage(animatedFrames[animateCounter]);
-
             animateCounter = (animateCounter == animatedFrames.length-1) ? (0) : (++animateCounter);
-            System.out.println("animating prop");
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
-
     }
 
 

@@ -34,15 +34,14 @@ public class Background_items {
         StringBuilder json = new StringBuilder();
         try {
             File file = new File(file2);
-
             BufferedReader br = new BufferedReader(new FileReader(file));
-
             String st;
             while ((st = br.readLine()) != null) {
                 json.append(st);
             }
         } catch (Exception e) {
-            System.out.println("Cannot find room template - Room");
+            System.out.println("Cannot find prop Template - Background_items");
+            e.printStackTrace();
         }
         return json;
     }
